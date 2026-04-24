@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin - Portfolio</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="/js/darkmode.js"></script>
+  </head>
+  <body class="bg-background text-foreground select-none">
+    <app-root></app-root>
+    <script>
+      if (
+        localStorage.getItem('color-theme') === 'dark' ||
+        (!('color-theme' in localStorage) &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+    <noscript>
+      <style>
+        body {
+          background-color: #0f111a;
+          min-height: 100svh;
+          display: grid;
+          place-content: center;
+          color: #f5f5f5;
+        }
+
+        .main {
+          text-align: center;
+          border-radius: 0.7rem;
+          padding: 2.5rem;
+        }
+
+        .paragraph {
+          font-size: clamp(2.7994rem, 1.8553rem + 4.7202vi, 6.1035rem);
+          text-align: center;
+        }
+      </style>
+      <main class="main">
+        <p class="paragraph">Lo siento, necesitas activar JavaScript para ver la página</p>
+      </main>
+    </noscript>
+  </body>
+</html>

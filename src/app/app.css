@@ -1,0 +1,59 @@
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(--color-border);
+  }
+  body {
+    background-color: hsl(var(--color-background));
+    color: hsl(var(--color-foreground));
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  main {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+[data-sidebar='sidebar'] {
+  /* @apply bg-sidebar text-sidebar-foreground border-sidebar-border; */
+  background-color: hsl(--color-sidebar-primary);
+  color: hsl(--color-sidebar-foreground);
+  border-color: hsl(--color-sidebar-border);
+}
+
+/*[data-sidebar="header"],
+[data-sidebar="footer"] {
+  @apply border-sidebar-border;
+}
+
+[data-sidebar="menu-button"] {
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200;
+}
+
+[data-sidebar="menu-button"] svg {
+  @apply text-sidebar-foreground transition-colors duration-200;
+}
+
+[data-sidebar="menu-button"][data-active="true"] {
+  @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-sm;
+}
+
+[data-sidebar="menu-button"][data-active="true"] svg {
+  @apply text-sidebar-accent-foreground;
+}
+
+[data-sidebar="menu-button"]:hover svg {
+  @apply text-sidebar-accent-foreground;
+}
+
+[data-sidebar="menu-item"] {
+  @apply transition-transform duration-200 hover:scale-[1.02];
+} */
