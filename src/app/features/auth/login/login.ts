@@ -4,13 +4,12 @@ import { ZardCheckboxComponent } from '@/shared/components/checkbox';
 import { ZardFormImports } from '@/shared/components/form';
 import { ZardInputDirective } from '@/shared/components/input';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   LucideBriefcase,
   LucideEye,
   LucideEyeOff,
-  LucideLoader,
   LucideLoader2,
   LucideLock,
   LucideLogIn,
@@ -40,12 +39,12 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export default class Login implements OnInit {
+export default class Login {
   //#region Variables
-  isError: boolean = false;
-  error: string = 'test';
-  showPassword: boolean = false;
-  isLoading: boolean = false;
+  isError = false;
+  error = '';
+  showPassword = false;
+  isLoading = false;
   year: number = new Date().getFullYear();
   submitted = false;
   //#endregion
@@ -59,7 +58,7 @@ export default class Login implements OnInit {
   //#endregion
 
   //#region Inicializacion
-  ngOnInit(): void {}
+
   //#endregion
 
   //#region getterandvalidations
@@ -110,7 +109,7 @@ export default class Login implements OnInit {
 
   private sendLogin(): Promise<void> {
     console.log('Form submitted:', this.validationForm.getRawValue());
-    return new Promise((resolve) => setTimeout(resolve, 1000));
+    return new Promise(resolve => setTimeout(resolve, 1000));
   }
   //#endregion
 

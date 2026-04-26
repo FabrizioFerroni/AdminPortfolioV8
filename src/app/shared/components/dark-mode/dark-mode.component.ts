@@ -12,7 +12,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMonitor, lucideMoon, lucideSun } from '@ng-icons/lucide';
 import { ZardButtonComponent } from '../button';
 import { ClassValue } from 'clsx';
-import { formLabelVariants } from '../form';
 import { mergeClasses } from '@/shared/utils';
 import {
   ZardTooltipImports,
@@ -38,8 +37,7 @@ import {
       [zPosition]="tPosition()"
       [zTrigger]="pTrigger()"
       [zShowDelay]="pShowDelay()"
-      [zHideDelay]="pHideDelay()"
-    >
+      [zHideDelay]="pHideDelay()">
       <ng-icon [name]="themeIcon()" class="size-4.5" />
       <span class="sr-only">Toggle theme</span>
     </button>

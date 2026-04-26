@@ -14,15 +14,13 @@
         novalidate
         [formGroup]="validationForm"
         (ngSubmit)="handleSubmit()"
-        class="max-w-sm space-y-6"
-      >
+        class="max-w-sm space-y-6">
         @if (isError) {
           <z-alert
             zType="destructive"
             zTitle="Uppsss... Hubo un error!"
             [zDescription]="customDescription"
-            class="animate-in slide-in-from-top-2"
-          />
+            class="animate-in slide-in-from-top-2" />
 
           <ng-template #customDescription>
             <p>{{ error }}</p>
@@ -32,6 +30,8 @@
           <div class="flex flex-col gap-2">
             <z-form-field>
               <label
+                id="email"
+                for="email"
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 z-form-label
                 zRequired
@@ -41,8 +41,7 @@
                 <z-form-control>
                   <svg
                     lucideMail
-                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
-                  ></svg>
+                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"></svg>
                   <input
                     z-input
                     type="email"
@@ -52,8 +51,9 @@
                     class="h-12 pl-10 pr-4"
                     autoComplete="email"
                     zRequired
-                    [zStatus]="emailControl.invalid && emailControl.touched ? 'error' : undefined"
-                  />
+                    [zStatus]="
+                      emailControl.invalid && emailControl.touched ? 'error' : undefined
+                    " />
                 </z-form-control>
                 <z-form-message zType="error">{{ getEmailError() }}</z-form-message>
               </div>
@@ -64,6 +64,7 @@
               <div class="flex items-center justify-between">
                 <label
                   for="password"
+                  id="password"
                   class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   z-form-label
                   zRequired
@@ -79,8 +80,7 @@
                 <z-form-control>
                   <svg
                     lucideLock
-                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
-                  ></svg>
+                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"></svg>
                   <input
                     z-input
                     type="{{ showPassword ? 'text' : 'password' }}"
@@ -92,13 +92,11 @@
                     zRequired
                     [zStatus]="
                       passwordControl.invalid && passwordControl.touched ? 'error' : undefined
-                    "
-                  />
+                    " />
                   <button
                     type="button"
                     (click)="showPassword = !showPassword"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                  >
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                     @if (showPassword) {
                       <svg lucideEyeOff class="h-5 w-5"></svg>
                     } @else {
@@ -122,8 +120,7 @@
             zFull
             zType="default"
             type="button"
-            class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer cursor-not-allowed"
-          >
+            class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer cursor-not-allowed">
             <svg lucideLoader2 class="mr-2 h-5 w-5 animate-spin"></svg>
             <span>Iniciando sesión...</span>
           </button>
@@ -134,8 +131,7 @@
             zType="default"
             type="submit"
             [zDisabled]="validationForm.invalid"
-            class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer disabled:cursor-not-allowed"
-          >
+            class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer disabled:cursor-not-allowed">
             <svg lucideLogIn class="mr-2 h-5 w-5"></svg>
             <span>Iniciar sesión </span>
           </button>
