@@ -1,0 +1,8 @@
+if [ "$branch" = "prod" ] || [ "$branch" = "pre" ] || [ "$branch" = "dev" ]; then
+ echo "No puedes comitear directamente con la rama $branch"
+ exit 1
+fi
+
+npm run lint
+
+npx lint-staged
