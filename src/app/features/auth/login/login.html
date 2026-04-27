@@ -15,7 +15,7 @@
         [formGroup]="validationForm"
         (ngSubmit)="handleSubmit()"
         class="max-w-sm space-y-6">
-        @if (isError) {
+        @if (isError()) {
           <z-alert
             zType="destructive"
             zTitle="Uppsss... Hubo un error!"
@@ -23,7 +23,7 @@
             class="animate-in slide-in-from-top-2" />
 
           <ng-template #customDescription>
-            <p>{{ error }}</p>
+            <p>{{ error() }}</p>
           </ng-template>
         }
         <div class="space-y-4">
@@ -48,7 +48,7 @@
                     placeholder="name@example.com"
                     formControlName="email"
                     id="email"
-                    class="h-12 pl-10 pr-4"
+                    class="h-12 pl-10 pr-4 outFocus"
                     autoComplete="email"
                     zRequired
                     [zStatus]="
@@ -87,7 +87,7 @@
                     placeholder="Enter your password"
                     formControlName="password"
                     id="password"
-                    class="h-12 pl-10 pr-4"
+                    class="h-12 pl-10 pr-4 outFocus"
                     autoComplete="current-password"
                     zRequired
                     [zStatus]="
@@ -110,10 +110,17 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <span z-checkbox formControlName="rememberMe">Recordarme</span>
+          <z-form-field>
+            <z-form-control class="flex flex-col">
+              <div class="flex items-center space-x-2">
+                <z-checkbox id="rememberMe" formControlName="rememberMe" class="outFocus" />
+                <label z-form-label class="mb-0! outFocus" for="rememberMe">Recordarme</label>
+              </div>
+            </z-form-control>
+          </z-form-field>
         </div>
 
-        @if (submitted) {
+        @if (submitted()) {
           <button
             z-button
             zDisabled

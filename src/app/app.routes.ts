@@ -8,6 +8,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/auth/auth.routes'),
   },
   {
+    path: Rutas.HOME,
+    loadChildren: () => import('./features/app/app.routes'),
+  },
+  {
     path: Rutas.NOT_FOUND,
     component: NotFoundComponent,
     pathMatch: 'full',
