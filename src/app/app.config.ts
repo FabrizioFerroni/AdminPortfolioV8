@@ -9,6 +9,8 @@ import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideZard } from '@/shared/core/provider/providezard';
+import { AuthService } from './features/auth/services';
+import { errorHandlerInterceptor, refreshInterceptor } from './core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,7 +25,8 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideZard(),
-    provideHttpClient(withInterceptors([]), withFetch()),
+    provideHttpClient(withInterceptors([errorHandlerInterceptor, refreshInterceptor]), withFetch()),
     ReactiveFormsModule,
+    AuthService,
   ],
 };
