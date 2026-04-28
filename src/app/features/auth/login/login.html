@@ -15,7 +15,7 @@
         [formGroup]="validationForm"
         (ngSubmit)="handleSubmit()"
         class="max-w-sm space-y-6">
-        @if (isError()) {
+        @if (authError()) {
           <z-alert
             zType="destructive"
             zTitle="Uppsss... Hubo un error!"
@@ -23,7 +23,7 @@
             class="animate-in slide-in-from-top-2" />
 
           <ng-template #customDescription>
-            <p>{{ error() }}</p>
+            <p>{{ authError() }}</p>
           </ng-template>
         }
         <div class="space-y-4">
@@ -120,7 +120,7 @@
           </z-form-field>
         </div>
 
-        @if (submitted()) {
+        @if (isLoading()) {
           <button
             z-button
             zDisabled
