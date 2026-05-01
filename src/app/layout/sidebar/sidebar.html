@@ -1,0 +1,98 @@
+<nav
+  [class]="
+    'flex h-full flex-col overflow-hidden ' + (sidebarCollapsed() && isMovile() ? 'gap-1' : 'gap-4')
+  ">
+  <div
+    class="border-b m-0! p-0!"
+    [style]="
+      sidebarCollapsed() && isMovile()
+        ? 'padding-left: calc(var(--spacing) * 1) !important;
+      padding-right: calc(var(--spacing) * 1) !important;
+      padding-top: calc(var(--spacing) * 4) !important;'
+        : 'padding-left: calc(var(--spacing) * 4) !important;
+      padding-right: calc(var(--spacing) * 4) !important;'
+    ">
+    <div
+      class="flex {{
+        sidebarCollapsed() || isMovile() ? 'justify-center' : 'justify-start'
+      }} items-center px-2 py-3">
+      <div class="flex items-center gap-2">
+        <div
+          class="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+          <ng-icon name="lucideBriefcase" class="h-6! w-6!" />
+        </div>
+        @if (!sidebarCollapsed() && !isMovile()) {
+          <h2 class="text-lg font-semibold">Portfolio Admin</h2>
+        }
+      </div>
+    </div>
+  </div>
+  <z-sidebar-group
+    [style]="
+      sidebarCollapsed() && isMovile()
+        ? 'padding-left: calc(var(--spacing) * 1) !important;
+      padding-right: calc(var(--spacing) * 1) !important;
+      padding-top: calc(var(--spacing) * 4) !important;'
+        : 'padding-left: calc(var(--spacing) * 4) !important;
+      padding-right: calc(var(--spacing) * 4) !important;'
+    ">
+    @for (item of mainMenuItems; track item.label) {
+      <a
+        [routerLink]="item.href"
+        routerLinkActive="active"
+        [class]="setClassLink(item.href)"
+        z-button
+        zType="ghost"
+        [zTooltip]="sidebarCollapsed() || isMovile() ? item.label : ''"
+        zPosition="right">
+        <ng-icon [name]="item.icon" [class]="sidebarCollapsed() || isMovile() ? '' : 'mr-2'" />
+        @if (!sidebarCollapsed() && !isMovile()) {
+          <span>{{ item.label }}</span>
+        }
+      </a>
+    }
+  </z-sidebar-group>
+
+  <div class="mt-auto border-t {{ sidebarCollapsed() || isMovile() ? 'p-1' : 'p-4' }}">
+    <div
+      z-menu
+      [zMenuTriggerFor]="userMenu"
+      zPlacement="rightBottom"
+      [class]="
+        'hover:bg-accent flex cursor-pointer items-center justify-center gap-2  ' +
+        (sidebarCollapsed() || isMovile() ? 'm-2 p-0 rounded-full' : 'p-2 rounded-md')
+      ">
+      <z-avatar
+        [zSrc]="avatarSrc()"
+        zAlt="fullName()"
+        [class]="sidebarCollapsed() || isMovile() ? 'cursor-pointer' : ''" />
+
+      @if (!sidebarCollapsed() && !isMovile()) {
+        <div>
+          <span class="font-medium">{{ fullName() }}</span>
+          <div class="text-xs">{{ user()?.email }}</div>
+        </div>
+
+        <ng-icon name="lucideChevronsUpDown" class="ml-auto" />
+      }
+    </div>
+
+    <ng-template #userMenu>
+      <div z-menu-content class="w-48">
+        <button type="button" z-menu-item>
+          <ng-icon name="lucideUser" class="mr-2" />
+          Perfil
+        </button>
+        <button type="button" z-menu-item>
+          <ng-icon name="lucideSettings" class="mr-2" />
+          Configuraciones
+        </button>
+        <z-divider zSpacing="sm" />
+        <button type="button" class="cursor-pointer" z-menu-item (click)="logout()">
+          <ng-icon name="lucideLogOut" class="mr-2" />
+          Cerrar sesión
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</nav>
