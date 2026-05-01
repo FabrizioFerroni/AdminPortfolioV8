@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { Rutas } from './shared/utils/rutas';
 import { NotFoundComponent } from './shared/components/not-found/not-found';
+import { MainLayout } from './layout';
+import { logedGuard } from './core';
 
 export const routes: Routes = [
   {
@@ -9,7 +11,9 @@ export const routes: Routes = [
   },
   {
     path: Rutas.HOME,
-    loadChildren: () => import('./features/app/app.routes'),
+    component: MainLayout,
+    canActivate: [logedGuard],
+    loadChildren: () => import('./features/app/app.routes').then(m => m.APP_ROUTES),
   },
   {
     path: Rutas.NOT_FOUND,
