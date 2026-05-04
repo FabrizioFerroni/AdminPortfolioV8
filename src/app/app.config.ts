@@ -14,6 +14,8 @@ import { authConfig } from './features/auth';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideStore } from '@ngrx/store';
 import { provideRouterStore } from '@ngrx/router-store';
+import { subscribersConfig } from './features/app/subscribers/subscriber.config';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,6 +29,7 @@ export const appConfig: ApplicationConfig = {
         scrollPositionRestoration: 'enabled',
       })
     ),
+    provideAnimationsAsync(),
     provideZard(),
     provideHttpClient(withInterceptors([errorHandlerInterceptor, refreshInterceptor]), withFetch()),
     ReactiveFormsModule,
@@ -41,5 +44,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouterStore(),
     ...authConfig,
+    ...subscribersConfig,
   ],
 };

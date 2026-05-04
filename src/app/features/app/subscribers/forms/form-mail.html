@@ -1,0 +1,29 @@
+<form [formGroup]="form" class="grid flex-1 auto-rows-min gap-6 px-4">
+  <div class="grid gap-3">
+    <label
+      for="subject"
+      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+      Asunto
+    </label>
+    <input
+      z-input
+      formControlName="subject"
+      placeholder="Asunto para el mail"
+      class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+  </div>
+
+  <div class="grid gap-3">
+    <label
+      for="message"
+      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+      Mensaje
+    </label>
+    <textarea
+      id="message"
+      rows="5"
+      placeholder="Mensaje a enviar al subscriptor"
+      class="outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      z-input
+      formControlName="message"></textarea>
+  </div>
+</form>
