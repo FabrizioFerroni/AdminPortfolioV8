@@ -13,7 +13,7 @@ import { LayoutService } from '@/shared/services/layout';
   styleUrl: './main-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 
-  host: { class: 'h-[100vh] flex flex-col' },
+  host: { class: 'flex flex-col' }, //h-[100vh]
 })
 export class MainLayout {
   layout = inject(LayoutService);

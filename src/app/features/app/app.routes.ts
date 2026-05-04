@@ -7,7 +7,7 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./dashboard/dashboard').then(m => m.Dashboard),
   },
   {
-    path: Rutas.PROJECTS,
-    loadComponent: () => import('./dashboard/dashboard').then(m => m.Dashboard),
+    path: Rutas.SUBSCRIBERS,
+    loadComponent: () => import('./subscribers/subscribers').then(m => m.Subscribers),
   },
 ];

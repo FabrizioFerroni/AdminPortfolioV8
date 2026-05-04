@@ -1,0 +1,368 @@
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Subscriptores</h1>
+      <p class="text-muted-foreground mt-1">Maneja la audiencia de los subscriptores</p>
+    </div>
+    @if (isExporting()) {
+      <button
+        type="button"
+        z-button
+        zType="default"
+        class="cursor-pointer"
+        [zLoading]="true"
+        [zDisabled]="true">
+        Exportando CSV
+      </button>
+    } @else {
+      <button
+        type="button"
+        z-button
+        zType="default"
+        class="cursor-pointer"
+        (click)="handleExportCSV()">
+        <ng-icon name="lucideDownload" class="mr-2 h-4 w-4" />
+        Export CSV
+      </button>
+    }
+  </div>
+
+  <!-- stadisticas -->
+  <div class="grid gap-4 sm:grid-cols-3">
+    @if (isLoadingStats()) {
+      @for (item of [1, 2, 3]; track item) {
+        <f-card cClass="p-0!">
+          <f-card-content cClass="p-4">
+            <div class="flex items-center gap-3">
+              <z-skeleton class="h-9 w-9 rounded-lg shrink-0" />
+              <div class="flex flex-col gap-2">
+                <z-skeleton class="h-7 w-16 rounded-md" />
+                <z-skeleton class="h-4 w-28 rounded-md" />
+              </div>
+            </div>
+          </f-card-content>
+        </f-card>
+      }
+    } @else {
+      <f-card
+        cId="total-subscribers"
+        cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="total-subscribers-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
+              <ng-icon name="lucideUsers" class="h-5 w-5 text-blue-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalSub() }}</p>
+              <p class="text-sm text-muted-foreground">Total Subscriptores</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="subscriber-active"
+        cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20">
+        <f-card-content cId="subscriber-active-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
+              <ng-icon name="lucideUserCheck" class="h-5 w-5 text-emerald-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ activeSub() }}</p>
+              <p class="text-sm text-muted-foreground">Activos</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="subscriber-inactive"
+        cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20">
+        <f-card-content cId="subscriber-inactive-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
+              <ng-icon name="lucideUserX" class="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ inactiveSub() }}</p>
+              <p class="text-sm text-muted-foreground">Inactivos</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+    }
+  </div>
+
+  <f-card cId="content" cClass="border-border/50">
+    <f-card-header class="pb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <f-card-title class="text-lg"> Lista de subscriptores </f-card-title>
+          <f-card-description> {{ totalSub() }} personas en tu lista </f-card-description>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <ng-icon
+            name="lucideSearch"
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
+          <input
+            z-input
+            type="text"
+            placeholder="Buscar subscriptores..."
+            id="search"
+            class="pl-9 bg-muted/50 border-0 outFocus"
+            autoComplete="search"
+            (input)="search.set($any($event.target).value)"
+            zRequired />
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content>
+      <!-- <div class="rounded-md border">
+        
+      </div> -->
+      <div class="w-full">
+        @if (!isMovile()) {
+          <div class="overflow-hidden rounded-md border">
+            <table z-table>
+              <thead z-table-header>
+                <tr z-table-row>
+                  <th z-table-head>Nombre</th>
+                  <th z-table-head>Email</th>
+                  <th z-table-head class="">Fecha</th>
+                  <th z-table-head class="">Estado</th>
+                  <th z-table-head class="w-16">Acciones</th>
+                </tr>
+              </thead>
+              <tbody z-table-body>
+                @if (isLoading$ | async) {
+                  @for (item of [1, 2, 3, 4, 5]; track item) {
+                    <tr z-table-row>
+                      <!-- Nombre -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-32 rounded-md" />
+                      </td>
+                      <!-- Email -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-44 rounded-md" />
+                      </td>
+                      <!-- Fecha -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-24 rounded-md" />
+                      </td>
+                      <!-- Estado (imita el badge) -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-5 w-16 rounded-full" />
+                      </td>
+                      <!-- Acciones (imita el botón) -->
+                      <td z-table-cell>
+                        <div class="flex justify-end">
+                          <z-skeleton class="h-8 w-8 rounded-md" />
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
+                  @for (sub of subscribers$ | async; track sub.id) {
+                    <tr z-table-row>
+                      <td z-table-cell>
+                        <div class="">{{ sub.name }}</div>
+                      </td>
+                      <td z-table-cell>
+                        <div class="lowercase">{{ sub.email }}</div>
+                      </td>
+                      <td z-table-cell>
+                        <div class="lowercase">{{ formatDate(sub.subscribed_at) }}</div>
+                      </td>
+                      <td z-table-cell>
+                        <z-badge [zType]="getStatusVariant(sub.status)">
+                          {{ getStatusName(sub.status) }}
+                        </z-badge>
+                      </td>
+                      <td z-table-cell>
+                        <div class="flex justify-end gap-2">
+                          @if (!sub.status) {
+                            <button
+                              type="button"
+                              z-button
+                              zType="outline"
+                              class="cursor-pointer"
+                              zDisabled
+                              zTooltip="Enviar mail">
+                              <ng-icon name="lucideMail" class="h-4 w-4" />
+                            </button>
+                          } @else {
+                            <button
+                              type="button"
+                              z-button
+                              zType="outline"
+                              class="cursor-pointer"
+                              (click)="openSheet(sub.name, sub.email)"
+                              zTooltip="Enviar mail">
+                              <ng-icon name="lucideMail" class="h-4 w-4" />
+                            </button>
+                          }
+
+                          <button
+                            type="button"
+                            z-button
+                            zType="destructive"
+                            class="cursor-pointer"
+                            zTooltip="Borrar"
+                            (click)="onDelete(sub.email)">
+                            <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr z-table-row>
+                      <td z-table-cell [attr.colspan]="5" class="text-center">
+                        <z-empty
+                          zIcon="lucideUsers"
+                          zTitle="Aun no hay subscriptores"
+                          zDescription="Aun no se han subscripto a tu portfolio, espera que se subscriban para tener mas información.">
+                        </z-empty>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        @if (isMovile()) {
+          <!-- MOBILE: cards -->
+          <div class="flex flex-col divide-y gap-3">
+            @if (isLoading$ | async) {
+              @for (item of [1, 2, 3, 4, 5]; track item) {
+                <div class="rounded-md border p-4 flex flex-col gap-2">
+                  <z-skeleton class="h-4 w-32 rounded-md" />
+                  <z-skeleton class="h-4 w-44 rounded-md" />
+                  <z-skeleton class="h-4 w-24 rounded-md" />
+                  <z-skeleton class="h-5 w-16 rounded-full" />
+                </div>
+              }
+            } @else {
+              @for (sub of subscribers$ | async; track sub.id) {
+                <div class="rounded-md border p-4 flex flex-col gap-2">
+                  <!-- Header de la card: nombre + badge -->
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">{{ sub.name }}</span>
+                    <z-badge [zType]="getStatusVariant(sub.status)">
+                      {{ getStatusName(sub.status) }}
+                    </z-badge>
+                  </div>
+
+                  <!-- Email -->
+                  <span class="text-sm text-muted-foreground lowercase">{{ sub.email }}</span>
+
+                  <!-- Fecha -->
+                  <span class="text-xs text-muted-foreground">{{
+                    formatDate(sub.subscribed_at)
+                  }}</span>
+
+                  <!-- Acciones -->
+                  <div class="flex justify-end gap-2 pt-1">
+                    @if (!sub.status) {
+                      <button
+                        type="button"
+                        z-button
+                        zType="outline"
+                        zDisabled
+                        zTooltip="Enviar mail">
+                        <ng-icon name="lucideMail" class="h-4 w-4" />
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        z-button
+                        zType="outline"
+                        (click)="openSheet(sub.name, sub.email)"
+                        zTooltip="Enviar mail">
+                        <ng-icon name="lucideMail" class="h-4 w-4" />
+                      </button>
+                    }
+
+                    <button
+                      type="button"
+                      z-button
+                      zType="destructive"
+                      (click)="onDelete(sub.email)"
+                      zTooltip="Borrar">
+                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <z-empty
+                  zIcon="lucideUsers"
+                  zTitle="Aun no hay subscriptores"
+                  zDescription="Aun no se han subscripto a tu portfolio.">
+                </z-empty>
+              }
+            }
+          </div>
+        }
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Mostrar</span>
+          <z-select
+            class="w-[70px]"
+            zSize="default"
+            zPlaceholder="Select a value"
+            [zValue]="selectedValue()"
+            (zSelectionChange)="handleItemsPerPageChange($event)">
+            @for (item of items; track item) {
+              <z-select-item [zValue]="item">{{ item }}</z-select-item>
+            }
+          </z-select>
+          <span>por página</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground">
+            {{ rangeStart() }}-{{ rangeEnd() }} de {{ totalItems() }}
+          </span>
+          <div class="flex items-center gap-1">
+            <z-pagination
+              [zTotal]="totalPages()"
+              [(zPageIndex)]="currentPage"
+              [zContent]="content" />
+
+            <ng-template #content>
+              <ul z-pagination-content>
+                <li z-pagination-item>
+                  <z-pagination-previous
+                    (click)="goToPrevious()"
+                    [zDisabled]="!hasPreviousPage()"
+                    class="cursor-pointer" />
+                </li>
+
+                @for (page of pages(); track page) {
+                  <li z-pagination-item>
+                    <button
+                      type="button"
+                      z-pagination-button
+                      [zActive]="page === currentPage()"
+                      (click)="goToPage(page)"
+                      class="cursor-pointer">
+                      <span class="sr-only">To page</span>
+                      {{ page }}
+                    </button>
+                  </li>
+                }
+
+                <li z-pagination-item>
+                  <z-pagination-next
+                    (click)="goToNext()"
+                    [zDisabled]="!hasNextPage()"
+                    class="cursor-pointer" />
+                </li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </f-card-content>
+  </f-card>
+</div>
