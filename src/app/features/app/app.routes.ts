@@ -10,4 +10,8 @@ export const APP_ROUTES: Routes = [
     path: Rutas.SUBSCRIBERS,
     loadComponent: () => import('./subscribers/subscribers').then(m => m.Subscribers),
   },
+  {
+    path: Rutas.AUDITS,
+    loadComponent: () => import('./audit-logs').then(m => m.AuditLogs),
+  },
 ];
