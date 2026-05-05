@@ -1,0 +1,342 @@
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Historial de registros</h1>
+      <p class="text-muted-foreground mt-1">
+        Realizar un seguimiento de toda la actividad del sistema.
+      </p>
+    </div>
+    @if (isExporting()) {
+      <button
+        type="button"
+        z-button
+        zType="default"
+        class="cursor-pointer"
+        [zLoading]="true"
+        [zDisabled]="true">
+        Exportando CSV
+      </button>
+    } @else {
+      <button
+        type="button"
+        z-button
+        zType="default"
+        class="cursor-pointer"
+        (click)="handleExportCSV()">
+        <ng-icon name="lucideDownload" class="mr-2 h-4 w-4" />
+        Export CSV
+      </button>
+    }
+  </div>
+
+  <!-- estadisticas -->
+  <div class="grid gap-4 sm:grid-cols-4">
+    @if (isLoadingStats()) {
+      @for (item of [1, 2, 3, 4]; track item) {
+        <f-card cClass="p-0!">
+          <f-card-content cClass="p-4">
+            <div class="flex items-center gap-3">
+              <z-skeleton class="h-9 w-9 rounded-lg shrink-0" />
+              <div class="flex flex-col gap-2">
+                <z-skeleton class="h-7 w-16 rounded-md" />
+                <z-skeleton class="h-4 w-28 rounded-md" />
+              </div>
+            </div>
+          </f-card-content>
+        </f-card>
+      }
+    } @else {
+      <f-card
+        cId="auditlog-login"
+        cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="auditlog-login-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
+              <ng-icon name="lucideLogIn" class="h-5 w-5 text-blue-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalLogin() }}</p>
+              <p class="text-sm text-muted-foreground">Inicio de sesion</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="auditlog-created"
+        cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="auditlog-created-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
+              <ng-icon name="lucidePlus" class="h-5 w-5 text-emerald-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalCreated() }}</p>
+              <p class="text-sm text-muted-foreground">Creados</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="auditlog-updated"
+        cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20">
+        <f-card-content cId="auditlog-updated-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
+              <ng-icon name="lucideRefreshCw" class="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalUpdated() }}</p>
+              <p class="text-sm text-muted-foreground">Actualizados</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="auditlog-deleted"
+        cClass="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20">
+        <f-card-content cId="auditlog-deleted-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-red-500/10">
+              <ng-icon name="lucideTrash" class="h-5 w-5 text-red-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalDeleted() }}</p>
+              <p class="text-sm text-muted-foreground">Eliminados</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+    }
+  </div>
+  <!-- fin estadisticas -->
+
+  <f-card cClass="border-border/50">
+    <f-card-header cClass="pb-4">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <f-card-title>Historial de actividades</f-card-title>
+            <f-card-description
+              >Mostrando {{ rangeStart() }}-{{ rangeEnd() }} de
+              {{ totalItems() }} registros</f-card-description
+            >
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1 w-full">
+            <ng-icon
+              name="lucideSearch"
+              class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
+            <input
+              z-input
+              type="text"
+              placeholder="Buscar logs..."
+              id="search"
+              class="pl-9 bg-muted/50 border-0 outFocus"
+              autoComplete="search"
+              (input)="search.set($any($event.target).value)"
+              zRequired />
+          </div>
+          <div class="flex gap-2 flex-col md:flex-row">
+            <z-select
+              class="md:w-75 outFocus bg-muted/50 border-0"
+              [(zValue)]="selectedValueActions">
+              <z-select-item zValue="all">Todas las acciones</z-select-item>
+              <z-select-item zValue="login">Inicio de sesión</z-select-item>
+              <z-select-item zValue="create">Creado</z-select-item>
+              <z-select-item zValue="update">Actualizado</z-select-item>
+              <z-select-item zValue="delete">Eliminado</z-select-item>
+            </z-select>
+
+            <z-select class="bg-muted/50 border-0 md:w-75 outFocus" [(zValue)]="selectedValueTime">
+              <z-select-item zValue="all">Todos los tiempos</z-select-item>
+              <z-select-item zValue="today">Hoy</z-select-item>
+              <z-select-item zValue="yesterday">Ayer</z-select-item>
+              <z-select-item zValue="last7days">Últimos 7 días</z-select-item>
+              <z-select-item zValue="last30days">Últimos 30 días</z-select-item>
+            </z-select>
+          </div>
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content>
+      @if (!isMovile()) {
+        <div class="overflow-hidden rounded-md border">
+          <table z-table>
+            <thead z-table-header>
+              <tr z-table-row>
+                <th z-table-head>Acción</th>
+                <th z-table-head>Modulo</th>
+                <th z-table-head>Usuario</th>
+                <th z-table-head class="">Fecha</th>
+                <th z-table-head class="">Detalles</th>
+                <th z-table-head class="">Dirección IP</th>
+              </tr>
+            </thead>
+            <tbody z-table-body>
+              @if (isLoading$ | async) {
+                @for (item of [1, 2, 3, 4, 5]; track item) {
+                  <tr z-table-row>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-32 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-44 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-24 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-5 w-16 rounded-full" />
+                    </td>
+                    <td z-table-cell>
+                      <div class="flex justify-end">
+                        <z-skeleton class="h-8 w-8 rounded-md" />
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                @for (aud of audits$ | async; track aud.id) {
+                  <tr z-table-row>
+                    <td z-table-cell>
+                      <div class="">
+                        <z-badge [zType]="getActionVariant(aud.action)">
+                          {{ getActionName(aud.action) }}
+                        </z-badge>
+                      </div>
+                    </td>
+                    <td z-table-cell>
+                      <div class="">{{ aud.module }}</div>
+                    </td>
+                    <td z-table-cell>
+                      <div class="">{{ aud.user }}</div>
+                    </td>
+                    <td z-table-cell>
+                      <div class="">{{ aud.date }}</div>
+                    </td>
+                    <td z-table-cell>
+                      <div class="">{{ aud.details }}</div>
+                    </td>
+                    <td z-table-cell>
+                      <div class="">{{ aud.ip }}</div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr z-table-row>
+                    <td z-table-cell [attr.colspan]="5" class="text-center">
+                      <z-empty
+                        zIcon="lucideClipboardList"
+                        zTitle="Aun no hay auditorias"
+                        zDescription="Aun no hay ningun log">
+                      </z-empty>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (isMovile()) {
+        <!-- MOBILE: cards -->
+        <div class="flex flex-col divide-y gap-3">
+          @if (isLoading$ | async) {
+            @for (item of [1, 2, 3, 4, 5]; track item) {
+              <div class="rounded-md border p-4 flex flex-col gap-2">
+                <z-skeleton class="h-4 w-32 rounded-md" />
+                <z-skeleton class="h-4 w-44 rounded-md" />
+                <z-skeleton class="h-4 w-24 rounded-md" />
+                <z-skeleton class="h-5 w-16 rounded-full" />
+              </div>
+            }
+          } @else {
+            @for (aud of audits$ | async; track aud.id) {
+              <div class="rounded-md border p-4 flex flex-col gap-2">
+                <z-badge [zType]="getActionVariant(aud.action)">
+                  {{ getActionName(aud.action) }}
+                </z-badge>
+
+                <span class="font-medium">{{ aud.user }}</span>
+
+                <span class="text-sm text-muted-foreground">{{ aud.details }}</span>
+
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-muted-foreground">{{ aud.date }}</span>
+                  <span class="text-xs text-muted-foreground">-</span>
+                  <span class="text-xs text-muted-foreground">{{ aud.ip }}</span>
+                </div>
+              </div>
+            } @empty {
+              <z-empty
+                zIcon="lucideClipboardList"
+                zTitle="Aun no hay auditorias"
+                zDescription="Aun no hay ningun log">
+              </z-empty>
+            }
+          }
+        </div>
+      }
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Mostrar</span>
+          <z-select
+            class="w-[70px]"
+            zSize="default"
+            zPlaceholder="Select a value"
+            [zValue]="selectedValue()"
+            (zSelectionChange)="handleItemsPerPageChange($event)">
+            @for (item of items; track item) {
+              <z-select-item [zValue]="item">{{ item }}</z-select-item>
+            }
+          </z-select>
+          <span>por página</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground">
+            {{ rangeStart() }}-{{ rangeEnd() }} de {{ totalItems() }}
+          </span>
+          <div class="flex items-center gap-1">
+            <z-pagination
+              [zTotal]="totalPages()"
+              [(zPageIndex)]="currentPage"
+              [zContent]="content" />
+
+            <ng-template #content>
+              <ul z-pagination-content>
+                <li z-pagination-item>
+                  <z-pagination-previous
+                    (click)="goToPrevious()"
+                    [zDisabled]="!hasPreviousPage()"
+                    class="cursor-pointer" />
+                </li>
+
+                @for (page of pages(); track page) {
+                  <li z-pagination-item>
+                    <button
+                      type="button"
+                      z-pagination-button
+                      [zActive]="page === currentPage()"
+                      (click)="goToPage(page)"
+                      class="cursor-pointer">
+                      <span class="sr-only">To page</span>
+                      {{ page }}
+                    </button>
+                  </li>
+                }
+
+                <li z-pagination-item>
+                  <z-pagination-next
+                    (click)="goToNext()"
+                    [zDisabled]="!hasNextPage()"
+                    class="cursor-pointer" />
+                </li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </f-card-content>
+  </f-card>
+</div>
