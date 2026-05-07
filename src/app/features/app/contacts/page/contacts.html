@@ -126,7 +126,7 @@
             </thead>
             <tbody z-table-body>
               @if (isLoading$ | async) {
-                @for (item of [1, 2, 3, 4, 5]; track item) {
+                @for (item of skeletonItems; track item) {
                   <tr z-table-row>
                     <td z-table-cell>
                       <z-skeleton class="h-4 w-32 rounded-md" />
@@ -247,7 +247,92 @@
         </div>
       }
 
-      @if (isMovile()) {}
+      @if (isMovile()) {
+        <div class="flex flex-col divide-y gap-3">
+          @if (isLoading$ | async) {
+            @for (item of skeletonItems; track item) {
+              <div class="rounded-md border p-4 flex flex-col gap-2">
+                <z-skeleton class="h-4 w-32 rounded-md" />
+                <z-skeleton class="h-4 w-44 rounded-md" />
+                <z-skeleton class="h-4 w-24 rounded-md" />
+                <z-skeleton class="h-5 w-16 rounded-full" />
+              </div>
+            }
+          } @else {
+            @for (cont of contacts$ | async; track cont.id) {
+              <div class="rounded-md border p-4 flex flex-col gap-2">
+                <z-badge [zType]="getStatusVariant(cont.status)">
+                  {{ getStatusName(cont.status) }}
+                </z-badge>
+
+                <span class="font-medium">{{ cont.name }} ({{ cont.email }})</span>
+
+                <span class="text-sm text-muted-foreground">{{ cont.subject }}</span>
+
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-muted-foreground">{{ cont.send_at }}</span>
+                </div>
+
+                <!-- Acciones -->
+                <div class="flex justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    z-button
+                    zType="default"
+                    class="cursor-pointer"
+                    zTooltip="Ver mensaje"
+                    (click)="readMessage(cont)">
+                    <ng-icon name="lucideEye" class="h-4 w-4" />
+                  </button>
+                  @if (cont.status === 'repplied') {
+                    <button
+                      type="button"
+                      z-button
+                      zDisabled
+                      zType="secondary"
+                      class="cursor-pointer"
+                      zTooltip="Mascar como respondido">
+                      <ng-icon name="lucideMail" class="h-4 w-4" />
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      z-button
+                      zType="secondary"
+                      class="cursor-pointer"
+                      zTooltip="Mascar como respondido"
+                      (click)="onRepplied(cont.id, cont.status)">
+                      <ng-icon name="lucideMailCheck" class="h-4 w-4" />
+                    </button>
+                  }
+
+                  @if (cont.status === 'repplied') {
+                    <button type="button" z-button zDisabled zType="destructive" zTooltip="Trash2">
+                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      z-button
+                      zType="destructive"
+                      class="cursor-pointer"
+                      zTooltip="Borrar contacto"
+                      (click)="onDelete(cont.id, cont.status)">
+                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                    </button>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <z-empty
+                zIcon="lucideMessageSquare"
+                zTitle="Aun no hay contactos"
+                zDescription="Aun no hay ningun contacto">
+              </z-empty>
+            }
+          }
+        </div>
+      }
 
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
         <div class="flex items-center gap-2 text-sm text-muted-foreground">
@@ -264,7 +349,7 @@
           </z-select>
           <span>por página</span>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col flex-wrap md:flex-row items-center gap-2">
           <span class="text-sm text-muted-foreground">
             {{ rangeStart() }}-{{ rangeEnd() }} de {{ totalItems() }}
           </span>
@@ -285,15 +370,21 @@
 
                 @for (page of pages(); track page) {
                   <li z-pagination-item>
-                    <button
-                      type="button"
-                      z-pagination-button
-                      [zActive]="page === currentPage()"
-                      (click)="goToPage(page)"
-                      class="cursor-pointer">
-                      <span class="sr-only">To page</span>
-                      {{ page }}
-                    </button>
+                    @if (page === null) {
+                      <span class="px-2 text-muted-foreground select-none pointer-events-none"
+                        >…</span
+                      >
+                    } @else {
+                      <button
+                        type="button"
+                        z-pagination-button
+                        [zActive]="page === currentPage()"
+                        (click)="page !== null && goToPage(page)"
+                        class="cursor-pointer">
+                        <span class="sr-only">To page</span>
+                        {{ page }}
+                      </button>
+                    }
                   </li>
                 }
 

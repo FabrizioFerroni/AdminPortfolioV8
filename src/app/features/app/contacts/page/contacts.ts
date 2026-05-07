@@ -115,7 +115,30 @@ export class Contacts implements OnInit {
   readonly totalPages = signal(1);
   readonly hasNextPage = signal(false);
   readonly hasPreviousPage = signal(false);
-  readonly pages = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+  readonly pages = computed<(number | null)[]>(() => {
+    const total = this.totalPages();
+    const current = this.currentPage();
+
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const delta = 1;
+    const left = Math.max(2, current - delta);
+    const right = Math.min(total - 1, current + delta);
+
+    const pages: (number | null)[] = [1];
+
+    if (left > 2) pages.push(null);
+
+    for (let i = left; i <= right; i++) pages.push(i);
+
+    if (right < total - 1) pages.push(null);
+
+    pages.push(total);
+
+    return pages;
+  });
   readonly totalItems = signal(0);
   readonly rangeStart = computed(() => (this.currentPage() - 1) * this.limit() + 1);
   readonly rangeEnd = computed(() =>
@@ -155,6 +178,10 @@ export class Contacts implements OnInit {
       },
       { injector: this.injector }
     );
+  }
+
+  get skeletonItems() {
+    return Array(this.limit());
   }
 
   private initPagination(): void {
