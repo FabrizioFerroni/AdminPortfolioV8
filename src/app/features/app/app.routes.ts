@@ -14,4 +14,8 @@ export const APP_ROUTES: Routes = [
     path: Rutas.AUDITS,
     loadComponent: () => import('./audit-logs').then(m => m.AuditLogs),
   },
+  {
+    path: Rutas.CONTACTS,
+    loadComponent: () => import('./contacts').then(m => m.Contacts),
+  },
 ];
