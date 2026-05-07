@@ -1,0 +1,313 @@
+<div class="space-y-6">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Contactos</h1>
+      <p class="text-muted-foreground mt-1">Gestiona los mensajes de tu portfolio.</p>
+    </div>
+  </div>
+
+  <!-- estadisticas -->
+  <div class="grid gap-4 sm:grid-cols-4">
+    @if (isLoadingStats()) {
+      @for (item of [1, 2, 3, 4]; track item) {
+        <f-card cClass="p-0!">
+          <f-card-content cClass="p-4">
+            <div class="flex items-center gap-3">
+              <z-skeleton class="h-9 w-9 rounded-lg shrink-0" />
+              <div class="flex flex-col gap-2">
+                <z-skeleton class="h-7 w-16 rounded-md" />
+                <z-skeleton class="h-4 w-28 rounded-md" />
+              </div>
+            </div>
+          </f-card-content>
+        </f-card>
+      }
+    } @else {
+      <f-card
+        cId="total"
+        cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="total-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
+              <ng-icon name="lucideMessageSquare" class="h-5 w-5 text-blue-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ total() }}</p>
+              <p class="text-sm text-muted-foreground">Total</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="unread"
+        cClass="bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="unread-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-red-500/10">
+              <ng-icon name="lucideMailWarning" class="h-5 w-5 text-red-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalUnread() }}</p>
+              <p class="text-sm text-muted-foreground">Sin leer</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="read"
+        cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20">
+        <f-card-content cId="read-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
+              <ng-icon name="lucideMailOpen" class="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalRead() }}</p>
+              <p class="text-sm text-muted-foreground">Leido(s)</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="repplied"
+        cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20">
+        <f-card-content cId="repplied-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
+              <ng-icon name="lucideMailCheck" class="h-5 w-5 text-emerald-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalRepplied() }}</p>
+              <p class="text-sm text-muted-foreground">Respondido(s)</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+    }
+  </div>
+  <!-- fin estadisticas -->
+
+  <f-card cId="content" cClass="border-border/50">
+    <f-card-header class="pb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <f-card-title class="text-lg"> Mensajes de contacto </f-card-title>
+          <f-card-description> {{ total() }} mensaje(s) recibido(s) </f-card-description>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <ng-icon
+            name="lucideSearch"
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
+          <input
+            z-input
+            type="text"
+            placeholder="Buscar contactos..."
+            id="search"
+            class="pl-9 bg-muted/50 border-0 outFocus"
+            autoComplete="search"
+            (input)="search.set($any($event.target).value)"
+            zRequired />
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content>
+      @if (!isMovile()) {
+        <div class="overflow-hidden rounded-md border">
+          <table z-table>
+            <thead z-table-header>
+              <tr z-table-row>
+                <th z-table-head>Nombre</th>
+                <th z-table-head>Correo electronico</th>
+                <th z-table-head>Asunto</th>
+                <th z-table-head class="">Fecha</th>
+                <th z-table-head class="">Estado</th>
+                <th z-table-head class="flex justify-end items-center mr-19">Accion</th>
+              </tr>
+            </thead>
+            <tbody z-table-body>
+              @if (isLoading$ | async) {
+                @for (item of [1, 2, 3, 4, 5]; track item) {
+                  <tr z-table-row>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-32 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-44 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-4 w-24 rounded-md" />
+                    </td>
+                    <td z-table-cell>
+                      <z-skeleton class="h-5 w-16 rounded-full" />
+                    </td>
+                    <td z-table-cell>
+                      <div class="flex justify-end">
+                        <z-skeleton class="h-8 w-8 rounded-md" />
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                @for (cont of contacts$ | async; track cont.id) {
+                  <tr z-table-row>
+                    <td z-table-cell>
+                      {{ cont.name }}
+                    </td>
+
+                    <td z-table-cell>
+                      {{ cont.email }}
+                    </td>
+
+                    <td z-table-cell>
+                      {{ cont.subject }}
+                    </td>
+
+                    <td z-table-cell>
+                      {{ cont.send_at }}
+                    </td>
+
+                    <td z-table-cell>
+                      <div class="">
+                        <z-badge [zType]="getStatusVariant(cont.status)">
+                          {{ getStatusName(cont.status) }}
+                        </z-badge>
+                      </div>
+                    </td>
+
+                    <td z-table-cell>
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          z-button
+                          zType="default"
+                          class="cursor-pointer"
+                          zTooltip="Ver mensaje"
+                          (click)="readMessage(cont)">
+                          <ng-icon name="lucideEye" class="h-4 w-4" />
+                        </button>
+                        @if (cont.status === 'repplied') {
+                          <button
+                            type="button"
+                            z-button
+                            zDisabled
+                            zType="secondary"
+                            class="cursor-pointer"
+                            zTooltip="Mascar como respondido">
+                            <ng-icon name="lucideMail" class="h-4 w-4" />
+                          </button>
+                        } @else {
+                          <button
+                            type="button"
+                            z-button
+                            zType="secondary"
+                            class="cursor-pointer"
+                            zTooltip="Mascar como respondido"
+                            (click)="onRepplied(cont.id, cont.status)">
+                            <ng-icon name="lucideMailCheck" class="h-4 w-4" />
+                          </button>
+                        }
+
+                        @if (cont.status === 'repplied') {
+                          <button
+                            type="button"
+                            z-button
+                            zDisabled
+                            zType="destructive"
+                            zTooltip="Trash2">
+                            <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                          </button>
+                        } @else {
+                          <button
+                            type="button"
+                            z-button
+                            zType="destructive"
+                            class="cursor-pointer"
+                            zTooltip="Borrar contacto"
+                            (click)="onDelete(cont.id, cont.status)">
+                            <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                          </button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr z-table-row>
+                    <td z-table-cell [attr.colspan]="6" class="text-center">
+                      <z-empty
+                        zIcon="lucideMessageSquare"
+                        zTitle="Aun no hay contactos"
+                        zDescription="Aun no hay ningun contacto">
+                      </z-empty>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (isMovile()) {}
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Mostrar</span>
+          <z-select
+            class="w-[70px]"
+            zSize="default"
+            zPlaceholder="Select a value"
+            [zValue]="selectedValue()"
+            (zSelectionChange)="handleItemsPerPageChange($event)">
+            @for (item of items; track item) {
+              <z-select-item [zValue]="item">{{ item }}</z-select-item>
+            }
+          </z-select>
+          <span>por página</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground">
+            {{ rangeStart() }}-{{ rangeEnd() }} de {{ totalItems() }}
+          </span>
+          <div class="flex items-center gap-1">
+            <z-pagination
+              [zTotal]="totalPages()"
+              [(zPageIndex)]="currentPage"
+              [zContent]="content" />
+
+            <ng-template #content>
+              <ul z-pagination-content>
+                <li z-pagination-item>
+                  <z-pagination-previous
+                    (click)="goToPrevious()"
+                    [zDisabled]="!hasPreviousPage()"
+                    class="cursor-pointer" />
+                </li>
+
+                @for (page of pages(); track page) {
+                  <li z-pagination-item>
+                    <button
+                      type="button"
+                      z-pagination-button
+                      [zActive]="page === currentPage()"
+                      (click)="goToPage(page)"
+                      class="cursor-pointer">
+                      <span class="sr-only">To page</span>
+                      {{ page }}
+                    </button>
+                  </li>
+                }
+
+                <li z-pagination-item>
+                  <z-pagination-next
+                    (click)="goToNext()"
+                    [zDisabled]="!hasNextPage()"
+                    class="cursor-pointer" />
+                </li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </f-card-content>
+  </f-card>
+</div>

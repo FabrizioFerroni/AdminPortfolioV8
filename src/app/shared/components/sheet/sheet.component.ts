@@ -69,8 +69,7 @@ export class ZardSheetOptions<T, U> {
         zType="ghost"
         zSize="sm"
         class="absolute top-1 right-1 cursor-pointer"
-        (click)="onCloseClick()"
-      >
+        (click)="onCloseClick()">
         <ng-icon name="lucideX" />
       </button>
     }
@@ -78,12 +77,18 @@ export class ZardSheetOptions<T, U> {
     @if (config.zTitle || config.zDescription) {
       <header data-slot="sheet-header" class="flex flex-col gap-1.5 p-4">
         @if (config.zTitle) {
-          <h4 data-testid="z-title" data-slot="sheet-title" class="text-lg leading-none font-semibold tracking-tight">
+          <h4
+            data-testid="z-title"
+            data-slot="sheet-title"
+            class="text-lg leading-none font-semibold tracking-tight">
             {{ config.zTitle }}
           </h4>
 
           @if (config.zDescription) {
-            <p data-testid="z-description" data-slot="sheet-description" class="text-muted-foreground text-sm">
+            <p
+              data-testid="z-description"
+              data-slot="sheet-description"
+              class="text-muted-foreground text-sm">
               {{ config.zDescription }}
             </p>
           }
@@ -108,13 +113,12 @@ export class ZardSheetOptions<T, U> {
             class="cursor-pointer"
             z-button
             [zType]="config.zOkDestructive ? 'destructive' : 'default'"
+            [zDisabled]="config.zOkDisabled ?? false"
             [disabled]="config.zOkDisabled"
-            (click)="onOkClick()"
-          >
+            (click)="onOkClick()">
             @if (config.zOkIcon) {
               <ng-icon [svg]="config.zOkIcon" />
             }
-
             {{ config.zOkText ?? 'OK' }}
           </button>
         }
@@ -126,8 +130,7 @@ export class ZardSheetOptions<T, U> {
             class="cursor-pointer"
             z-button
             zType="outline"
-            (click)="onCloseClick()"
-          >
+            (click)="onCloseClick()">
             @if (config.zCancelIcon) {
               <ng-icon [svg]="config.zCancelIcon" />
             }
@@ -161,7 +164,7 @@ export class ZardSheetComponent<T, U> extends BasePortalOutlet {
         zSide: this.config.zSide,
         zSize,
       }),
-      this.config.zCustomClasses,
+      this.config.zCustomClasses
     );
   });
 
