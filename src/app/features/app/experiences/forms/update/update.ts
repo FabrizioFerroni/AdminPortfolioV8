@@ -34,6 +34,7 @@ import { Store } from '@ngrx/store';
 import { ExperienceFormGroup, ExperienceList, UpdateExperienceDto } from '../../interfaces';
 import {
   ExperiencesActions,
+  selectExperienceErrorStatusCode,
   selectExperienceFormError,
   selectExperienceFormLoading,
   selectExperiencesError,
@@ -44,10 +45,11 @@ import { Card } from '@/shared/components/card-custom';
 import { Rutas } from '@/shared/utils';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ZardBreadcrumbImports } from '@/shared/components/breadcrumb/breadcrumb.imports';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ZardSkeletonComponent } from '@/shared/components/skeleton';
 import { AsyncPipe } from '@angular/common';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-updateexperience',
@@ -86,6 +88,7 @@ import { AsyncPipe } from '@angular/common';
 export class UpdateExperience implements OnInit, AfterViewInit {
   //#region Dependencias
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
   //#endregion
 
   //#region Variables
@@ -118,11 +121,14 @@ export class UpdateExperience implements OnInit, AfterViewInit {
   experience$ = this.store.select(selectSelectedExperience);
   isLoadingBack$ = this.store.select(selectExperiencesLoading);
   error$ = this.store.select(selectExperiencesError);
+  statusCode$ = this.store.select(selectExperienceErrorStatusCode);
+
   //#endregion
 
   //#region Ciclo de vida angular
   ngOnInit(): void {
     this.getData();
+    this.experienceNotFound();
   }
 
   ngAfterViewInit(): void {
@@ -232,6 +238,26 @@ export class UpdateExperience implements OnInit, AfterViewInit {
   //#region Funciones
   getData() {
     this.store.dispatch(ExperiencesActions.getById({ id: this.id() }));
+  }
+
+  experienceNotFound() {
+    this.statusCode$.subscribe({
+      next: (res: number | null) => {
+        const statusCode = res;
+
+        if (statusCode === 404) {
+          toast.error('Upps.. hubo un error', {
+            description: 'La experiencia buscada no existe',
+            position: 'top-right',
+          });
+
+          this.router.navigate([this.baseRoute]);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(`error not found: ${error}`);
+      },
+    });
   }
 
   addSkill(): void {

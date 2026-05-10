@@ -57,14 +57,13 @@ export const getExperienceByIdEffect = createEffect(
       switchMap(({ id }) =>
         experienceService.obtenerPorId(id).pipe(
           map(({ body }) => ExperiencesActions.getByIdSuccess({ experience: body!.data })),
-          catchError((error: HttpErrorResponse) => {
-            const messages: Record<number, string> = {
-              401: 'No estas autenticado.',
-              403: 'No tenés permisos para ver la experiencia.',
-              404: 'No se encontraron experiencia.',
-            };
-            const msg = messages[error.status] ?? 'Error inesperado. Intentá nuevamente.';
-            return of(ExperiencesActions.getByIdFailure({ error: msg, statusCode: error.status }));
+          catchError((error: HandledError) => {
+            return of(
+              ExperiencesActions.getByIdFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
           })
         )
       )
