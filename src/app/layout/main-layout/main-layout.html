@@ -1,26 +1,25 @@
-<z-layout class="overflow-hidden">
-  <!-- h-full -->
-  <z-layout>
+<z-layout class="h-full">
+  <z-layout class="h-full">
     <z-sidebar
       [zWidth]="isMovile() ? '' : '300'"
       [zCollapsible]="false"
       [zCollapsed]="sidebarCollapsed()"
       [zCollapsedWidth]="70"
       (zCollapsedChange)="onCollapsedChange($event)"
-      class="p-0! {{ isMovile() && sidebarCollapsed() ? 'hidden' : 'h-screen' }}">
+      class="p-0! {{ isMovile() && sidebarCollapsed() ? 'hidden' : 'h-full' }}">
       <app-sidebar
         [sidebarCollapsed]="sidebarCollapsed()"
         (sidebarCollapsedChange)="onCollapsedChange($event)" />
     </z-sidebar>
 
-    <z-layout>
-      <z-content class="min-h-50 p-0!">
+    <z-layout class="h-full overflow-hidden">
+      <z-content class="p-0!">
         <app-header
           class="sticky top-0 z-10"
           [sidebarCollapsed]="sidebarCollapsed()"
           (sidebarCollapsedChange)="onCollapsedChange($event)" />
 
-        <div class="p-6">
+        <div class="overflow-y-auto p-6 flex-1 min-h-0">
           <router-outlet />
         </div>
       </z-content>

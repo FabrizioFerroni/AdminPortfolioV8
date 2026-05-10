@@ -12,8 +12,7 @@ import { LayoutService } from '@/shared/services/layout';
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-
-  host: { class: 'flex flex-col' }, //h-[100vh]
+  host: { class: 'flex flex-col h-full overflow-hidden' },
 })
 export class MainLayout {
   layout = inject(LayoutService);
