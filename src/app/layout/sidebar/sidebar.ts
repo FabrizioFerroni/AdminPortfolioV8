@@ -123,7 +123,7 @@ export class Sidebar {
       'transition-colors py-3 h-auto rounded-lg  hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-foreground'; // hover:bg-yellow-600 dark:hover:bg-yellow-600';
 
     const activeClass =
-      this.router.url === href
+      this.router.url === href || this.router.url.startsWith(href + '/')
         ? 'bg-sidebar-accent active:sidebar-accent focus:bg-sidebar-accent hover:bg-sidebar-accent dark:bg-sidebar-accent dark:active:bg-sidebar-accent dark:focus:bg-sidebar-accent dark:hover:bg-sidebar-accent'
         : '';
     const collapsedClass =

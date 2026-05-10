@@ -18,4 +18,8 @@ export const APP_ROUTES: Routes = [
     path: Rutas.CONTACTS,
     loadComponent: () => import('./contacts').then(m => m.Contacts),
   },
+  {
+    path: Rutas.EXPERIENCES,
+    loadChildren: () => import('./experiences').then(m => m.EXPERIENCES_ROUTES),
+  },
 ];

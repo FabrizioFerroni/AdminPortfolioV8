@@ -156,3 +156,7 @@
 .outFocus {
   @apply outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0;
 }
+
+[data-sonner-toaster] {
+  z-index: 99999 !important;
+}
