@@ -10,6 +10,9 @@ import { AuthActions } from './features/auth/store';
   imports: [RouterOutlet, ZardToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  host: {
+    style: 'display: flex; flex-direction: column; height: 100dvh; overflow: hidden;',
+  },
 })
 export class App {
   private readonly darkModeService = inject(ZardDarkMode);
