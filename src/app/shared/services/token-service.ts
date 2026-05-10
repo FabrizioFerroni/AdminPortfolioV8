@@ -153,6 +153,9 @@ export class TokenService extends BaseHttpService {
 
     this.deleteCookieRefresh();
 
-    this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
+    // this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
+    setTimeout(() => {
+      this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
+    }, 100);
   }
 }

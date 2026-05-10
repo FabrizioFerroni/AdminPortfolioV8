@@ -31,9 +31,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 @Component({
   selector: 'z-breadcrumb-ellipsis, [z-breadcrumb-ellipsis]',
   imports: [NgIcon],
-  template: `
-    <ng-icon name="lucideEllipsis" class="size-4!" />
-  `,
+  template: ` <ng-icon name="lucideEllipsis" class="size-4!" /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   viewProviders: [provideIcons({ lucideEllipsis })],
@@ -49,7 +47,7 @@ export class ZardBreadcrumbEllipsisComponent {
 
   readonly class = input<ClassValue>('');
   protected readonly classes = computed(() =>
-    mergeClasses(breadcrumbEllipsisVariants({ zColor: this.zColor() }), this.class()),
+    mergeClasses(breadcrumbEllipsisVariants({ zColor: this.zColor() }), this.class())
   );
 }
 
@@ -67,15 +65,18 @@ export class ZardBreadcrumbEllipsisComponent {
           class="flex items-center gap-1.5"
           [routerLink]="routerLink()"
           [queryParams]="queryParams()"
-          [fragment]="fragment()"
-        >
+          [fragment]="fragment()">
           <ng-container *zStringTemplateOutlet="itemContent" />
         </a>
       }
     </li>
 
     @if (!isLast()) {
-      <li aria-hidden="true" role="presentation" [class]="separatorClasses()" (click)="$event.stopPropagation()">
+      <li
+        aria-hidden="true"
+        role="presentation"
+        [class]="separatorClasses()"
+        (click)="$event.stopPropagation()">
         @if (isTemplate(separator())) {
           <ng-container *zStringTemplateOutlet="separator()" />
         } @else if (separator()) {
@@ -94,22 +95,7 @@ export class ZardBreadcrumbEllipsisComponent {
   host: {
     class: 'inline-flex items-center gap-1.5',
   },
-  hostDirectives: [
-    {
-      directive: RouterLink,
-      inputs: [
-        'routerLink',
-        'queryParams',
-        'fragment',
-        'queryParamsHandling',
-        'state',
-        'relativeTo',
-        'preserveFragment',
-        'skipLocationChange',
-        'replaceUrl',
-      ],
-    },
-  ],
+
   exportAs: 'zBreadcrumbItem',
 })
 export class ZardBreadcrumbItemComponent {
@@ -128,12 +114,14 @@ export class ZardBreadcrumbItemComponent {
   readonly class = input<ClassValue>('');
 
   protected readonly separator = computed(() => this.breadcrumbComponent.zSeparator());
-  protected readonly isLast = computed<boolean>(() => this === this.breadcrumbComponent.items().at(-1));
+  protected readonly isLast = computed<boolean>(
+    () => this === this.breadcrumbComponent.items().at(-1)
+  );
   protected readonly isEllipsis = computed<boolean>(() => this.content() !== undefined);
 
   protected readonly classes = computed(() => mergeClasses(breadcrumbItemVariants(), this.class()));
   protected readonly separatorClasses = computed(
-    () => 'text-muted-foreground [&_svg]:size-3.5 [&_ng-icon]:flex! [&_ng-icon]:items-center!',
+    () => 'text-muted-foreground [&_svg]:size-3.5 [&_ng-icon]:flex! [&_ng-icon]:items-center!'
   );
 
   protected isTemplate(value: string | TemplateRef<void>): value is TemplateRef<void> {
@@ -165,10 +153,10 @@ export class ZardBreadcrumbComponent {
   readonly items = contentChildren(ZardBreadcrumbItemComponent);
 
   protected readonly navClasses = computed(() =>
-    mergeClasses(breadcrumbVariants({ zSize: this.zSize() }), this.class()),
+    mergeClasses(breadcrumbVariants({ zSize: this.zSize() }), this.class())
   );
 
   protected readonly listClasses = computed(() =>
-    breadcrumbListVariants({ zAlign: this.zAlign(), zWrap: this.zWrap() }),
+    breadcrumbListVariants({ zAlign: this.zAlign(), zWrap: this.zWrap() })
   );
 }

@@ -44,6 +44,14 @@ export class Header {
       href: `/${Rutas.EXPERIENCES}`,
     },
     {
+      label: 'Agregar experiencia',
+      href: `/${Rutas.EXPERIENCES}/${Rutas.NEW_ROUTES}`,
+    },
+    {
+      label: 'Editar experiencia',
+      href: `/${Rutas.EXPERIENCES}/${Rutas.UPDATE_ROUTES}/:id`,
+    },
+    {
       label: 'Subscriptores',
       href: `/${Rutas.SUBSCRIBERS}`,
     },
@@ -62,14 +70,25 @@ export class Header {
       filter(event => event instanceof NavigationEnd),
       map(() => {
         const currentUrl = this.router.url;
-        return this.mainTitleItems.find(item => item.href === currentUrl)?.label ?? 'Tablero';
+        return (
+          this.mainTitleItems.find(item => this.matchRoute(item.href, currentUrl))?.label ??
+          'Tablero'
+        );
       })
     ),
     {
       initialValue:
-        this.mainTitleItems.find(item => this.router.url === item.href)?.label ?? 'Tablero',
+        this.mainTitleItems.find(item => this.matchRoute(item.href, this.router.url))?.label ??
+        'Tablero',
     }
   );
+
+  private matchRoute(itemHref: string, currentUrl: string): boolean {
+    if (itemHref === currentUrl) return true;
+
+    const pattern = itemHref.replace(/:([^/]+)/g, '[^/]+');
+    return new RegExp(`^${pattern}$`).test(currentUrl);
+  }
 
   toggleSidebar() {
     this.sidebarCollapsed.update(collapsed => !collapsed);
