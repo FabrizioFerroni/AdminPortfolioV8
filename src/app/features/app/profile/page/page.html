@@ -1,0 +1,394 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight">Perfil</h1>
+    <p class="text-muted-foreground mt-1">Administra tu informacion personal</p>
+  </div>
+
+  <f-card cId="content" cClass="border-border/50">
+    <f-card-header class="pb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <f-card-title class="text-lg"> Informacion Personal </f-card-title>
+          <f-card-description> Actualiza tu informacion de perfil </f-card-description>
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content cClass="space-y-6">
+      @if (isLoadingUser$()) {
+        <!-- Skeleton perfil -->
+        <div class="grid gap-4">
+          <!-- Avatar skeleton -->
+          <div class="flex items-center gap-6">
+            <z-skeleton class="h-24 w-24 rounded-full" />
+            <div class="flex flex-col gap-2">
+              <z-skeleton class="h-4 w-36" />
+              <z-skeleton class="h-3 w-48" />
+            </div>
+          </div>
+
+          <!-- Campos skeleton -->
+          <div class="space-y-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="flex flex-col gap-3">
+                <z-skeleton class="h-3 w-16" />
+                <z-skeleton class="h-9 w-full rounded-md" />
+              </div>
+              <div class="flex flex-col gap-3">
+                <z-skeleton class="h-3 w-20" />
+                <z-skeleton class="h-9 w-full rounded-md" />
+              </div>
+            </div>
+            <div class="flex flex-col gap-3 mt-2">
+              <z-skeleton class="h-3 w-32" />
+              <z-skeleton class="h-9 w-full rounded-md" />
+            </div>
+          </div>
+
+          <!-- Botón skeleton -->
+          <div class="flex justify-end mt-6 md:mt-4">
+            <z-skeleton class="h-9 w-36 rounded-md" />
+          </div>
+        </div>
+      } @else {
+        <form class="grid gap-4" novalidate [formGroup]="form" (ngSubmit)="handleSubmit()">
+          @if (errorProfile()) {
+            <z-alert
+              zType="destructive"
+              zTitle="Uppsss... Hubo un error!"
+              [zDescription]="customDescription"
+              class="animate-in slide-in-from-top-2" />
+
+            <ng-template #customDescription>
+              <p>{{ errorProfile() }}</p>
+            </ng-template>
+          }
+
+          <div class="flex items-center gap-6">
+            <div class="relative">
+              @if (avatarPreview()) {
+                <img
+                  [src]="avatarPreview()"
+                  class="h-24 w-24 rounded-full object-cover"
+                  [alt]="fullName()"
+                  width="40"
+                  height="40" />
+              } @else {
+                <z-avatar
+                  zSrc="{{ avatarSrc() }}"
+                  zFallback="{{ getInitialsWithFullName(fullName()) }}"
+                  zSize="sm"
+                  width="96"
+                  height="96"
+                  class="h-24 w-24" />
+              }
+
+              <label
+                class="icon-photo absolute p-2 bottom-0 right-0 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors"
+                zTooltip="Cambiar foto"
+                zPosition="right">
+                <ng-icon name="lucideCamera" class="h-2 w-2" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  class="hidden"
+                  (change)="onAvatarChange($event)" />
+              </label>
+            </div>
+            <div>
+              <p class="font-medium">{{ fullName() }}</p>
+              <p class="text-sm text-muted-foreground">{{ user()?.email }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="flex flex-col gap-3">
+                <z-form-field>
+                  <label
+                    for="name"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Nombre
+                  </label>
+                  <z-form-control>
+                    <input
+                      z-input
+                      id="name"
+                      formControlName="name"
+                      placeholder="Nombre"
+                      zRequired
+                      [zStatus]="nameControl.invalid && nameControl.touched ? 'error' : undefined"
+                      class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                  </z-form-control>
+                  <z-form-message zType="error">{{ getNameError() }}</z-form-message>
+                </z-form-field>
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <z-form-field>
+                  <label
+                    for="lastname"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Apellido
+                  </label>
+                  <z-form-control>
+                    <input
+                      z-input
+                      id="lastname"
+                      formControlName="lastname"
+                      placeholder="Apellido"
+                      zRequired
+                      [zStatus]="
+                        lastnameControl.invalid && lastnameControl.touched ? 'error' : undefined
+                      "
+                      class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                  </z-form-control>
+                  <z-form-message zType="error">{{ getLastnameError() }}</z-form-message>
+                </z-form-field>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <z-form-field>
+                <label
+                  for="email"
+                  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                  z-form-label
+                  zRequired>
+                  Correo Electróncio
+                </label>
+                <z-form-control>
+                  <input
+                    z-input
+                    id="email"
+                    formControlName="email"
+                    placeholder="Correo electronico"
+                    zRequired
+                    [zStatus]="emailControl.invalid && emailControl.touched ? 'error' : undefined"
+                    class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                </z-form-control>
+                <z-form-message zType="error">{{ getEmailError() }}</z-form-message>
+              </z-form-field>
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col-reverse md:flex-row gap-4 justify-end items-center mt-6 md:mt-4">
+            <button
+              [zDisabled]="isLoadingProfile$() || form.invalid"
+              z-button
+              type="submit"
+              zType="default"
+              class="cursor-pointer w-full md:w-auto">
+              @if (isLoadingProfile$()) {
+                <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4" />
+                <span> Guardando cambios </span>
+              } @else {
+                <ng-icon name="lucideSave" class="mr-2 h-4 w-4" /> <span>Guardar Cambios</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </f-card-content>
+  </f-card>
+
+  <f-card cId="content" cClass="border-border/50 mt-16">
+    <f-card-header class="pb-4">
+      <f-card-title class="text-lg"> Cambiar Contrasena </f-card-title>
+      <f-card-description> Actualiza tu contrasena de acceso </f-card-description>
+    </f-card-header>
+    <f-card-content cClass="space-y-6">
+      <form
+        class="grid gap-4"
+        novalidate
+        [formGroup]="formPassword"
+        (ngSubmit)="handleSubmitPassword()">
+        <div class="space-y-2">
+          @if (errorPassword()) {
+            <z-alert
+              zType="destructive"
+              zTitle="Uppsss... Hubo un error!"
+              [zDescription]="customDescription"
+              class="animate-in slide-in-from-top-2" />
+
+            <ng-template #customDescription>
+              <p>{{ errorPassword() }}</p>
+            </ng-template>
+          }
+
+          <div class="flex flex-col gap-2">
+            <z-form-field>
+              <div class="flex items-center justify-between">
+                <label
+                  for="currentPassword"
+                  id="currentPassword"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  z-form-label
+                  zRequired
+                  >Contraseña Actual</label
+                >
+              </div>
+              <div class="relative">
+                <z-form-control>
+                  <input
+                    z-input
+                    type="{{ showCurrentPassword ? 'text' : 'password' }}"
+                    placeholder="Ingresa tu contraseña actual"
+                    formControlName="currentPassword"
+                    id="currentPassword"
+                    class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                    autoComplete="current-password"
+                    zRequired
+                    [zStatus]="
+                      currentPasswordControl.invalid && currentPasswordControl.touched
+                        ? 'error'
+                        : undefined
+                    " />
+                  <button
+                    type="button"
+                    z-button
+                    zType="link"
+                    [zDisabled]="
+                      !formPassword.controls.currentPassword.value ||
+                      formPassword.controls.currentPassword.disabled
+                    "
+                    (click)="showCurrentPassword = !showCurrentPassword"
+                    class="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    @if (showCurrentPassword) {
+                      <svg lucideEyeOff class="h-5 w-5"></svg>
+                    } @else {
+                      <svg lucideEye class="h-5 w-5"></svg>
+                    }
+                  </button>
+                </z-form-control>
+                <z-form-message zType="error">{{ getCurrentPasswordError() }}</z-form-message>
+              </div>
+            </z-form-field>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <div class="flex flex-col gap-2">
+              <z-form-field>
+                <div class="flex items-center justify-between">
+                  <label
+                    for="newPassword"
+                    id="newPassword"
+                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    z-form-label
+                    zRequired
+                    >Nueva Contraseña</label
+                  >
+                </div>
+                <div class="relative">
+                  <z-form-control>
+                    <input
+                      z-input
+                      type="{{ showNewPassword ? 'text' : 'password' }}"
+                      placeholder="Ingresa tu nueva contraseña"
+                      formControlName="newPassword"
+                      id="newPassword"
+                      class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      autoComplete="current-password"
+                      zRequired
+                      [zStatus]="
+                        newPasswordControl.invalid && newPasswordControl.touched
+                          ? 'error'
+                          : undefined
+                      " />
+                    <button
+                      type="button"
+                      z-button
+                      zType="link"
+                      [zDisabled]="
+                        !formPassword.controls.newPassword.value ||
+                        formPassword.controls.newPassword.disabled
+                      "
+                      (click)="showNewPassword = !showNewPassword"
+                      class="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                      @if (showNewPassword) {
+                        <svg lucideEyeOff class="h-5 w-5"></svg>
+                      } @else {
+                        <svg lucideEye class="h-5 w-5"></svg>
+                      }
+                    </button>
+                  </z-form-control>
+                  <z-form-message zType="error">{{ getNewPasswordError() }}</z-form-message>
+                </div>
+              </z-form-field>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <z-form-field>
+                <div class="flex items-center justify-between">
+                  <label
+                    for="confirmPassword"
+                    id="confirmPassword"
+                    class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    z-form-label
+                    zRequired
+                    >Confirmar Contraseña</label
+                  >
+                </div>
+                <div class="relative">
+                  <z-form-control>
+                    <input
+                      z-input
+                      type="{{ showConfirmPassword ? 'text' : 'password' }}"
+                      placeholder="Confirma tu contraseña"
+                      formControlName="confirmPassword"
+                      id="confirmPassword"
+                      class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      autoComplete="current-password"
+                      zRequired
+                      [zStatus]="
+                        confirmPasswordControl.invalid && confirmPasswordControl.touched
+                          ? 'error'
+                          : undefined
+                      " />
+                    <button
+                      type="button"
+                      z-button
+                      zType="link"
+                      [zDisabled]="
+                        !formPassword.controls.confirmPassword.value ||
+                        formPassword.controls.confirmPassword.disabled
+                      "
+                      (click)="showConfirmPassword = !showConfirmPassword"
+                      class="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                      @if (showConfirmPassword) {
+                        <svg lucideEyeOff class="h-5 w-5"></svg>
+                      } @else {
+                        <svg lucideEye class="h-5 w-5"></svg>
+                      }
+                    </button>
+                  </z-form-control>
+                  <z-form-message zType="error">{{ getConfirmPasswordError() }}</z-form-message>
+                </div>
+              </z-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col-reverse md:flex-row gap-4 justify-end items-center mt-6 md:mt-4">
+          <button
+            [zDisabled]="isLoadingPassword$() || formPassword.invalid"
+            z-button
+            type="submit"
+            zType="default"
+            class="cursor-pointer w-full md:w-auto">
+            @if (isLoadingPassword$()) {
+              <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4" />
+              <span> Guardando cambios </span>
+            } @else {
+              <ng-icon name="lucideSave" class="mr-2 h-4 w-4" /> <span>Cambiar Contraseña</span>
+            }
+          </button>
+        </div>
+      </form>
+    </f-card-content>
+  </f-card>
+</div>

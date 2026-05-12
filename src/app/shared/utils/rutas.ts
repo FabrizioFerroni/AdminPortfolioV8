@@ -9,4 +9,6 @@ export enum Rutas {
   SUBSCRIBERS = 'subscriptores',
   CONTACTS = 'contactos',
   AUDITS = 'auditorias',
+  PROFILE = 'perfil',
+  SETTINGS = 'configuraciones',
 }

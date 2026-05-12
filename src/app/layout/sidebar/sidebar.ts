@@ -110,6 +110,9 @@ export class Sidebar {
     },
   ];
 
+  profileRoute = `/${Rutas.PROFILE}`;
+  settingsRoute = `/${Rutas.SETTINGS}`;
+
   toggleSidebar() {
     this.sidebarCollapsed.update(collapsed => !collapsed);
   }
@@ -129,6 +132,17 @@ export class Sidebar {
     const collapsedClass =
       this.sidebarCollapsed() && this.isMovile() ? 'justify-center' : 'justify-start';
     return mergeClasses(baseClass, activeClass, collapsedClass);
+  }
+
+  setClassLinkProfile(href: string): string {
+    const baseClass =
+      'transition-colors  h-auto rounded-lg  hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-foreground cursor-pointer';
+
+    const activeClass =
+      this.router.url === href || this.router.url.startsWith(href + '/')
+        ? 'bg-sidebar-accent active:sidebar-accent focus:bg-sidebar-accent hover:bg-sidebar-accent dark:bg-sidebar-accent dark:active:bg-sidebar-accent dark:focus:bg-sidebar-accent dark:hover:bg-sidebar-accent'
+        : '';
+    return mergeClasses(baseClass, activeClass);
   }
 
   logout() {

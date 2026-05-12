@@ -1,0 +1,133 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight">Configuraciones</h1>
+    <p class="text-muted-foreground mt-1">Administra las preferencias de tu cuenta</p>
+  </div>
+
+  <f-card cId="content" cClass="border-border/50">
+    <f-card-header class="pb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <f-card-title class="text-lg"> Configuracion del Portfolio </f-card-title>
+          <f-card-description>
+            Configura la URL y el estado de tu portfolio publico
+          </f-card-description>
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content cClass="space-y-6">
+      @if (isLoadingSetting$()) {
+        <div class="grid gap-4">
+          <div class="space-y-2">
+            <z-skeleton class="h-4 w-36" />
+            <z-skeleton class="h-9 w-full" />
+            <z-skeleton class="h-3 w-80 opacity-60" />
+          </div>
+
+          <div class="border-t pt-6">
+            <div class="flex items-center justify-between">
+              <div class="space-y-1.5">
+                <z-skeleton class="h-4 w-40" />
+                <z-skeleton class="h-3 w-72 opacity-60" />
+              </div>
+              <z-skeleton class="h-6 w-12 rounded-full" />
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-6">
+            <z-skeleton class="h-9 w-36" />
+          </div>
+        </div>
+      } @else {
+        <form class="grid gap-4" novalidate [formGroup]="form" (ngSubmit)="handleSubmit()">
+          @if (errorFormSettingRed()) {
+            <z-alert
+              zType="destructive"
+              zTitle="Uppsss... Hubo un error!"
+              [zDescription]="customDescription"
+              class="animate-in slide-in-from-top-2" />
+
+            <ng-template #customDescription>
+              <p>{{ errorFormSettingRed() }}</p>
+            </ng-template>
+          }
+          <div class="space-y-2">
+            <z-form-field>
+              <label
+                for="frontUrl"
+                class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                z-form-label
+                zRequired>
+                URL del Frontend
+              </label>
+              <z-form-control>
+                <input
+                  z-input
+                  id="url"
+                  formControlName="frontUrl"
+                  placeholder="URL del front"
+                  zRequired
+                  [zStatus]="
+                    frontUrlControl.invalid && frontUrlControl.touched ? 'error' : undefined
+                  "
+                  class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+
+                <p class="text-xs text-muted-foreground">
+                  Esta URL se usara para generar los enlaces a tus proyectos. Ejemplo:
+                  {{ frontUrlControl.value }}/proyectos/mi-proyecto
+                </p>
+              </z-form-control>
+              <z-form-message zType="error">{{ getUrlError() }}</z-form-message>
+            </z-form-field>
+          </div>
+
+          <div class="border-t pt-6">
+            <div>
+              <z-form-field class="flex items-center justify-between">
+                <div class="space-y-0.5">
+                  <label
+                    for="maintenanceMode"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label>
+                    Modo Mantenimiento
+                  </label>
+                  <p class="text-sm text-muted-foreground">
+                    Cuando esta activo, los visitantes veran una pagina de mantenimiento
+                  </p>
+                </div>
+                <z-form-control>
+                  <z-switch [formControl]="maintenanceModeControl" />
+                </z-form-control>
+              </z-form-field>
+            </div>
+            @if (maintenanceModeControl.value) {
+              <div class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <p class="text-sm text-amber-600 dark:text-amber-400">
+                  El portfolio esta actualmente en modo mantenimiento. Los visitantes no podran ver
+                  el contenido.
+                </p>
+              </div>
+            }
+          </div>
+
+          <div
+            class="flex flex-col-reverse md:flex-row gap-4 justify-end items-center mt-6 md:mt-4">
+            <button
+              [zDisabled]="isLoadingFormSetting$() || form.invalid"
+              z-button
+              type="submit"
+              zType="default"
+              class="cursor-pointer w-full md:w-auto">
+              @if (isLoadingFormSetting$()) {
+                <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4" />
+                <span> Guardando cambios </span>
+              } @else {
+                <ng-icon name="lucideSave" class="mr-2 h-4 w-4" /> <span>Guardar Cambios</span>
+              }
+            </button>
+          </div>
+        </form>
+      }
+    </f-card-content>
+  </f-card>
+</div>

@@ -22,4 +22,12 @@ export const APP_ROUTES: Routes = [
     path: Rutas.EXPERIENCES,
     loadChildren: () => import('./experiences').then(m => m.EXPERIENCES_ROUTES),
   },
+  {
+    path: Rutas.PROFILE,
+    loadComponent: () => import('./profile').then(c => c.Profile),
+  },
+  {
+    path: Rutas.SETTINGS,
+    loadComponent: () => import('./settings').then(c => c.Settings),
+  },
 ];

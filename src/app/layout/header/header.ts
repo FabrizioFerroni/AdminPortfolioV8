@@ -63,6 +63,14 @@ export class Header {
       label: 'Auditorias',
       href: `/${Rutas.AUDITS}`,
     },
+    {
+      label: 'Perfil',
+      href: `/${Rutas.PROFILE}`,
+    },
+    {
+      label: 'Configuraciones',
+      href: `/${Rutas.SETTINGS}`,
+    },
   ];
 
   titlePage = toSignal(

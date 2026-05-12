@@ -17,6 +17,8 @@ import { provideRouterStore } from '@ngrx/router-store';
 import { subscribersConfig } from './features/app/subscribers/subscriber.config';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { auditLogsConfig, contactConfig, experienceConfig } from './features';
+import { profileConfig } from './features/app/profile';
+import { settingsConfig } from './features/app/settings';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -49,5 +51,7 @@ export const appConfig: ApplicationConfig = {
     ...auditLogsConfig,
     ...contactConfig,
     ...experienceConfig,
+    ...profileConfig,
+    ...settingsConfig,
   ],
 };
