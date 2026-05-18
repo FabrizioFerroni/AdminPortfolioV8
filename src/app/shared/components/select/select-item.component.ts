@@ -8,6 +8,7 @@ import {
   input,
   linkedSignal,
   signal,
+  TemplateRef,
 } from '@angular/core';
 
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -34,7 +35,11 @@ interface SelectHost {
   template: `
     @if (isSelected()) {
       <span [class]="iconClasses()">
-        <ng-icon name="lucideCheck" [strokeWidth]="strokeWidth()" aria-hidden="true" data-testid="check-icon" />
+        <ng-icon
+          name="lucideCheck"
+          [strokeWidth]="strokeWidth()"
+          aria-hidden="true"
+          data-testid="check-icon" />
       </span>
     }
     <span class="truncate">
@@ -62,6 +67,7 @@ export class ZardSelectItemComponent {
   readonly zValue = input.required<string>();
   readonly zDisabled = input(false, { transform: booleanAttribute });
   readonly class = input<string>('');
+  readonly zTemplate = input<TemplateRef<void> | null>(null);
 
   private readonly select = signal<SelectHost | null>(null);
   noopFn = noopFn;
@@ -75,16 +81,18 @@ export class ZardSelectItemComponent {
   readonly zSize = signal<ZardSelectSizeVariants>('default');
 
   protected readonly classes = computed(() =>
-    mergeClasses(selectItemVariants({ zMode: this.zMode(), zSize: this.zSize() }), this.class()),
+    mergeClasses(selectItemVariants({ zMode: this.zMode(), zSize: this.zSize() }), this.class())
   );
 
   protected readonly iconClasses = computed(() =>
-    mergeClasses(selectItemIconVariants({ zMode: this.zMode(), zSize: this.zSize() })),
+    mergeClasses(selectItemIconVariants({ zMode: this.zMode(), zSize: this.zSize() }))
   );
 
   protected readonly strokeWidth = computed(() => (this.zMode() === 'compact' ? 3 : 2));
 
-  protected readonly isSelected = computed(() => this.select()?.selectedValue().includes(this.zValue()) ?? false);
+  protected readonly isSelected = computed(
+    () => this.select()?.selectedValue().includes(this.zValue()) ?? false
+  );
 
   setSelectHost(selectHost: SelectHost) {
     this.select.set(selectHost);

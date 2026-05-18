@@ -40,6 +40,14 @@ export class Header {
       href: `/${Rutas.PROJECTS}`,
     },
     {
+      label: 'Agregar Proyecto',
+      href: `/${Rutas.PROJECTS}/${Rutas.NEW_ROUTES_O}`,
+    },
+    {
+      label: 'Editar Proyecto',
+      href: `/${Rutas.PROJECTS}/${Rutas.UPDATE_ROUTES}/:id`,
+    },
+    {
       label: 'Experiencias Laborales',
       href: `/${Rutas.EXPERIENCES}`,
     },

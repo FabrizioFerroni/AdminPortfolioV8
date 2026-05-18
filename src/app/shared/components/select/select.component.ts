@@ -5,7 +5,7 @@ import {
   type OverlayRef,
 } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import {
   afterNextRender,
   booleanAttribute,
@@ -56,7 +56,7 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100;
 
 @Component({
   selector: 'z-select, [z-select]',
-  imports: [OverlayModule, ZardBadgeComponent, NgIcon],
+  imports: [OverlayModule, ZardBadgeComponent, NgIcon, NgTemplateOutlet],
   template: `
     <button
       type="button"
@@ -71,15 +71,19 @@ const COMPACT_MODE_WIDTH_THRESHOLD = 100;
       (click)="toggle()"
       (focus)="onFocus()">
       <span class="flex min-w-0 flex-1 flex-wrap items-center gap-2">
-        @for (label of selectedLabels(); track $index) {
-          @if (zMultiple()) {
+        @if (zMultiple()) {
+          @for (label of selectedLabels(); track $index) {
             <z-badge zType="secondary">
               <span class="truncate">{{ label }}</span>
             </z-badge>
-          } @else {
-            <span class="truncate">{{ label }}</span>
+          } @empty {
+            <span class="text-muted-foreground truncate">{{ zPlaceholder() }}</span>
           }
-        } @empty {
+        } @else if (selectedTemplate()) {
+          <ng-container *ngTemplateOutlet="selectedTemplate()" />
+        } @else if (selectedLabels().length) {
+          <span class="truncate">{{ selectedLabels()[0] }}</span>
+        } @else {
           <span class="text-muted-foreground truncate">{{ zPlaceholder() }}</span>
         }
       </span>
@@ -173,8 +177,17 @@ export class ZardSelectComponent implements ControlValueAccessor, OnDestroy {
     if (this.zMultiple() && Array.isArray(selectedValue)) {
       return this.provideLabelsForMultiselectMode(selectedValue);
     }
-
     return this.provideLabelForSingleSelectMode(selectedValue as string);
+  });
+
+  readonly selectedTemplate = computed<TemplateRef<void> | null>(() => {
+    const value = this.zValue();
+    if (!value || Array.isArray(value)) return null;
+    return (
+      this.selectItems()
+        .find(i => i.zValue() === value)
+        ?.zTemplate() ?? null
+    );
   });
 
   private onChange: OnChangeType = (_value: string) => {
