@@ -5,6 +5,7 @@ export enum Rutas {
   PROJECTS = 'proyectos',
   EXPERIENCES = 'experiencias',
   NEW_ROUTES = 'nueva',
+  NEW_ROUTES_O = 'nuevo',
   UPDATE_ROUTES = 'actualizar',
   SUBSCRIBERS = 'subscriptores',
   CONTACTS = 'contactos',

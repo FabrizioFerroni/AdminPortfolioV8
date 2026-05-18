@@ -1,0 +1,722 @@
+<div class="space-y-6">
+  <z-breadcrumb zWrap="wrap" zAlign="start" class="mb-2">
+    <z-breadcrumb-item [routerLink]="[homeRoute]">
+      <ng-icon name="lucideHouse" />
+      Inicio
+    </z-breadcrumb-item>
+
+    <z-breadcrumb-item [routerLink]="[baseRoute]">
+      <ng-icon name="lucideFolderKanban" /> Proyectos
+    </z-breadcrumb-item>
+
+    <z-breadcrumb-item> <ng-icon name="lucidePencil" /> Editar proyecto </z-breadcrumb-item>
+  </z-breadcrumb>
+
+  @if (projectLoading()) {
+    <!-- Skeleton título -->
+    <div class="flex items-center gap-4 mt-4">
+      <div>
+        <z-skeleton class="h-9 w-64 mb-2" />
+        <z-skeleton class="h-4 w-40" />
+      </div>
+    </div>
+
+    <!-- Skeleton form -->
+    <div class="grid gap-6 lg:grid-cols-3 mt-6">
+      <div class="lg:col-span-2 space-y-6">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-48 mb-2" />
+            <z-skeleton class="h-4 w-56" />
+          </div>
+          <div class="px-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <z-skeleton class="h-9 w-full" />
+              <z-skeleton class="h-9 w-full" />
+            </div>
+            <z-skeleton class="h-16 w-full" />
+            <z-skeleton class="h-40 w-full" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <z-skeleton class="h-9 w-full" />
+              <z-skeleton class="h-9 w-full" />
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-40 mb-2" />
+            <z-skeleton class="h-4 w-52" />
+          </div>
+          <div class="px-4">
+            <z-skeleton class="h-9 w-full" />
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-36 mb-2" />
+            <z-skeleton class="h-4 w-52" />
+          </div>
+          <div class="px-4">
+            <z-skeleton class="h-9 w-full" />
+          </div>
+        </f-card>
+      </div>
+
+      <div class="space-y-6">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-28 mb-2" />
+          </div>
+          <div class="px-4 space-y-4">
+            <z-skeleton class="h-9 w-full" />
+            <z-skeleton class="h-9 w-full" />
+            <z-skeleton class="h-9 w-full" />
+            <div class="flex gap-2 pt-2">
+              <z-skeleton class="h-9 flex-1" />
+              <z-skeleton class="h-9 flex-1" />
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-44 mb-2" />
+          </div>
+          <div class="px-4">
+            <z-skeleton class="w-full aspect-video rounded-lg" />
+          </div>
+        </f-card>
+      </div>
+    </div>
+  } @else {
+    <div class="flex items-center gap-4 mt-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">Editar proyecto</h1>
+        <p class="text-muted-foreground mt-1">{{ title() }}</p>
+      </div>
+    </div>
+
+    @if (errorBack()) {
+      <z-alert
+        zType="destructive"
+        zTitle="Uppsss... Hubo un error!"
+        [zDescription]="customDescription"
+        class="animate-in slide-in-from-top-2" />
+
+      <ng-template #customDescription>
+        <p>{{ errorBack() }}</p>
+      </ng-template>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="grid gap-6 lg:grid-cols-3">
+      <div class="lg:col-span-2 space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Información Basica</h3>
+              <span class="text-sm text-muted-foreground">Datos principales del proyecto</span>
+            </div>
+
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <!-- titulo y slug -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="title"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Titulo
+                    </label>
+                    <z-form-control>
+                      <input
+                        #titleInput
+                        z-input
+                        id="title"
+                        formControlName="title"
+                        placeholder="Titulo"
+                        [zStatus]="
+                          titleControl?.invalid && titleControl?.touched ? 'error' : undefined
+                        "
+                        zRequired
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getTitleError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="position"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label>
+                      Slug
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="position"
+                        placeholder="Slug"
+                        disabled
+                        [value]="slug()"
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <p class="text-xs text-muted-foreground">
+                      URL: {{ frontUrl() }}/{{ slug() ? slug() : 'slug-titulo-proyecto' }}
+                    </p>
+                    <!-- <z-form-message zType="error">{{ getPositionError() }}</z-form-message> -->
+                  </z-form-field>
+                </div>
+              </div>
+              <!-- fin titulo y slug -->
+
+              <!-- resumen -->
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="summary"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Resumen
+                  </label>
+                  <z-form-control>
+                    <textarea
+                      id="summary"
+                      rows="2"
+                      placeholder="Breve descripcion del proyecto"
+                      class="resize-none outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      z-input
+                      [zStatus]="
+                        summaryControl?.invalid && summaryControl?.touched ? 'error' : undefined
+                      "
+                      formControlName="summary"></textarea>
+                    <z-form-message zType="error">{{ getSummaryError() }}</z-form-message>
+                  </z-form-control>
+                </z-form-field>
+              </div>
+              <!-- fin resumen -->
+
+              <!-- descripcion -->
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="description"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Descripción del proyecto
+                  </label>
+                  <z-tab-group>
+                    <z-tab label="Escribir">
+                      <z-form-control>
+                        <textarea
+                          id="description"
+                          style="min-height: 200px"
+                          placeholder="Descripcion completa del proyecto."
+                          [zStatus]="
+                            descriptionControl?.invalid && descriptionControl?.touched
+                              ? 'error'
+                              : undefined
+                          "
+                          class="font-mono resize-none outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          z-input
+                          formControlName="description"></textarea>
+                        <z-form-message zType="error">{{ getResumeError() }}</z-form-message>
+                      </z-form-control>
+                      <p class="mt-2 text-xs text-muted-foreground">
+                        Admite el formato Markdown: **bold**, *italic*, [links](url),
+                        ![images](url), `code`, etc.
+                      </p>
+                    </z-tab>
+                    <z-tab label="Previsualizar">
+                      <div
+                        class="font-mono resize-none rounded-md border border-input bg-background flex rounded-lg border border-input bg-transparent px-2.5 font-normal transition-colors file:inline-flex file:border-0 file:bg-transparent file:font-medium file:text-foreground placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 dark:bg-input/30 dark:disabled:bg-input/80 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
+                        style="min-height: 200px">
+                        <p class="text-muted-foreground">
+                          El contenido de la descripcion iria aquí.
+                        </p>
+                      </div>
+                    </z-tab>
+                  </z-tab-group>
+                </z-form-field>
+              </div>
+              <!-- fin descripcion -->
+
+              <!-- url github y proyecto -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="githubUrl"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label>
+                      URL Github
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="githubUrl"
+                        [zStatus]="
+                          urlGithubControl?.invalid && urlGithubControl?.touched
+                            ? 'error'
+                            : undefined
+                        "
+                        formControlName="urlGithub"
+                        placeholder="URL del repositorio github"
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getGithubUrlError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="urlProyecto"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label>
+                      URL Proyecto Publico
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="urlProyecto"
+                        formControlName="urlProyect"
+                        [zStatus]="
+                          urlProyectControl?.invalid && urlProyectControl?.touched
+                            ? 'error'
+                            : undefined
+                        "
+                        placeholder="URL Proyeto publico final"
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getUrlProyectoError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+              </div>
+              <!-- fin url guithub y proyecto -->
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Caracteristicas</h3>
+              <span class="text-sm text-muted-foreground"
+                >Lista de caracteristicas del proyecto
+              </span>
+            </div>
+
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <div class="flex flex-col gap-3">
+                <z-form-field>
+                  <div class="flex flex-col gap-2">
+                    <div class="flex flex-wrap gap-3 {{ features.length > 1 ? 'mb-2' : '' }}">
+                      @for (feature of features; track feature.description) {
+                        <z-badge zType="secondary" class="px-2 py-1">
+                          {{ feature.description }}
+                          <button
+                            type="button"
+                            class="ml-1 text-xs hover:text-destructive cursor-pointer"
+                            (click)="removeFeature(feature, feature.id!)">
+                            <ng-icon
+                              name="lucideX"
+                              style="height: calc(var(--spacing) * 2) !important" />
+                          </button>
+                        </z-badge>
+                      }
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-2">
+                      <div class="flex-1">
+                        <z-form-control>
+                          <input
+                            z-input
+                            id="feature"
+                            placeholder="Añadir caracteristica"
+                            [formControl]="featureInput"
+                            class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                        </z-form-control>
+                        <z-form-message zType="error">{{ getFeatureError() }}</z-form-message>
+                      </div>
+                      <div class="flex">
+                        <button
+                          type="button"
+                          z-button
+                          [zDisabled]="isAddFeatDisabled()"
+                          zType="default"
+                          class="cursor-pointer border border-input w-full"
+                          zSize="lg"
+                          (click)="addFeature()">
+                          <ng-icon name="lucidePlus" class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </z-form-field>
+              </div>
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Tecnologias</h3>
+              <span class="text-sm text-muted-foreground"
+                >Tecnologias utilizadas en el proyecto
+              </span>
+            </div>
+
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <div class="flex flex-col gap-3">
+                <z-form-field>
+                  <div class="flex flex-col gap-2">
+                    <div class="flex flex-col md:flex-row gap-2">
+                      <div class="flex flex-col md:flex-row flex-1 justify-between gap-2">
+                        <div class="flex-1">
+                          <input
+                            z-input
+                            id="technology"
+                            placeholder="Añadir habilidad"
+                            [formControl]="technologieInput"
+                            class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                        </div>
+
+                        <div class="flex">
+                          <z-select
+                            class="w-full md:w-36 outFocus"
+                            zPlaceholder="Selecciona la categoria"
+                            [(zValue)]="selectedValue">
+                            <z-select-item zValue="frontend">Front-end</z-select-item>
+                            <z-select-item zValue="backend">Back-end</z-select-item>
+                            <z-select-item zValue="devops">Dev-Ops</z-select-item>
+                            <z-select-item zValue="database">Bases de datos</z-select-item>
+                            <z-select-item zValue="tools">Herramientas</z-select-item>
+                            <z-select-item zValue="other">Otros</z-select-item>
+                          </z-select>
+                        </div>
+                      </div>
+                      <div class="flex">
+                        <button
+                          type="button"
+                          z-button
+                          [zDisabled]="isAddTechDisabled()"
+                          zType="default"
+                          class="cursor-pointer border border-input w-full"
+                          zSize="lg"
+                          (click)="addTechnologie()">
+                          <ng-icon name="lucidePlus" class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-2">
+                      @if (groupedTechnologies().length > 0) {
+                        <div class="space-y-3">
+                          @for (group of groupedTechnologies(); track group.key) {
+                            <div class="space-y-2">
+                              <span
+                                class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                {{ group.label }}
+                              </span>
+                              <div class="flex flex-wrap gap-2">
+                                @for (tech of group.techs; track tech.name) {
+                                  <z-badge
+                                    variant="outline"
+                                    [class]="
+                                      group.color + ' pl-2.5 pr-1.5 py-1 text-sm font-medium border'
+                                    ">
+                                    {{ tech.name }}
+                                    <button
+                                      z-button
+                                      type="button"
+                                      zType="ghost"
+                                      class="ml-1.5 hover:rounded-full rounded-full hover:bg-black/10 dark:hover:bg-white/10 p-0.5 cursor-pointer"
+                                      (click)="removeTechnologie(tech, tech.id!)">
+                                      <ng-icon
+                                        name="lucideX"
+                                        style="height: calc(var(--spacing) * 2) !important" />
+                                    </button>
+                                  </z-badge>
+                                }
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      } @else {
+                        <p
+                          class="w-full text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
+                          Aún no se ha añadido ninguna tecnología. Añade una arriba.
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </z-form-field>
+              </div>
+            </div>
+          </div>
+        </f-card>
+      </div>
+      <div class="space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Publicar</h3>
+            </div>
+
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="visibility"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Visibilidad
+                  </label>
+                  <z-form-control>
+                    <z-select class="w-full outFocus" formControlName="visibility">
+                      <ng-template #publicTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideGlobe" class="h-4 w-4" />
+                          Publico
+                        </div>
+                      </ng-template>
+
+                      <ng-template #privateTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideLock" class="h-4 w-4" />
+                          Privado
+                        </div>
+                      </ng-template>
+
+                      <z-select-item zValue="public" [zTemplate]="publicTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideGlobe" class="h-4 w-4" />
+                          Publico
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="private" [zTemplate]="privateTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideLock" class="h-4 w-4" />
+                          Privado
+                        </div>
+                      </z-select-item>
+                    </z-select>
+                    <z-form-message zType="error">{{ getVisibilityError() }}</z-form-message>
+                  </z-form-control>
+                </z-form-field>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="type"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Tipo
+                  </label>
+                  <z-form-control>
+                    <z-select class="w-full outFocus" formControlName="type">
+                      <ng-template #personalTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideUser" class="h-4 w-4" />
+                          Personal
+                        </div>
+                      </ng-template>
+
+                      <ng-template #communityTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideUsersRound" class="h-4 w-4" />
+                          Comunidad
+                        </div>
+                      </ng-template>
+
+                      <z-select-item zValue="personal" [zTemplate]="personalTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideUser" class="h-4 w-4" />
+                          Personal
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="community" [zTemplate]="communityTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideUsersRound" class="h-4 w-4" />
+                          Comunidad
+                        </div>
+                      </z-select-item>
+                    </z-select>
+                    <z-form-message zType="error">{{ getTypeError() }}</z-form-message>
+                  </z-form-control>
+                </z-form-field>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="publishedDate"
+                    z-form-label
+                    zRequired
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+                    Fecha
+                  </label>
+                  <z-form-control>
+                    <z-date-picker
+                      id="publishedDate"
+                      [value]="form.controls.publishedDate.value"
+                      placeholder="Selecciona la fecha"
+                      (dateChange)="onPublishedDateChange($event)"
+                      zFormat="dd/MM/yyyy"
+                      [maxDate]="maxDate"
+                      zClassBtn="w-full cursor-pointer"
+                      zRequired
+                      zSize="default" />
+                  </z-form-control>
+                  <z-form-message zType="error">{{ getPublishedDateError() }}</z-form-message>
+                </z-form-field>
+              </div>
+
+              <div class="space-y-2 pt-4 flex gap-2">
+                <a
+                  [routerLink]="baseRoute"
+                  z-button
+                  zType="ghost"
+                  class="cursor-pointer flex-1 w-full md:w-auto border border-input">
+                  <ng-icon name="lucideX" class="mr-2 h-4 w-4" /> Cancelar
+                </a>
+
+                <button
+                  [zDisabled]="isLoading$() || form.invalid"
+                  z-button
+                  type="submit"
+                  zType="default"
+                  class="cursor-pointer flex-1 w-full md:w-auto">
+                  @if (isLoading$()) {
+                    <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4" />
+                    <span> Editando proyecto </span>
+                  } @else {
+                    <ng-icon name="lucidePencil" class="mr-2 h-4 w-4" />
+                    <span>Editar proyecto</span>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Imagen de Portada</h3>
+            </div>
+            <div class="px-4">
+              @if (coverImage()) {
+                <div class="relative">
+                  <img
+                    [src]="coverImage()"
+                    alt="Cover"
+                    class="w-full aspect-video object-cover rounded-lg" />
+                  <button
+                    (click)="removeCoverImage()"
+                    class="absolute top-2 right-2 h-8 w-8 cursor-pointer"
+                    z-button
+                    zSize="icon"
+                    type="button"
+                    zType="destructive">
+                    <ng-icon name="lucideX" class="h-4 w-4" />
+                  </button>
+                </div>
+              } @else {
+                <label
+                  class="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                  <ng-icon name="lucideUpload" class="h-8 w-8 text-muted-foreground mb-2" />
+                  <span class="text-sm text-muted-foreground">Subir imagen</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    (change)="handleCoverImageUpload($event)" />
+                </label>
+              }
+            </div>
+          </div>
+        </f-card>
+      </div>
+    </form>
+  }
+
+  <!-- form de images -->
+  <form class="grid gap-6 lg:grid-cols-3">
+    <div class="lg:col-span-2 space-y-6-cards">
+      <f-card cId="content" cClass="border-border/50 py-4 ">
+        <div class="flex-1 overflow-y-auto">
+          <div class="flex justify-between items-center px-4 pb-4">
+            <div>
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Galeria</h3>
+              <span class="text-sm text-muted-foreground">Imagenes adicionales del proyecto </span>
+            </div>
+            <button
+              (click)="removeAllGalleryImages()"
+              class="h-8 w-8 cursor-pointer"
+              z-button
+              zSize="icon"
+              type="button"
+              zTooltip="Eliminar todas las imagenes"
+              zPosition="left"
+              zType="destructive">
+              <ng-icon name="lucideTrash2" class="h-4 w-4" />
+            </button>
+          </div>
+
+          <div class="px-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              @if (isLoadingImagesBack()) {
+                @for (_ of skeletonImagesItems; track $index) {
+                  <div class="w-full aspect-video rounded-lg bg-muted animate-pulse"></div>
+                }
+              } @else {
+                @for (image of galleryImages(); track $index) {
+                  <div class="relative group">
+                    <img
+                      [src]="image.imageFullUrl"
+                      [alt]="image.altText"
+                      class="w-full aspect-video object-cover rounded-lg" />
+                    <button
+                      (click)="removeGalleryImage(image.id)"
+                      class="absolute top-2 right-2 h-8 w-8 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                      z-button
+                      zSize="icon"
+                      type="button"
+                      zType="destructive">
+                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                    </button>
+                  </div>
+                }
+              }
+              <label
+                class="flex flex-col items-center justify-center aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                <ng-icon name="lucidePlus" class="h-8 w-8 text-muted-foreground mb-2" />
+                <span class="text-sm text-muted-foreground">Agregar imagen</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  class="hidden"
+                  (change)="handleGalleryImageUpload($event)" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </f-card>
+    </div>
+    <div></div>
+  </form>
+  <!-- fin form images -->
+</div>

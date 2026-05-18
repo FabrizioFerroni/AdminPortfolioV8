@@ -30,4 +30,8 @@ export const APP_ROUTES: Routes = [
     path: Rutas.SETTINGS,
     loadComponent: () => import('./settings').then(c => c.Settings),
   },
+  {
+    path: Rutas.PROJECTS,
+    loadChildren: () => import('./projects').then(m => m.PROJECTS_ROUTES),
+  },
 ];

@@ -3,3 +3,7 @@ export * from './dashboard';
 export * from './subscribers';
 export * from './contacts';
 export * from './experiences';
+export * from './profile';
+export * from './projects';
+export * from './settings';
+export * from './app.routes';

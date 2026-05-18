@@ -13,7 +13,7 @@ export const routes: Routes = [
     path: Rutas.HOME,
     component: MainLayout,
     canActivate: [logedGuard],
-    loadChildren: () => import('./features/app/app.routes').then(m => m.APP_ROUTES),
+    loadChildren: () => import('./features').then(m => m.APP_ROUTES),
   },
   {
     path: Rutas.NOT_FOUND,
