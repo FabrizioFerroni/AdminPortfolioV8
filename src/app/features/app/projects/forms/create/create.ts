@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ZardAlertComponent } from '@/shared/components/alert';
 import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardBreadcrumbImports } from '@/shared/components/breadcrumb/breadcrumb.imports';
@@ -57,8 +56,6 @@ import { ZardTabComponent, ZardTabGroupComponent } from '@/shared/components/tab
 import { ZardSelectImports } from '@/shared/components/select';
 import { CATEGORY_CONFIG, groupTechnologiesByCategory } from '../../utils';
 import { MarkdownModule } from 'ngx-markdown';
-
-declare const Prism: any;
 
 @Component({
   selector: 'app-createproject',
@@ -439,10 +436,6 @@ export class CreateProject implements OnInit, AfterViewInit {
     }
 
     this.store.dispatch(ProjectsActions.createProject({ data: fd }));
-  }
-
-  onMarkdownReady(): void {
-    Prism.highlightAll();
   }
   //#endregion
 }
