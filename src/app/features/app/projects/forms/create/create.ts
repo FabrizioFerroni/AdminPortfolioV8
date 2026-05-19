@@ -55,6 +55,7 @@ import { generateSlug } from '@/shared/functions';
 import { ZardTabComponent, ZardTabGroupComponent } from '@/shared/components/tabs';
 import { ZardSelectImports } from '@/shared/components/select';
 import { CATEGORY_CONFIG, groupTechnologiesByCategory } from '../../utils';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-createproject',
@@ -75,6 +76,7 @@ import { CATEGORY_CONFIG, groupTechnologiesByCategory } from '../../utils';
     ZardTabGroupComponent,
     ZardSelectImports,
     RouterLink,
+    MarkdownModule,
   ],
   templateUrl: './create.html',
   styleUrl: './create.css',

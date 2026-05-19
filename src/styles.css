@@ -1,6 +1,7 @@
 @layer ng-icon, theme, base, components, utilities;
 @import 'tailwindcss';
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -147,7 +148,9 @@
   background: var(--muted);
 }
 
-.outFocus {
+.outFocus,
+z-select,
+input {
   @apply outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0;
 }
 

@@ -73,6 +73,8 @@ import { selectSetting, SettingActions } from '@/features/app/settings/store';
 import { CATEGORY_CONFIG, groupTechnologiesByCategory } from '../../utils';
 import { SettingList } from '@/features/app/settings/interfaces';
 import { ZardSelectImports } from '@/shared/components/select';
+import { MarkdownModule } from 'ngx-markdown';
+import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
 
 @Component({
   selector: 'app-updateproject',
@@ -95,6 +97,7 @@ import { ZardSelectImports } from '@/shared/components/select';
     ZardSelectImports,
     ZardTooltipImports,
     RouterLink,
+    MarkdownModule,
   ],
   templateUrl: './update.html',
   styleUrl: './update.css',
@@ -119,6 +122,7 @@ import { ZardSelectImports } from '@/shared/components/select';
 })
 export class UpdateProject implements OnInit, AfterViewInit {
   //#region Dependencias
+  private readonly alertDialogService = inject(ZardAlertDialogService);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
   //#endregion
@@ -440,11 +444,29 @@ export class UpdateProject implements OnInit, AfterViewInit {
   }
 
   removeGalleryImage(id: string): void {
-    this.store.dispatch(ProjectsActions.deleteProjectImage({ id, projectId: this.id() }));
+    this.alertDialogService.confirm({
+      zTitle: '¿Estás completamente seguro?',
+      zDescription:
+        'Esta acción es irreversible. Eliminará permanentemente la imagen subida del proyecto.',
+      zOkDestructive: true,
+      zOkText: 'Si, borrar',
+      zCancelText: 'No, cancelar',
+      zOnOk: () =>
+        this.store.dispatch(ProjectsActions.deleteProjectImage({ id, projectId: this.id() })),
+    });
   }
 
   removeAllGalleryImages(): void {
-    this.store.dispatch(ProjectsActions.deleteProjectImageAll({ projectId: this.id() }));
+    this.alertDialogService.confirm({
+      zTitle: '¿Estás completamente seguro?',
+      zDescription:
+        'Esta acción es irreversible. Eliminará permanentemente todas las imagenes subidas del proyecto.',
+      zOkDestructive: true,
+      zOkText: 'Si, borrar',
+      zCancelText: 'No, cancelar',
+      zOnOk: () =>
+        this.store.dispatch(ProjectsActions.deleteProjectImageAll({ projectId: this.id() })),
+    });
   }
 
   onPublishedDateChange(date: Date | null) {
