@@ -24,6 +24,7 @@ import {
   projectConfig,
   settingsConfig,
 } from './features';
+import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -51,6 +52,15 @@ export const appConfig: ApplicationConfig = {
       connectInZone: true,
     }),
     provideRouterStore(),
+    // provideMarkdown(),
+    provideMarkdown({
+      markedOptions: {
+        provide: MARKED_OPTIONS,
+        useValue: {
+          gfm: true,
+        },
+      },
+    }),
     ...authConfig,
     ...subscribersConfig,
     ...auditLogsConfig,

@@ -3,6 +3,7 @@ import { appConfig } from './app/app.config';
 import { App } from './app/app';
 import { environment } from './environments/environment';
 import { enableProdMode } from '@angular/core';
+import './imports-prims';
 
 if (environment.production) {
   enableProdMode();

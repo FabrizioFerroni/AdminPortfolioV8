@@ -71,8 +71,8 @@
                 "maximumError": "5mb"
               }
             ],
-            "styles": ["src/styles.css"],
-            "scripts": []
+            "styles": ["src/styles.css", "node_modules/prismjs/themes/prism-tomorrow.css"],
+            "scripts": ["node_modules/prismjs/prism.js"]
           },
           "configurations": {
             "production": {

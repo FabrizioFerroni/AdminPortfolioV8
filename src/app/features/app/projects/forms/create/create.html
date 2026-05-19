@@ -154,9 +154,13 @@
                   </z-tab>
                   <z-tab label="Previsualizar">
                     <div
-                      class="font-mono resize-none rounded-md border border-input bg-background flex rounded-lg border border-input bg-transparent px-2.5 font-normal transition-colors file:inline-flex file:border-0 file:bg-transparent file:font-medium file:text-foreground placeholder:text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 dark:bg-input/30 dark:disabled:bg-input/80 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 overflow-auto"
-                      style="min-height: 200px">
-                      <p class="text-muted-foreground">El contenido de la descripcion iria aquí.</p>
+                      class="rounded-md border border-input bg-background px-3 py-2 text-sm overflow-auto bg-transparent disabled:opacity-50 dark:bg-input/30 dark:disabled:bg-input/80 px-2.5"
+                      style="min-height: 200px; max-height: 200px">
+                      <markdown
+                        class="prose prose-invert prose-sm max-w-none"
+                        [data]="form.controls.description.value"
+                        (ready)="onMarkdownReady()">
+                      </markdown>
                     </div>
                   </z-tab>
                 </z-tab-group>
