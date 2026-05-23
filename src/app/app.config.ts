@@ -19,6 +19,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {
   auditLogsConfig,
   contactConfig,
+  dashboardConfig,
   experienceConfig,
   profileConfig,
   projectConfig,
@@ -69,5 +70,6 @@ export const appConfig: ApplicationConfig = {
     ...profileConfig,
     ...settingsConfig,
     ...projectConfig,
+    ...dashboardConfig,
   ],
 };
