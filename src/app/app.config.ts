@@ -26,6 +26,11 @@ import {
   settingsConfig,
 } from './features';
 import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
+import localeEsAr from '@angular/common/locales/es-AR';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeEsAr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -71,5 +76,6 @@ export const appConfig: ApplicationConfig = {
     ...settingsConfig,
     ...projectConfig,
     ...dashboardConfig,
+    { provide: LOCALE_ID, useValue: 'es-AR' },
   ],
 };

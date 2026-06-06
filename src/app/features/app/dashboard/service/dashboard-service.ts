@@ -1,22 +1,39 @@
 import { BaseHttpService } from '@/shared/services';
 import { Injectable } from '@angular/core';
-import { AuditLogsData } from '../../audit-logs/interfaces';
-import { PaginationAuditQuery } from '@/shared/interfaces';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { ApiResponse } from '@/shared/response';
-import { construirQueryParams } from '@/shared/functions/construirQueryParams';
+import { AnalyticsResponse, DashboardMonthlySummaryDto, DashboardSummaryDto } from '../interfaces';
+import { AuditLogsList } from '../../audit-logs/interfaces';
+import { AnalyticsRange } from '../enum/analitycrange.enum';
 
 @Injectable()
 export class DashboardService extends BaseHttpService {
-  obtenerRecientes(): Observable<HttpResponse<ApiResponse<AuditLogsData>>> {
-    const paginado: PaginationAuditQuery = {
-      page: 1,
-      limit: 10,
-    };
-    const params = construirQueryParams(paginado);
-    return this.http.get<ApiResponse<AuditLogsData>>(`${this.apiUrl}/audits`, {
-      params,
+  getStatsCompleted(): Observable<HttpResponse<ApiResponse<DashboardSummaryDto>>> {
+    return this.http.get<ApiResponse<DashboardSummaryDto>>(`${this.apiUrl}/dashboard/stats`, {
+      observe: 'response',
+    });
+  }
+
+  getStatsMonthlyCompleted(): Observable<HttpResponse<ApiResponse<DashboardMonthlySummaryDto>>> {
+    return this.http.get<ApiResponse<DashboardMonthlySummaryDto>>(
+      `${this.apiUrl}/dashboard/stats/monthly`,
+      {
+        observe: 'response',
+      }
+    );
+  }
+
+  getLastFiveAudits(): Observable<HttpResponse<ApiResponse<AuditLogsList[]>>> {
+    return this.http.get<ApiResponse<AuditLogsList[]>>(`${this.apiUrl}/audits/dashboard`, {
+      observe: 'response',
+    });
+  }
+
+  getPortfolioViews(
+    range: AnalyticsRange
+  ): Observable<HttpResponse<ApiResponse<AnalyticsResponse>>> {
+    return this.http.get<ApiResponse<AnalyticsResponse>>(`${this.apiUrl}/analytics/${range}`, {
       observe: 'response',
     });
   }

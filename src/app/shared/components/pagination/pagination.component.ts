@@ -6,7 +6,6 @@ import {
   computed,
   input,
   model,
-  output,
   type TemplateRef,
   ViewEncapsulation,
 } from '@angular/core';
@@ -34,6 +33,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
   template: ` <ng-content /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
   host: {
     'data-slot': 'pagination-content',
     '[class]': 'classes()',
@@ -53,6 +53,7 @@ export class ZardPaginationContentComponent {
   template: ` <ng-content /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
   host: {
     'data-slot': 'pagination-item',
   },
@@ -64,6 +65,7 @@ export class ZardPaginationItemComponent {}
 @Component({
   selector: 'button[z-pagination-button], a[z-pagination-button]',
   imports: [ZardButtonComponent],
+  standalone: true,
   template: `
     <z-button
       [attr.data-active]="zActive() || null"
@@ -95,6 +97,7 @@ export class ZardPaginationButtonComponent {
 @Component({
   selector: 'z-pagination-previous',
   imports: [ZardPaginationButtonComponent, NgIcon],
+  standalone: true,
   template: `
     <button
       type="button"
@@ -126,6 +129,7 @@ export class ZardPaginationPreviousComponent {
 @Component({
   selector: 'z-pagination-next',
   imports: [ZardPaginationButtonComponent, NgIcon],
+  standalone: true,
   template: `
     <button
       type="button"
@@ -155,6 +159,7 @@ export class ZardPaginationNextComponent {
 @Component({
   selector: 'z-pagination-ellipsis',
   imports: [NgIcon],
+  standalone: true,
   template: ` <ng-icon name="lucideEllipsis" aria-hidden="true" /> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -175,6 +180,7 @@ export class ZardPaginationEllipsisComponent {
 
 @Component({
   selector: 'z-pagination',
+  standalone: true,
   imports: [
     ZardPaginationContentComponent,
     ZardPaginationItemComponent,
@@ -246,7 +252,7 @@ export class ZardPaginationComponent {
 
   readonly class = input<ClassValue>('');
 
-  readonly zPageIndexChange = output<number>();
+  //readonly zPageIndexChange = output<number>();
   readonly Math = Math;
 
   protected readonly classes = computed(() => mergeClasses(paginationVariants(), this.class()));
@@ -257,7 +263,7 @@ export class ZardPaginationComponent {
   goToPage(page: number): void {
     if (!this.zDisabled() && page !== this.zPageIndex()) {
       this.zPageIndex.set(page);
-      this.zPageIndexChange.emit(page);
+      //this.zPageIndexChange.emit(page);
     }
   }
 }

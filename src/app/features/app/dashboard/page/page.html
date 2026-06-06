@@ -22,7 +22,7 @@
 
   <!-- estadisticas -->
   <div class="grid gap-4 sm:grid-cols-4">
-    <!-- @if (isLoadingStats()) {
+    @if (isLoadingStatsDashboard()) {
       @for (item of skeletonStatsItems; track item) {
         <f-card cClass="p-0!">
           <f-card-content cClass="p-4">
@@ -36,82 +36,82 @@
           </f-card-content>
         </f-card>
       }
-    } @else { -->
-    <a [routerLink]="projectRoute">
-      <f-card
-        cId="total"
-        cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0! hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
-        <f-card-content cClass="p-6" cId="total-content">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
-              <ng-icon name="lucideFolderKanban" class="h-5 w-5 text-blue-500" />
+    } @else {
+      <a [routerLink]="projectRoute">
+        <f-card
+          cId="total"
+          cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0! hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
+          <f-card-content cClass="p-6" cId="total-content">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
+                <ng-icon name="lucideFolderKanban" class="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ totalProjects() | number }}</p>
+                <p class="text-sm text-muted-foreground">Proyectos totales</p>
+              </div>
             </div>
-            <div>
-              <p class="text-2xl font-bold">{{ totalProjects() }}</p>
-              <p class="text-sm text-muted-foreground">Proyectos totales</p>
+          </f-card-content>
+        </f-card>
+      </a>
+      <a [routerLink]="subscriberRoute">
+        <f-card
+          cId="unread"
+          cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20 p-0! hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
+          <f-card-content cClass="p-6" cId="unread-content">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
+                <ng-icon name="lucideUsers" class="h-5 w-5 text-emerald-500" />
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ totalSubscribers() | number }}</p>
+                <p class="text-sm text-muted-foreground">Subscriptores totales</p>
+              </div>
             </div>
-          </div>
-        </f-card-content>
-      </f-card>
-    </a>
-    <a [routerLink]="subscriberRoute">
-      <f-card
-        cId="unread"
-        cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20 p-0! hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
-        <f-card-content cClass="p-6" cId="unread-content">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
-              <ng-icon name="lucideUsers" class="h-5 w-5 text-emerald-500" />
+          </f-card-content>
+        </f-card>
+      </a>
+      <a [routerLink]="contactRoute">
+        <f-card
+          cId="read"
+          cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20 hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
+          <f-card-content cId="read-content" cClass="p-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
+                <ng-icon name="lucideMessageSquare" class="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ totalUnreadMessages() | number }}</p>
+                <p class="text-sm text-muted-foreground">Mensajes sin leer totales</p>
+              </div>
             </div>
-            <div>
-              <p class="text-2xl font-bold">{{ totalSubscribers() }}</p>
-              <p class="text-sm text-muted-foreground">Subscriptores totales</p>
+          </f-card-content>
+        </f-card>
+      </a>
+      <div>
+        <f-card
+          cId="repplied"
+          cClass="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20 transition-all  group">
+          <f-card-content cId="repplied-content" cClass="p-6">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center p-2 rounded-lg bg-purple-500/10">
+                <ng-icon name="lucideEye" class="h-5 w-5 text-purple-500" />
+              </div>
+              <div>
+                <p class="text-2xl font-bold">{{ totalViewsPortfolio() | number }}</p>
+                <p class="text-sm text-muted-foreground">Total vistas al portfolio</p>
+              </div>
             </div>
-          </div>
-        </f-card-content>
-      </f-card>
-    </a>
-    <a [routerLink]="contactRoute">
-      <f-card
-        cId="read"
-        cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20 hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
-        <f-card-content cId="read-content" cClass="p-6">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
-              <ng-icon name="lucideMessageSquare" class="h-5 w-5 text-amber-500" />
-            </div>
-            <div>
-              <p class="text-2xl font-bold">{{ totalUnreadMessages() }}</p>
-              <p class="text-sm text-muted-foreground">Mensajes sin leer totales</p>
-            </div>
-          </div>
-        </f-card-content>
-      </f-card>
-    </a>
-    <a [routerLink]="auditsRoute">
-      <f-card
-        cId="repplied"
-        cClass="bg-gradient-to-br from-purple-500/10 to-purple-500/5 border-purple-500/20 hover:shadow-md transition-all hover:border-primary/20 cursor-pointer group">
-        <f-card-content cId="repplied-content" cClass="p-6">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center justify-center p-2 rounded-lg bg-purple-500/10">
-              <ng-icon name="lucideEye" class="h-5 w-5 text-purple-500" />
-            </div>
-            <div>
-              <p class="text-2xl font-bold">{{ totalViewsPortfolio() }}</p>
-              <p class="text-sm text-muted-foreground">Total vistas al portfolio</p>
-            </div>
-          </div>
-        </f-card-content>
-      </f-card>
-    </a>
-    <!-- } -->
+          </f-card-content>
+        </f-card>
+      </div>
+    }
   </div>
   <!-- fin estadisticas -->
   <!-- contenido principal -->
-  <div class="grid gap-6 lg:grid-cols-3">
-    <div class="lg:col-span-2">
-      <f-card cId="chart">
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="lg:col-span-2 h-full flex flex-col w-full min-w-0">
+      <f-card cId="chart" class="flex-1">
         <f-card-header cClass="pb-4">
           <div class="flex items-center justify-between">
             <div>
@@ -123,12 +123,83 @@
           </div>
         </f-card-header>
         <f-card-content>
-          <div class="h-[280px] max-h-[280px] flex items-end gap-1"></div>
+          @if (isLoadingAnalitycs()) {
+            <div class="h-[280px] flex items-end gap-1">
+              @for (item of skeletonBars; track item) {
+                <div
+                  class="flex-1 rounded-t-sm bg-muted animate-pulse"
+                  [style.height.%]="item"></div>
+              }
+            </div>
+
+            <!-- Labels eje X skeleton -->
+            <div class="flex justify-between mt-4">
+              <div class="h-3 w-10 rounded bg-muted animate-pulse"></div>
+              <div class="h-3 w-10 rounded bg-muted animate-pulse"></div>
+              <div class="h-3 w-10 rounded bg-muted animate-pulse"></div>
+            </div>
+
+            <!-- Footer skeleton -->
+            <div class="mt-4 pt-4 border-t flex items-center justify-between">
+              <div class="space-y-2">
+                <div class="h-7 w-16 rounded bg-muted animate-pulse"></div>
+                <div class="h-3 w-24 rounded bg-muted animate-pulse"></div>
+              </div>
+              <div class="h-4 w-36 rounded bg-muted animate-pulse"></div>
+            </div>
+          } @else if (aggregatedData.length) {
+            <!-- Barras -->
+            <div class="h-[280px] max-h-[280px] flex items-end gap-1">
+              @for (item of aggregatedData; track item.date; let i = $index) {
+                <div
+                  class="flex-1 rounded-t-sm transition-all hover:opacity-80 relative group"
+                  [class]="i === aggregatedData.length - 1 ? 'bg-primary' : 'bg-primary/20'"
+                  [style.height.%]="getBarHeight(item.views)">
+                  <div
+                    class="absolute -top-8 left-1/2 -translate-x-1/2 bg-popover border border-border text-popover-foreground text-xs rounded-full px-2 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-sm">
+                    {{ getDateLabel(item.date) }}: {{ item.views }}
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Labels eje X -->
+            <div class="flex justify-between mt-4 text-xs text-muted-foreground">
+              <span>{{ getDateLabel(aggregatedData[0].date) }}</span>
+              <span>{{ getMidItem() ? getDateLabel(getMidItem()!.date) : '' }}</span>
+              <span>{{ getDateLabel(aggregatedData[aggregatedData.length - 1].date) }}</span>
+            </div>
+
+            <!-- Footer totales -->
+            <div class="mt-4 pt-4 border-t flex items-center justify-between">
+              <div>
+                <p class="text-2xl font-bold">{{ analyticsData()!.total | number }}</p>
+                <p class="text-sm text-muted-foreground">Visitas totales</p>
+              </div>
+              <div
+                class="flex items-center gap-1 text-sm font-medium"
+                [class.text-emerald-600]="analyticsData()!.percentageChange >= 0"
+                [class.text-red-600]="analyticsData()!.percentageChange < 0">
+                @if (analyticsData()!.percentageChange >= 0) {
+                  <ng-icon name="lucideTrendingUp" class="h-4 w-4" />
+                  +{{ analyticsData()!.percentageChange }}% vs periodo anterior
+                } @else {
+                  <ng-icon name="lucideTrendingDown" class="h-4 w-4" />
+                  {{ analyticsData()!.percentageChange }}% vs periodo anterior
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="h-[280px] flex items-center justify-center text-muted-foreground">
+              No hay datos disponibles
+            </div>
+          }
         </f-card-content>
       </f-card>
     </div>
-    <div class="lg:col-span-1">
-      <f-card>
+
+    <div class="lg:col-span-1 h-full">
+      <f-card cClass="h-full">
         <f-card-header cClass="pb-4" cId="card-viewall">
           <div class="flex items-center justify-between">
             <f-card-title cClass="text-lg">Actividad reciente</f-card-title>
@@ -139,19 +210,42 @@
           </div>
         </f-card-header>
         <f-card-content>
-          <div class="space-y-4 h-[295px] max-h-[295px]">
-            <!-- es un array -->
-            <div key="213213" class="flex items-start gap-3">
-              <div class="p-2 rounded-lg">
-                <ng-icon name="lucideHouse" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium">New project added</p>
-                <p class="text-xs text-muted-foreground truncate">E-commerce Website</p>
-              </div>
-              <span class="text-xs text-muted-foreground whitespace-nowrap">2 hours ago</span>
-            </div>
-            <!-- fin es un array -->
+          <div class="space-y-4 lg:h-[295px] lg:max-h-[295px]">
+            @if (isLoadingAuditsDashboard()) {
+              @for (item of skeletonAuditsItems; track item) {
+                <div class="flex items-start gap-3">
+                  <div class="h-9 w-9 rounded-lg bg-muted animate-pulse shrink-0"></div>
+                  <div class="flex-1 min-w-0 space-y-2">
+                    <div class="h-3.5 w-3/4 rounded bg-muted animate-pulse"></div>
+                    <div class="h-3 w-1/2 rounded bg-muted animate-pulse"></div>
+                  </div>
+                  <div class="h-3 w-16 rounded bg-muted animate-pulse shrink-0"></div>
+                </div>
+              }
+            } @else {
+              @for (audit of lastFiveAudits(); track audit.id) {
+                <div id="{{ audit.id }}" class="flex items-start gap-3">
+                  <div
+                    [class]="
+                      'flex justify-center items-center p-2 rounded-lg ' +
+                      getColorForModule(audit.module)
+                    ">
+                    <ng-icon [name]="getIconForModule(audit.module)" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium">{{ audit.description }}</p>
+                    <p class="text-xs text-muted-foreground truncate">{{ audit.details }}</p>
+                  </div>
+                  <span class="text-xs text-muted-foreground whitespace-nowrap">{{
+                    getRelativeTime(audit.date)
+                  }}</span>
+                </div>
+              } @empty {
+                <div class="text-center flex flex-column justify-center items-center">
+                  <z-empty zIcon="lucideActivity" zTitle="Aun no hay actividad reciente"> </z-empty>
+                </div>
+              }
+            }
           </div>
         </f-card-content>
       </f-card>
@@ -203,31 +297,61 @@
         </div>
 
         <div class="space-y-4">
-          <p class="text-sm font-medium text-muted-foreground">This Month</p>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-muted-foreground">New Projects</span>
-              <span class="text-sm font-medium">+2</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-muted-foreground">New Subscribers</span>
-              <span class="text-sm font-medium">+18</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-muted-foreground">Messages Received</span>
-              <span class="text-sm font-medium">+12</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-muted-foreground">Total Views</span>
-              <span class="text-sm font-medium">1,024</span>
-            </div>
-            <div class="pt-3 border-t">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium">Growth Rate</span>
-                <span class="text-sm font-medium text-emerald-600">+24.5%</span>
+          <p class="text-sm font-medium text-muted-foreground">Este mes</p>
+          @if (isLoadingStatsMontlyDashboard()) {
+            <div class="space-y-3">
+              @for (item of skeletonStatsMonthlyItems; track item) {
+                <div class="flex items-center justify-between">
+                  <div class="h-4 w-32 rounded bg-muted animate-pulse"></div>
+                  <div class="h-4 w-8 rounded bg-muted animate-pulse"></div>
+                </div>
+              }
+              <div class="pt-3 border-t">
+                <div class="flex items-center justify-between">
+                  <div class="h-4 w-28 rounded bg-muted animate-pulse"></div>
+                  <div class="h-4 w-10 rounded bg-muted animate-pulse"></div>
+                </div>
               </div>
             </div>
-          </div>
+          } @else {
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-muted-foreground">Nuevos proyectos</span>
+                <span class="text-sm font-medium">+{{ newProjects() | number }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-muted-foreground">Nuevos suscriptores</span>
+                <span class="text-sm font-medium">+{{ newSubscribers() | number }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-muted-foreground">Mensajes recibidos</span>
+                <span class="text-sm font-medium">+{{ newMessages() | number }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-muted-foreground">Total de visitas</span>
+                <span class="text-sm font-medium">{{ newViews() | number }}</span>
+              </div>
+              <div class="pt-3 border-t">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium hidden md:block"
+                    >Tasa de crecimiento respecto al mes pasado</span
+                  >
+                  <span class="text-sm font-medium md:hidden">
+                    Tasa de crecimiento
+                    <br />
+                    respecto al mes pasado
+                  </span>
+                  <span
+                    class="text-sm font-medium"
+                    [class.text-emerald-600]="growthRate() > 0"
+                    [class.text-red-500]="growthRate() < 0"
+                    [class.text-yellow-500]="growthRate() === 0"
+                    >{{ growthRate() }}%</span
+                  >
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </f-card-content>

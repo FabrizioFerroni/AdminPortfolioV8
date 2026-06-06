@@ -3,6 +3,7 @@ export interface AuditLogsList {
   action: string;
   user: string;
   details: string;
+  description: string;
   ip: string;
   module: string;
   date: string;
