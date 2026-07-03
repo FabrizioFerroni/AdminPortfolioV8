@@ -17,8 +17,6 @@ export const ExperiencesActions = createActionGroup({
     'Get Stats': emptyProps(),
     'Create Experience': props<{ data: CreateExperienceDto }>(),
     'Update Experience': props<{ id: string; data: UpdateExperienceDto }>(),
-    'Move Up Experience': props<{ id: string }>(),
-    'Move Down Experience': props<{ id: string }>(),
     'Delete Experience': props<{ id: string }>(),
 
     // Success
@@ -27,8 +25,6 @@ export const ExperiencesActions = createActionGroup({
     'Get Stats Success': props<{ stats: ExperienceCount }>(),
     'Create Experience Success': emptyProps(),
     'Update Experience Success': props<{ id: string }>(),
-    'Move Up Experience Success': props<{ id: string }>(),
-    'Move Down Experience Success': props<{ id: string }>(),
     'Delete Experience Success': props<{ id: string }>(),
 
     // Failure
@@ -37,8 +33,6 @@ export const ExperiencesActions = createActionGroup({
     'Get Stats Failure': props<{ error: string; statusCode: number }>(),
     'Create Experience Failure': props<{ error: string; statusCode: number }>(),
     'Update Experience Failure': props<{ error: string; statusCode: number }>(),
-    'Move Up Experience Failure': props<{ error: string; statusCode: number }>(),
-    'Move Down Experience Failure': props<{ error: string; statusCode: number }>(),
     'Delete Experience Failure': props<{ error: string; statusCode: number }>(),
 
     // Misc

@@ -10,6 +10,7 @@ export interface ExperienceList {
   description: string;
   displayOrder: number;
   skills: string[];
+  achievements: string[];
 }
 
 export interface ExperienceCount {
@@ -26,6 +27,7 @@ export interface CreateExperienceDto {
   currentPosition: boolean;
   description?: string;
   skills?: string[];
+  achievements?: string[];
 }
 
 export interface UpdateExperienceDto {
@@ -36,6 +38,7 @@ export interface UpdateExperienceDto {
   currentPosition: boolean;
   description?: string;
   skills?: string[];
+  achievements?: string[];
 }
 
 export type ExperienceFormGroup = FormGroup<{
@@ -46,4 +49,5 @@ export type ExperienceFormGroup = FormGroup<{
   currentPosition: FormControl<boolean>;
   description: FormControl<string>;
   skills: FormControl<string[]>;
+  achievements: FormControl<string[]>;
 }>;

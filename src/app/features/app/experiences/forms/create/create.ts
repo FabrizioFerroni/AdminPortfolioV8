@@ -82,11 +82,13 @@ export class CreateExperience {
     }),
     description: new FormControl<string>('', { nonNullable: true }),
     skills: new FormControl<string[]>([], { nonNullable: true }),
+    achievements: new FormControl<string[]>([], { nonNullable: true }),
   });
 
   errorBack = this.store.selectSignal(selectExperienceFormError);
 
   skillInput = new FormControl('', { nonNullable: true });
+  achievementInput = new FormControl('', { nonNullable: true });
 
   isLoading$ = toSignal(this.store.select(selectExperienceFormLoading), {
     initialValue: false,
@@ -179,6 +181,22 @@ export class CreateExperience {
   get skills(): string[] {
     return this.form.controls.skills.value;
   }
+
+  get achievementsControl() {
+    return this.form.get('achievements')!;
+  }
+
+  getAchievementsError(): string {
+    if (this.achievementsControl.hasError('required') && this.achievementsControl.touched) {
+      return 'Los logros son requeridas.';
+    }
+
+    return '';
+  }
+
+  get achievements(): string[] {
+    return this.form.controls.achievements.value;
+  }
   //#endregion
 
   //#region Funciones
@@ -192,6 +210,18 @@ export class CreateExperience {
 
   removeSkill(skill: string): void {
     this.form.controls.skills.setValue(this.skills.filter(s => s !== skill));
+  }
+
+  addAchievement(): void {
+    const value = this.achievementInput.value.trim();
+    if (!value || this.achievements.includes(value)) return;
+
+    this.form.controls.achievements.setValue([...this.achievements, value]);
+    this.achievementInput.reset();
+  }
+
+  removeAchievement(achievement: string): void {
+    this.form.controls.achievements.setValue(this.achievements.filter(a => a !== achievement));
   }
 
   onStartDateChange(date: Date | null) {

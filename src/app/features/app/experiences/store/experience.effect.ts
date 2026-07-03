@@ -141,66 +141,6 @@ export const updateExperienceEffect = createEffect(
   { functional: true }
 );
 
-export const moveUpExperienceEffect = createEffect(
-  (actions$ = inject(Actions), experienceService = inject(ExperienceService)) =>
-    actions$.pipe(
-      ofType(ExperiencesActions.moveUpExperience),
-      switchMap(({ id }) =>
-        experienceService.moveUpDisplayOrder(id).pipe(
-          map(({ body }) => {
-            toast.success('Éxito', {
-              description: `${body!.data}`,
-              position: 'top-right',
-            });
-            return ExperiencesActions.moveUpExperienceSuccess({ id });
-          }),
-          catchError((error: HttpErrorResponse) => {
-            const messages: Record<number, string> = {
-              401: 'No estas autenticado.',
-              403: 'No tenés permisos para editar una experiencias.',
-              404: 'No se encontraron experiencia.',
-            };
-            const msg = messages[error.status] ?? 'Error inesperado. Intentá nuevamente.';
-            return of(
-              ExperiencesActions.moveUpExperienceFailure({ error: msg, statusCode: error.status })
-            );
-          })
-        )
-      )
-    ),
-  { functional: true }
-);
-
-export const moveDownExperienceEffect = createEffect(
-  (actions$ = inject(Actions), experienceService = inject(ExperienceService)) =>
-    actions$.pipe(
-      ofType(ExperiencesActions.moveDownExperience),
-      switchMap(({ id }) =>
-        experienceService.moveDownDisplayOrder(id).pipe(
-          map(({ body }) => {
-            toast.success('Éxito', {
-              description: `${body!.data}`,
-              position: 'top-right',
-            });
-            return ExperiencesActions.moveDownExperienceSuccess({ id });
-          }),
-          catchError((error: HttpErrorResponse) => {
-            const messages: Record<number, string> = {
-              401: 'No estas autenticado.',
-              403: 'No tenés permisos para editar una experiencias.',
-              404: 'No se encontraron experiencia.',
-            };
-            const msg = messages[error.status] ?? 'Error inesperado. Intentá nuevamente.';
-            return of(
-              ExperiencesActions.moveDownExperienceFailure({ error: msg, statusCode: error.status })
-            );
-          })
-        )
-      )
-    ),
-  { functional: true }
-);
-
 export const deleteExperienceEffect = createEffect(
   (actions$ = inject(Actions), experienceService = inject(ExperienceService)) =>
     actions$.pipe(
@@ -238,8 +178,6 @@ export const reloadAfterStatusEffect = createEffect(
       ofType(
         ExperiencesActions.createExperienceSuccess,
         ExperiencesActions.updateExperienceSuccess,
-        ExperiencesActions.moveUpExperienceSuccess,
-        ExperiencesActions.moveDownExperienceSuccess,
         ExperiencesActions.deleteExperienceSuccess
       ),
       mergeMap(() => [
@@ -255,9 +193,7 @@ export const clearExperienceErrorEffect = createEffect(
     actions$.pipe(
       ofType(
         ExperiencesActions.createExperienceFailure,
-        ExperiencesActions.updateExperienceFailure,
-        ExperiencesActions.moveDownExperienceFailure,
-        ExperiencesActions.moveUpExperienceFailure
+        ExperiencesActions.updateExperienceFailure
       ),
       switchMap(() => timer(5000).pipe(map(() => ExperiencesActions.clearError())))
     ),

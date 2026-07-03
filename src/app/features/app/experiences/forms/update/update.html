@@ -183,16 +183,31 @@
                     Fecha de fin
                   </label>
                   <z-form-control>
-                    <z-date-picker
-                      id="endsDate"
-                      [value]="form.controls.endsDate.value"
-                      placeholder="Selecciona la fecha de fin"
-                      (dateChange)="onEndDateChange($event)"
-                      class="cursor-pointer"
-                      [maxDate]="maxDate"
-                      zClassBtn="w-full cursor-pointer"
-                      [disabled]="form.controls.currentPosition.value"
-                      zFormat="dd/MM/yyyy" />
+                    <div class="flex gap-2 items-center relative">
+                      <z-date-picker
+                        id="endsDate"
+                        [value]="form.controls.endsDate.value"
+                        placeholder="Selecciona la fecha de fin"
+                        (dateChange)="onEndDateChange($event)"
+                        class="cursor-pointer flex-1"
+                        [maxDate]="maxDate"
+                        zClassBtn="w-full cursor-pointer"
+                        [disabled]="form.controls.currentPosition.value"
+                        zFormat="dd/MM/yyyy" />
+
+                      <button
+                        type="button"
+                        [disabled]="
+                          form.controls.currentPosition.value || !form.controls.endsDate.value
+                        "
+                        (click)="form.controls.endsDate.setValue(null)"
+                        [class.hidden]="
+                          form.controls.currentPosition.value || !form.controls.endsDate.value
+                        "
+                        class="cursor-pointer text-destructive absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-md hover:bg-destructive/10 transition-colors">
+                        <ng-icon name="lucideX" />
+                      </button>
+                    </div>
                   </z-form-control>
                   <z-form-message zType="error">{{ getEndsDateError() }}</z-form-message>
                 </z-form-field>
@@ -286,6 +301,59 @@
                         class="cursor-pointer border border-input w-full"
                         zSize="lg"
                         (click)="addSkill()">
+                        <ng-icon name="lucidePlus" class="h-4 w-4" />
+                        Agregar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </z-form-field>
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <z-form-field>
+                <label
+                  for="achievements"
+                  z-form-label
+                  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
+                  Logros
+                </label>
+                <div class="flex flex-col gap-2">
+                  <div class="flex flex-wrap gap-3 {{ achievements.length > 1 ? 'mb-2' : '' }}">
+                    @for (achievement of achievements; track achievement) {
+                      <z-badge zType="secondary" class="px-2 py-1">
+                        {{ achievement }}
+                        <button
+                          type="button"
+                          class="ml-1 text-xs hover:text-destructive cursor-pointer"
+                          (click)="removeAchievement(achievement)">
+                          <ng-icon
+                            name="lucideX"
+                            style="height: calc(var(--spacing) * 2) !important" />
+                        </button>
+                      </z-badge>
+                    }
+                  </div>
+                  <div class="flex flex-col md:flex-row gap-2">
+                    <div class="flex-1">
+                      <z-form-control>
+                        <input
+                          z-input
+                          id="achievements"
+                          placeholder="Añadir logros"
+                          [formControl]="achievementInput"
+                          class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                      </z-form-control>
+                      <z-form-message zType="error">{{ getAchievementsError() }}</z-form-message>
+                    </div>
+                    <div class="flex">
+                      <button
+                        type="button"
+                        z-button
+                        zType="ghost"
+                        class="cursor-pointer border border-input w-full"
+                        zSize="lg"
+                        (click)="addAchievement()">
                         <ng-icon name="lucidePlus" class="h-4 w-4" />
                         Agregar
                       </button>
