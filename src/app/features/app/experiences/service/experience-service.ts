@@ -57,26 +57,6 @@ export class ExperienceService extends BaseHttpService {
     });
   }
 
-  moveUpDisplayOrder(id: string): Observable<HttpResponse<ApiResponse<string>>> {
-    return this.http.patch<ApiResponse<string>>(
-      `${this.apiUrl}/experiences/${id}/move-up`,
-      {},
-      {
-        observe: 'response',
-      }
-    );
-  }
-
-  moveDownDisplayOrder(id: string): Observable<HttpResponse<ApiResponse<string>>> {
-    return this.http.patch<ApiResponse<string>>(
-      `${this.apiUrl}/experiences/${id}/move-down`,
-      {},
-      {
-        observe: 'response',
-      }
-    );
-  }
-
   deleteExperience(id: string): Observable<HttpResponse<ApiResponse<string>>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/experiences/${id}`, {
       observe: 'response',

@@ -302,13 +302,6 @@ export class Experience implements OnInit {
   //#endregion
 
   //#region actions
-  moveUpDisplay(id: string) {
-    this.store.dispatch(ExperiencesActions.moveUpExperience({ id }));
-  }
-
-  moveDownDisplay(id: string) {
-    this.store.dispatch(ExperiencesActions.moveDownExperience({ id }));
-  }
 
   private deleteExperience(id: string) {
     this.store.dispatch(ExperiencesActions.deleteExperience({ id }));

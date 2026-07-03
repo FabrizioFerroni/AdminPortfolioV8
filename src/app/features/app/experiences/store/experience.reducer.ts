@@ -42,15 +42,23 @@ export const experienceFeature = createFeature({
       statusCode,
     })),
 
+    on(ExperiencesActions.getById, state => ({
+      ...state,
+      selected: null,
+      isLoading: true,
+    })),
+
     on(ExperiencesActions.getByIdSuccess, (state, { experience }) => ({
       ...state,
       selected: experience,
+      isLoading: false,
     })),
 
     on(ExperiencesActions.getByIdFailure, (state, { error, statusCode }) => ({
       ...state,
       error,
       statusCode,
+      isLoading: false,
     })),
 
     on(ExperiencesActions.clearError, state => ({
@@ -126,52 +134,6 @@ export const experienceFeature = createFeature({
       formError: error,
       formStatusCode: statusCode,
       isLoadingForm: false,
-    })),
-
-    on(ExperiencesActions.moveUpExperience, state => ({
-      ...state,
-      error: null,
-      statusCode: null,
-      isLoading: true,
-    })),
-
-    on(ExperiencesActions.moveUpExperienceSuccess, (state, { id }) => ({
-      ...state,
-      experiences: state.experiences.map(c => (c.id === id ? { ...c } : c)),
-      stats: state.stats,
-      isLoading: false,
-    })),
-
-    on(ExperiencesActions.moveUpExperienceFailure, (state, { error, statusCode }) => ({
-      ...state,
-      error,
-      statusCode,
-      formError: error,
-      formStatusCode: statusCode,
-      isLoading: false,
-    })),
-
-    on(ExperiencesActions.moveDownExperience, state => ({
-      ...state,
-      error: null,
-      statusCode: null,
-      isLoading: true,
-    })),
-
-    on(ExperiencesActions.moveDownExperienceSuccess, (state, { id }) => ({
-      ...state,
-      isLoading: false,
-      experiences: state.experiences.map(c => (c.id === id ? { ...c } : c)),
-      stats: state.stats,
-    })),
-
-    on(ExperiencesActions.moveDownExperienceFailure, (state, { error, statusCode }) => ({
-      ...state,
-      isLoading: false,
-      error,
-      statusCode,
-      formError: error,
-      formStatusCode: statusCode,
     })),
 
     on(ExperiencesActions.deleteExperience, state => ({

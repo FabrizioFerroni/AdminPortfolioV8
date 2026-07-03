@@ -195,28 +195,6 @@
                         <button
                           type="button"
                           z-button
-                          zType="secondary"
-                          [zDisabled]="count <= 1 || i === 0"
-                          class="cursor-pointer"
-                          zTooltip="Mover experiencia hacia arriba"
-                          (click)="count > 1 && i !== 0 && moveUpDisplay(exp.id)">
-                          <ng-icon name="lucideArrowUp" class="h-4 w-4" />
-                        </button>
-
-                        <button
-                          type="button"
-                          z-button
-                          [zDisabled]="count <= 1 || i === count - 1"
-                          zType="secondary"
-                          class="cursor-pointer"
-                          zTooltip="Mover experiencia hacia abajo"
-                          (click)="count > 1 && i !== count - 1 && moveDownDisplay(exp.id)">
-                          <ng-icon name="lucideArrowDown" class="h-4 w-4" />
-                        </button>
-
-                        <button
-                          type="button"
-                          z-button
                           zType="destructive"
                           class="cursor-pointer"
                           zTooltip="Borrar experiencia"
@@ -291,28 +269,6 @@
                     [routerLink]="[updateRoute, exp.id]">
                     <ng-icon name="lucidePencil" class="h-4 w-4" />
                   </a>
-
-                  <button
-                    type="button"
-                    z-button
-                    zType="secondary"
-                    [zDisabled]="count <= 1 || i === 0"
-                    class="cursor-pointer"
-                    zTooltip="Mover experiencia hacia arriba"
-                    (click)="count > 1 && i !== 0 && moveUpDisplay(exp.id)">
-                    <ng-icon name="lucideArrowUp" class="h-4 w-4" />
-                  </button>
-
-                  <button
-                    type="button"
-                    z-button
-                    [zDisabled]="count <= 1 || i === count - 1"
-                    zType="secondary"
-                    class="cursor-pointer"
-                    zTooltip="Mover experiencia hacia abajo"
-                    (click)="count > 1 && i !== count - 1 && moveDownDisplay(exp.id)">
-                    <ng-icon name="lucideArrowDown" class="h-4 w-4" />
-                  </button>
 
                   <button
                     type="button"

@@ -6,14 +6,7 @@ import { ZardDatePickerComponent } from '@/shared/components/date-picker';
 import { ZardFormImports } from '@/shared/components/form';
 import { ZardInputDirective } from '@/shared/components/input';
 import { ZardTooltipImports } from '@/shared/components/tooltip';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -31,7 +24,7 @@ import {
   lucideX,
 } from '@ng-icons/lucide';
 import { Store } from '@ngrx/store';
-import { ExperienceFormGroup, ExperienceList, UpdateExperienceDto } from '../../interfaces';
+import { ExperienceFormGroup, UpdateExperienceDto } from '../../interfaces';
 import {
   ExperiencesActions,
   selectExperienceErrorStatusCode,
@@ -46,7 +39,6 @@ import { Rutas } from '@/shared/utils';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ZardBreadcrumbImports } from '@/shared/components/breadcrumb/breadcrumb.imports';
 import { Router, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ZardSkeletonComponent } from '@/shared/components/skeleton';
 import { AsyncPipe } from '@angular/common';
 import { toast } from 'ngx-sonner';
@@ -85,7 +77,7 @@ import { toast } from 'ngx-sonner';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdateExperience implements OnInit, AfterViewInit {
+export class UpdateExperience {
   //#region Dependencias
   private readonly store = inject(Store);
   private readonly router = inject(Router);
@@ -108,30 +100,64 @@ export class UpdateExperience implements OnInit, AfterViewInit {
     }),
     description: new FormControl<string>('', { nonNullable: true }),
     skills: new FormControl<string[]>([], { nonNullable: true }),
+    achievements: new FormControl<string[]>([], { nonNullable: true }),
   });
 
   errorBack = this.store.selectSignal(selectExperienceFormError);
 
   skillInput = new FormControl('', { nonNullable: true });
+  achievementInput = new FormControl('', { nonNullable: true });
 
   isLoading$ = toSignal(this.store.select(selectExperienceFormLoading), {
     initialValue: false,
   });
 
-  experience$ = this.store.select(selectSelectedExperience);
   isLoadingBack$ = this.store.select(selectExperiencesLoading);
   error$ = this.store.select(selectExperiencesError);
-  statusCode$ = this.store.select(selectExperienceErrorStatusCode);
+  // experience$ = this.store.select(selectSelectedExperience);
+  // statusCode$ = this.store.select(selectExperienceErrorStatusCode);
+
+  experience = toSignal(this.store.select(selectSelectedExperience), { initialValue: null });
+  statusCode = toSignal(this.store.select(selectExperienceErrorStatusCode), { initialValue: null });
 
   //#endregion
 
   //#region Ciclo de vida angular
-  ngOnInit(): void {
-    this.getData();
-    this.experienceNotFound();
+
+  constructor() {
+    // Reacciona a cada cambio de id (incluye el primer render)
+    effect(() => {
+      const currentId = this.id();
+      this.form.reset();
+      this.store.dispatch(ExperiencesActions.getById({ id: currentId }));
+    });
+
+    // Reacciona cuando llega la nueva experiencia desde el store
+    effect(() => {
+      const data = this.experience();
+      if (data) {
+        this.form.patchValue(data);
+      }
+    });
+
+    // Reacciona si el back devuelve 404
+    effect(() => {
+      if (this.statusCode() === 404) {
+        toast.error('Upps.. hubo un error', {
+          description: 'La experiencia buscada no existe',
+          position: 'top-right',
+        });
+        this.router.navigate([this.baseRoute]);
+      }
+    });
   }
 
-  ngAfterViewInit(): void {
+  /*ngOnInit(): void {
+    this.getData();
+    this.experienceNotFound(); 
+  }*/
+
+  /* ngAfterViewInit(): void {
     if (this.experience$) {
       this.experience$.subscribe({
         next: (data: ExperienceList | null) => {
@@ -144,7 +170,7 @@ export class UpdateExperience implements OnInit, AfterViewInit {
         },
       });
     }
-  }
+  } */
   //#endregion
 
   //#region Getter y errores
@@ -233,14 +259,30 @@ export class UpdateExperience implements OnInit, AfterViewInit {
   get skills(): string[] {
     return this.form.controls.skills.value;
   }
+
+  get achievementsControl() {
+    return this.form.get('achievements')!;
+  }
+
+  getAchievementsError(): string {
+    if (this.achievementsControl.hasError('required') && this.achievementsControl.touched) {
+      return 'Los logros son requeridas.';
+    }
+
+    return '';
+  }
+
+  get achievements(): string[] {
+    return this.form.controls.achievements.value;
+  }
   //#endregion
 
   //#region Funciones
-  getData() {
+  /* getData() {
     this.store.dispatch(ExperiencesActions.getById({ id: this.id() }));
-  }
+  } */
 
-  experienceNotFound() {
+  /* experienceNotFound() {
     this.statusCode$.subscribe({
       next: (res: number | null) => {
         const statusCode = res;
@@ -258,7 +300,7 @@ export class UpdateExperience implements OnInit, AfterViewInit {
         console.error(`error not found: ${error}`);
       },
     });
-  }
+  } */
 
   addSkill(): void {
     const value = this.skillInput.value.trim();
@@ -270,6 +312,18 @@ export class UpdateExperience implements OnInit, AfterViewInit {
 
   removeSkill(skill: string): void {
     this.form.controls.skills.setValue(this.skills.filter(s => s !== skill));
+  }
+
+  addAchievement(): void {
+    const value = this.achievementInput.value.trim();
+    if (!value || this.achievements.includes(value)) return;
+
+    this.form.controls.achievements.setValue([...this.achievements, value]);
+    this.achievementInput.reset();
+  }
+
+  removeAchievement(achievement: string): void {
+    this.form.controls.achievements.setValue(this.achievements.filter(a => a !== achievement));
   }
 
   onStartDateChange(date: Date | null) {
