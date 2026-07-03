@@ -114,9 +114,6 @@ export class UpdateExperience {
 
   isLoadingBack$ = this.store.select(selectExperiencesLoading);
   error$ = this.store.select(selectExperiencesError);
-  // experience$ = this.store.select(selectSelectedExperience);
-  // statusCode$ = this.store.select(selectExperienceErrorStatusCode);
-
   experience = toSignal(this.store.select(selectSelectedExperience), { initialValue: null });
   statusCode = toSignal(this.store.select(selectExperienceErrorStatusCode), { initialValue: null });
 
@@ -125,14 +122,12 @@ export class UpdateExperience {
   //#region Ciclo de vida angular
 
   constructor() {
-    // Reacciona a cada cambio de id (incluye el primer render)
     effect(() => {
       const currentId = this.id();
       this.form.reset();
       this.store.dispatch(ExperiencesActions.getById({ id: currentId }));
     });
 
-    // Reacciona cuando llega la nueva experiencia desde el store
     effect(() => {
       const data = this.experience();
       if (data) {
@@ -140,7 +135,6 @@ export class UpdateExperience {
       }
     });
 
-    // Reacciona si el back devuelve 404
     effect(() => {
       if (this.statusCode() === 404) {
         toast.error('Upps.. hubo un error', {
@@ -151,26 +145,6 @@ export class UpdateExperience {
       }
     });
   }
-
-  /*ngOnInit(): void {
-    this.getData();
-    this.experienceNotFound(); 
-  }*/
-
-  /* ngAfterViewInit(): void {
-    if (this.experience$) {
-      this.experience$.subscribe({
-        next: (data: ExperienceList | null) => {
-          if (data) {
-            this.form.patchValue(data);
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-        },
-      });
-    }
-  } */
   //#endregion
 
   //#region Getter y errores
@@ -278,30 +252,6 @@ export class UpdateExperience {
   //#endregion
 
   //#region Funciones
-  /* getData() {
-    this.store.dispatch(ExperiencesActions.getById({ id: this.id() }));
-  } */
-
-  /* experienceNotFound() {
-    this.statusCode$.subscribe({
-      next: (res: number | null) => {
-        const statusCode = res;
-
-        if (statusCode === 404) {
-          toast.error('Upps.. hubo un error', {
-            description: 'La experiencia buscada no existe',
-            position: 'top-right',
-          });
-
-          this.router.navigate([this.baseRoute]);
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(`error not found: ${error}`);
-      },
-    });
-  } */
-
   addSkill(): void {
     const value = this.skillInput.value.trim();
     if (!value || this.skills.includes(value)) return;
