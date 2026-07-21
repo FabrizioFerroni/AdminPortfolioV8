@@ -8,6 +8,7 @@ export interface ProjectList {
   publishedDate: Date | null;
   slug: string;
   visibility: string;
+  category: string;
   type: string;
   imageUrl: string;
   imageFullUrl: string;
@@ -50,6 +51,7 @@ export interface CreateNewProjectDto {
   publishedDate: string;
   visibility: string;
   type: string;
+  category: string;
   urlGithub?: string;
   urlProyect?: string;
   projectFeatures: InsertOrUpdateProjectFeatDto[];
@@ -75,6 +77,7 @@ export interface UpdateProjectDto {
   summary: string;
   description: string;
   publishedDate: string;
+  category: string;
   visibility?: string;
   type?: string;
   projectFeatures: InsertOrUpdateProjectFeatDto[];
@@ -95,6 +98,7 @@ export interface ProjectFormControls {
   urlGithub: FormControl<string>;
   urlProyect: FormControl<string>;
   visibility: FormControl<string>;
+  category: FormControl<string>;
   type: FormControl<string>;
   features: FormControl<InsertOrUpdateProjectFeatDto[]>;
   technologies: FormControl<InsertOrUpdateProjectTecDto[]>;

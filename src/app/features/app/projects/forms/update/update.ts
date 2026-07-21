@@ -29,17 +29,23 @@ import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideArrowLeft,
+  lucideContainer,
   lucideFolderKanban,
   lucideGlobe,
   lucideHouse,
   lucideLoader2,
   lucideLock,
+  lucideMonitor,
+  lucideMonitorSmartphone,
   lucidePencil,
   lucidePlus,
+  lucideServer,
+  lucideTabletSmartphone,
   lucideTrash2,
   lucideUpload,
   lucideUser,
   lucideUsersRound,
+  lucideWrench,
   lucideX,
 } from '@ng-icons/lucide';
 import { Store } from '@ngrx/store';
@@ -47,9 +53,11 @@ import {
   DeleteProjectTechFeat,
   InsertOrUpdateProjectFeatDto,
   InsertOrUpdateProjectTecDto,
+  ProjectFeatureList,
   ProjectFormControls,
   ProjectImageList,
   ProjectList,
+  ProjectTechnologieList,
 } from '../../interfaces';
 import { Rutas } from '@/shared/utils';
 import {
@@ -116,6 +124,12 @@ import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
       lucideLock,
       lucideUser,
       lucideUsersRound,
+      lucideServer,
+      lucideMonitor,
+      lucideWrench,
+      lucideMonitorSmartphone,
+      lucideTabletSmartphone,
+      lucideContainer,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -145,6 +159,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
     publishedDate: new FormControl<Date | null>(new Date(), { validators: Validators.required }),
     urlGithub: new FormControl('', { nonNullable: true }),
     urlProyect: new FormControl('', { nonNullable: true }),
+    category: new FormControl('', { nonNullable: true, validators: Validators.required }),
     visibility: new FormControl('public', { nonNullable: true, validators: Validators.required }),
     type: new FormControl('personal', { nonNullable: true, validators: Validators.required }),
     features: new FormControl<InsertOrUpdateProjectFeatDto[]>([], { nonNullable: true }),
@@ -233,6 +248,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
           if (data) {
             this.title.set(data.title);
             this.form.patchValue(data);
+            this.handleDeleteAllDataFT(data.technologies, data.features);
             this.coverImage.set(data.imageFullUrl);
             this.form.controls.technologies.setValue(
               data.technologies.map(tech => ({
@@ -307,6 +323,18 @@ export class UpdateProject implements OnInit, AfterViewInit {
   getVisibilityError() {
     if (this.visibilityControl?.hasError('required') && this.visibilityControl.touched) {
       return 'La visibilidad del proyecto es obligatoria';
+    }
+
+    return '';
+  }
+
+  get categoryControl() {
+    return this.form.get('category');
+  }
+
+  getCategoryError() {
+    if (this.categoryControl?.hasError('required') && this.categoryControl.touched) {
+      return 'La categoria del proyecto es obligatoria';
     }
 
     return '';
@@ -547,6 +575,29 @@ export class UpdateProject implements OnInit, AfterViewInit {
     console.log('delete data', this.deleteDataFT);
   }
 
+  handleDeleteAllDataFT(
+    technologies: ProjectTechnologieList[],
+    features: ProjectFeatureList[]
+  ): void {
+    if (technologies && technologies.length > 0) {
+      technologies.forEach(tech => {
+        this.deleteDataFT.push({
+          id: tech.id,
+          module: 2,
+        });
+      });
+    }
+
+    if (features && features.length > 0) {
+      features.forEach(feat => {
+        this.deleteDataFT.push({
+          id: feat.id,
+          module: 1,
+        });
+      });
+    }
+  }
+
   handleSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -573,6 +624,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
     fd.append('description', rawValue.description!);
     fd.append('publishedDate', formattedDate!);
     fd.append('visibility', rawValue.visibility!);
+    fd.append('category', rawValue.category!);
     fd.append('type', rawValue.type!);
     fd.append('urlGithub', rawValue.urlGithub!);
     fd.append('urlProyect', rawValue.urlProyect!);

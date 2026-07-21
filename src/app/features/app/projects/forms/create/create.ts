@@ -28,12 +28,17 @@ import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideArrowLeft,
+  lucideContainer,
   lucideFolderKanban,
   lucideGlobe,
   lucideHouse,
   lucideLoader2,
   lucideLock,
+  lucideMonitor,
+  lucideMonitorSmartphone,
   lucidePlus,
+  lucideServer,
+  lucideTabletSmartphone,
   lucideUpload,
   lucideUser,
   lucideUsersRound,
@@ -93,6 +98,11 @@ import { MarkdownModule } from 'ngx-markdown';
       lucideUsersRound,
       lucideLock,
       lucideUpload,
+      lucideServer,
+      lucideMonitor,
+      lucideMonitorSmartphone,
+      lucideTabletSmartphone,
+      lucideContainer,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -119,6 +129,7 @@ export class CreateProject implements OnInit, AfterViewInit {
     urlGithub: new FormControl('', { nonNullable: true }),
     urlProyect: new FormControl('', { nonNullable: true }),
     visibility: new FormControl('public', { nonNullable: true, validators: Validators.required }),
+    category: new FormControl('', { nonNullable: true, validators: Validators.required }),
     type: new FormControl('personal', { nonNullable: true, validators: Validators.required }),
     features: new FormControl<InsertOrUpdateProjectFeatDto[]>([], { nonNullable: true }),
     technologies: new FormControl<InsertOrUpdateProjectTecDto[]>([], { nonNullable: true }),
@@ -241,6 +252,18 @@ export class CreateProject implements OnInit, AfterViewInit {
   getVisibilityError() {
     if (this.visibilityControl?.hasError('required') && this.visibilityControl.touched) {
       return 'La visibilidad del proyecto es obligatoria';
+    }
+
+    return '';
+  }
+
+  get categoryControl() {
+    return this.form.get('category');
+  }
+
+  getCategoryError() {
+    if (this.categoryControl?.hasError('required') && this.categoryControl.touched) {
+      return 'La categoria del proyecto es obligatoria';
     }
 
     return '';

@@ -474,6 +474,92 @@
               <div class="space-y-2 pt-2">
                 <z-form-field>
                   <label
+                    for="category"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Categoria
+                  </label>
+                  <z-form-control>
+                    <z-select class="w-full outFocus" formControlName="category">
+                      <ng-template #frontendTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideMonitor" class="h-4 w-4" />
+                          Frontend
+                        </div>
+                      </ng-template>
+
+                      <ng-template #backendTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideServer" class="h-4 w-4" />
+                          Backend
+                        </div>
+                      </ng-template>
+
+                      <ng-template #fullstackTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideMonitorSmartphone" class="h-4 w-4" />
+                          FullStack
+                        </div>
+                      </ng-template>
+
+                      <ng-template #mobileTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideTabletSmartphone" class="h-4 w-4" />
+                          Mobile
+                        </div>
+                      </ng-template>
+
+                      <ng-template #devopsTpl>
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideContainer" class="h-4 w-4" />
+                          DevOps
+                        </div>
+                      </ng-template>
+
+                      <z-select-item zValue="frontend" [zTemplate]="frontendTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideMonitor" class="h-4 w-4" />
+                          Frontend
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="backend" [zTemplate]="backendTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideServer" class="h-4 w-4" />
+                          Backend
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="fullstack" [zTemplate]="fullstackTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideMonitorSmartphone" class="h-4 w-4" />
+                          FullStack
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="mobile" [zTemplate]="mobileTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideTabletSmartphone" class="h-4 w-4" />
+                          Mobile
+                        </div>
+                      </z-select-item>
+
+                      <z-select-item zValue="devops" [zTemplate]="devopsTpl">
+                        <div class="flex items-center gap-2">
+                          <ng-icon name="lucideContainer" class="h-4 w-4" />
+                          DevOps
+                        </div>
+                      </z-select-item>
+                    </z-select>
+                    <z-form-message zType="error">{{ getCategoryError() }}</z-form-message>
+                  </z-form-control>
+                </z-form-field>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
                     for="visibility"
                     class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
                     z-form-label
