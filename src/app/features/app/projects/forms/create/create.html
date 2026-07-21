@@ -58,7 +58,7 @@
                       formControlName="title"
                       placeholder="Titulo"
                       [zStatus]="
-                        titleControl?.invalid && titleControl?.touched ? 'error' : undefined
+                        titleControl?.invalid && titleControl!.touched ? 'error' : undefined
                       "
                       zRequired
                       class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
@@ -390,6 +390,95 @@
           </div>
 
           <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+            <div class="space-y-2 pt-2">
+              <z-form-field>
+                <label
+                  for="category"
+                  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                  z-form-label
+                  zRequired>
+                  Categoria
+                </label>
+                <z-form-control>
+                  <z-select
+                    class="w-full outFocus"
+                    zPlaceholder="Selecciona una categoría"
+                    formControlName="category">
+                    <ng-template #frontendTpl>
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideMonitor" class="h-4 w-4" />
+                        Frontend
+                      </div>
+                    </ng-template>
+
+                    <ng-template #backendTpl>
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideServer" class="h-4 w-4" />
+                        Backend
+                      </div>
+                    </ng-template>
+
+                    <ng-template #fullstackTpl>
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideMonitorSmartphone" class="h-4 w-4" />
+                        FullStack
+                      </div>
+                    </ng-template>
+
+                    <ng-template #mobileTpl>
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideTabletSmartphone" class="h-4 w-4" />
+                        Mobile
+                      </div>
+                    </ng-template>
+
+                    <ng-template #devopsTpl>
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideContainer" class="h-4 w-4" />
+                        DevOps
+                      </div>
+                    </ng-template>
+
+                    <z-select-item zValue="frontend" [zTemplate]="frontendTpl">
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideMonitor" class="h-4 w-4" />
+                        Frontend
+                      </div>
+                    </z-select-item>
+
+                    <z-select-item zValue="backend" [zTemplate]="backendTpl">
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideServer" class="h-4 w-4" />
+                        Backend
+                      </div>
+                    </z-select-item>
+
+                    <z-select-item zValue="fullstack" [zTemplate]="fullstackTpl">
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideMonitorSmartphone" class="h-4 w-4" />
+                        FullStack
+                      </div>
+                    </z-select-item>
+
+                    <z-select-item zValue="mobile" [zTemplate]="mobileTpl">
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideTabletSmartphone" class="h-4 w-4" />
+                        Mobile
+                      </div>
+                    </z-select-item>
+
+                    <z-select-item zValue="devops" [zTemplate]="devopsTpl">
+                      <div class="flex items-center gap-2">
+                        <ng-icon name="lucideContainer" class="h-4 w-4" />
+                        DevOps
+                      </div>
+                    </z-select-item>
+                  </z-select>
+                  <z-form-message zType="error">{{ getCategoryError() }}</z-form-message>
+                </z-form-control>
+              </z-form-field>
+            </div>
+
             <div class="space-y-2 pt-2">
               <z-form-field>
                 <label
