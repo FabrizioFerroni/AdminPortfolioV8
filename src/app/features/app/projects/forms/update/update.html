@@ -789,16 +789,13 @@
                   </div>
                 }
               }
-              <label
+              <button
+                type="button"
+                (click)="openDialogImage()"
                 class="flex flex-col items-center justify-center aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                 <ng-icon name="lucidePlus" class="h-8 w-8 text-muted-foreground mb-2" />
                 <span class="text-sm text-muted-foreground">Agregar imagen</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  class="hidden"
-                  (change)="handleGalleryImageUpload($event)" />
-              </label>
+              </button>
             </div>
           </div>
         </div>

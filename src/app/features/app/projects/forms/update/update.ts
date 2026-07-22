@@ -83,6 +83,8 @@ import { SettingList } from '@/features/app/settings/interfaces';
 import { ZardSelectImports } from '@/shared/components/select';
 import { MarkdownModule } from 'ngx-markdown';
 import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
+import { ImageDialog } from './image';
+import { ZardDialogService } from '@/shared/components/dialog';
 
 @Component({
   selector: 'app-updateproject',
@@ -139,6 +141,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
   private readonly alertDialogService = inject(ZardAlertDialogService);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(ZardDialogService);
   //#endregion
 
   //#region Variables
@@ -454,21 +457,19 @@ export class UpdateProject implements OnInit, AfterViewInit {
     });
   }
 
-  handleGalleryImageUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-
-    if (!file) return;
-
-    const fd = new FormData();
-
-    fd.append('file', file);
-    fd.append('projectId', this.id());
-    fd.append('projectName', this.title());
-    fd.append('altText', `${this.title()} ${this.id()}`);
-    fd.append('displayOrder', `${this.galleryImages()!.length + 1}`);
-
-    this.store.dispatch(ProjectsActions.createProjectImage({ data: fd }));
+  openDialogImage() {
+    this.dialogService.create({
+      zTitle: 'Subir imagen a la galería',
+      zDescription: 'Estas imagenes seran vistas en la galería del proyecto.',
+      zContent: ImageDialog,
+      zData: {
+        projectId: this.id(),
+        title: this.title(),
+        imageLength: this.galleryImages()?.length,
+      },
+      zHideFooter: true,
+      zWidth: '1000px',
+    });
   }
 
   removeGalleryImage(id: string): void {
