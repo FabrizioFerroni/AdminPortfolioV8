@@ -131,7 +131,7 @@ export const createImageProjectEffect = createEffect(
         projectService.postProjectImage(data).pipe(
           mergeMap(({ body }) => {
             toast.success('Éxito', {
-              description: `${body!.data}`,
+              description: `${body!.message}`,
               position: 'top-right',
             });
 
@@ -162,7 +162,7 @@ export const deleteImageProjectEffect = createEffect(
         projectService.deleteProjectImage(id).pipe(
           mergeMap(({ body }) => {
             toast.success('Éxito', {
-              description: `${body!.data}`,
+              description: `${body!.message}`,
               position: 'top-right',
             });
 
@@ -193,7 +193,7 @@ export const deleteImageProjectAllEffect = createEffect(
         projectService.deleteAllProjectImage(projectId).pipe(
           mergeMap(({ body }) => {
             toast.success('Éxito', {
-              description: `${body!.data}`,
+              description: `${body!.message}`,
               position: 'top-right',
             });
 

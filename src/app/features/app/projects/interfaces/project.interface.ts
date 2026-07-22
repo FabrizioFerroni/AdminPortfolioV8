@@ -103,3 +103,7 @@ export interface ProjectFormControls {
   features: FormControl<InsertOrUpdateProjectFeatDto[]>;
   technologies: FormControl<InsertOrUpdateProjectTecDto[]>;
 }
+
+export interface AltTextForm {
+  altText: FormControl<string>;
+}
