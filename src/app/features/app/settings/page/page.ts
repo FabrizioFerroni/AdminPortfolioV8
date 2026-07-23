@@ -81,6 +81,10 @@ export class Settings implements OnInit, AfterViewInit {
       { value: false, disabled: false },
       { nonNullable: true, validators: Validators.required }
     ),
+    showTestimonials: new FormControl<boolean>(
+      { value: false, disabled: false },
+      { nonNullable: true, validators: Validators.required }
+    ),
   });
   //#endregion
 
@@ -142,6 +146,17 @@ export class Settings implements OnInit, AfterViewInit {
   getMaintanceModeError(): string {
     if (this.maintenanceModeControl.hasError('required') && this.maintenanceModeControl.touched) {
       return 'El modo de mantenimiento es requerido.';
+    }
+    return '';
+  }
+
+  get showTestimonialsControl() {
+    return this.form.controls.showTestimonials;
+  }
+
+  getShowTestimonialsError(): string {
+    if (this.showTestimonialsControl.hasError('required') && this.showTestimonialsControl.touched) {
+      return 'Mostrar testimonios es requerido.';
     }
     return '';
   }
