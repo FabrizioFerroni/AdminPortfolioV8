@@ -150,7 +150,7 @@ export class UpdateTestimonial implements OnInit, AfterViewInit {
   ngOnInit() {
     this.store.dispatch(ProjectsActions.getProjectSelect());
     this.store.dispatch(TestimonialsActions.getTestimonialById({ id: this.id() }));
-    this.projectNotFound();
+    this.testimonialNotFound();
   }
 
   ngAfterViewInit(): void {
@@ -246,14 +246,14 @@ export class UpdateTestimonial implements OnInit, AfterViewInit {
   //#endregion
 
   //#region funciones
-  projectNotFound() {
+  testimonialNotFound() {
     this.statusCode$.subscribe({
       next: (res: number | null) => {
         const statusCode = res;
 
         if (statusCode === 404) {
           toast.error('Upps.. hubo un error', {
-            description: 'El projecto buscado no existe',
+            description: 'El testimonio buscado no existe',
             position: 'top-right',
           });
 
