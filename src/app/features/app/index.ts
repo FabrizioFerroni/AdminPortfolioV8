@@ -6,4 +6,5 @@ export * from './experiences';
 export * from './profile';
 export * from './projects';
 export * from './settings';
+export * from './testimonials';
 export * from './app.routes';

@@ -5,7 +5,13 @@ import { BaseHttpService } from '@/shared/services';
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProjectCount, ProjectData, ProjectImageList, ProjectList } from '../interfaces';
+import {
+  ProjectCount,
+  ProjectData,
+  ProjectImageList,
+  ProjectList,
+  ProjectResponseSelectDto,
+} from '../interfaces';
 
 @Injectable()
 export class ProjectService extends BaseHttpService {
@@ -15,6 +21,15 @@ export class ProjectService extends BaseHttpService {
       params,
       observe: 'response',
     });
+  }
+
+  getProjectsSelect(): Observable<HttpResponse<ApiResponse<ProjectResponseSelectDto[]>>> {
+    return this.http.get<ApiResponse<ProjectResponseSelectDto[]>>(
+      `${this.apiUrl}/projects/select`,
+      {
+        observe: 'response',
+      }
+    );
   }
 
   obtenerPorId(id: string): Observable<HttpResponse<ApiResponse<ProjectList | null>>> {

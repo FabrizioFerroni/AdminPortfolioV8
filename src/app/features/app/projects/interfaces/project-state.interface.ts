@@ -1,5 +1,10 @@
 import { Pagination } from '@/shared/interfaces';
-import { ProjectCount, ProjectImageList, ProjectList } from './project.interface';
+import {
+  ProjectCount,
+  ProjectImageList,
+  ProjectList,
+  ProjectResponseSelectDto,
+} from './project.interface';
 
 export interface ProjectState {
   projects: ProjectList[];
@@ -19,6 +24,11 @@ export interface ProjectState {
   imageLoadingProject: boolean;
   imageErrorProject: string | null;
   imageStatusCodeProject: number | null;
+  //TODO: Project for selects
+  projectsSelect: ProjectResponseSelectDto[];
+  isLoadingSelect: boolean;
+  errorSelect: string | null;
+  statusCodeSelect: number | null;
 }
 
 export interface ProjectData {

@@ -107,3 +107,14 @@ export interface ProjectFormControls {
 export interface AltTextForm {
   altText: FormControl<string>;
 }
+
+export interface ProjectResponseSelectDto {
+  id: string;
+  title: string;
+  category: string;
+}
+
+export interface ProjectGroup {
+  category: string;
+  items: ProjectResponseSelectDto[];
+}

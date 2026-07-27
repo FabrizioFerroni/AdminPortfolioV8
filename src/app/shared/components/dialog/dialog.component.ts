@@ -77,7 +77,7 @@ export class ZardDialogOptions<T, U> {
           z-button
           zType="ghost"
           zSize="icon-sm"
-          class="absolute top-2 right-2"
+          class="absolute top-2 right-2 cursor-pointer"
           (click)="onCloseClick()">
           <ng-icon name="lucideX" class="size-4!" />
           <span class="sr-only">Close</span>

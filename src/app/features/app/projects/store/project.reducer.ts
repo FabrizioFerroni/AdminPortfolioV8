@@ -18,6 +18,10 @@ const initialState: ProjectState = {
   imageLoadingProject: false,
   imageErrorProject: null,
   imageStatusCodeProject: null,
+  projectsSelect: [],
+  isLoadingSelect: false,
+  errorSelect: null,
+  statusCodeSelect: null,
 };
 
 export const projectFeature = createFeature({
@@ -247,6 +251,26 @@ export const projectFeature = createFeature({
       ...state,
       formError: null,
       formStatusCode: null,
+    })),
+
+    on(ProjectsActions.getProjectSelect, state => ({
+      ...state,
+      isLoadingSelect: true,
+      errorSelect: null,
+      statusCodeSelect: null,
+    })),
+
+    on(ProjectsActions.getProjectSelectSuccess, (state, { select }) => ({
+      ...state,
+      projectsSelect: select,
+      isLoadingSelect: false,
+    })),
+
+    on(ProjectsActions.getProjectSelectFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingSelect: false,
+      errorSelect: error,
+      statusCodeSelect: statusCode,
     }))
   ),
 });

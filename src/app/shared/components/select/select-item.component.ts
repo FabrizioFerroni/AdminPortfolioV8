@@ -9,13 +9,16 @@ import {
   linkedSignal,
   signal,
   TemplateRef,
+  ViewEncapsulation,
 } from '@angular/core';
 
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck } from '@ng-icons/lucide';
+import type { ClassValue } from 'clsx';
 
 import {
   selectItemIconVariants,
+  selectItemStateVariants,
   selectItemVariants,
   type ZardSelectItemModeVariants,
   type ZardSelectSizeVariants,
@@ -33,28 +36,32 @@ interface SelectHost {
   selector: 'z-select-item, [z-select-item]',
   imports: [NgIcon],
   template: `
-    @if (isSelected()) {
-      <span [class]="iconClasses()">
+    <span data-slot="select-item-indicator" [class]="iconClasses()">
+      @if (isSelected()) {
         <ng-icon
           name="lucideCheck"
+          class="size-4! text-current"
           [strokeWidth]="strokeWidth()"
           aria-hidden="true"
           data-testid="check-icon" />
-      </span>
-    }
-    <span class="truncate">
+      }
+    </span>
+    <span data-slot="select-item-text" class="truncate">
       <ng-content />
     </span>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   viewProviders: [provideIcons({ lucideCheck })],
   host: {
     role: 'option',
     tabindex: '-1',
+    'data-slot': 'select-item',
     '[class]': 'classes()',
     '[attr.value]': 'zValue()',
     '[attr.data-disabled]': 'zDisabled() ? "" : null',
     '[attr.data-selected]': 'isSelected() ? "" : null',
+    '[attr.aria-disabled]': 'zDisabled()',
     '[attr.aria-selected]': 'isSelected()',
     '(click)': 'onClick()',
     '(mouseenter)': 'onMouseEnter()',
@@ -66,7 +73,7 @@ export class ZardSelectItemComponent {
 
   readonly zValue = input.required<string>();
   readonly zDisabled = input(false, { transform: booleanAttribute });
-  readonly class = input<string>('');
+  readonly class = input<ClassValue>('');
   readonly zTemplate = input<TemplateRef<void> | null>(null);
 
   private readonly select = signal<SelectHost | null>(null);
@@ -81,7 +88,11 @@ export class ZardSelectItemComponent {
   readonly zSize = signal<ZardSelectSizeVariants>('default');
 
   protected readonly classes = computed(() =>
-    mergeClasses(selectItemVariants({ zMode: this.zMode(), zSize: this.zSize() }), this.class())
+    mergeClasses(
+      selectItemVariants({ zMode: this.zMode(), zSize: this.zSize() }),
+      selectItemStateVariants(),
+      this.class()
+    )
   );
 
   protected readonly iconClasses = computed(() =>

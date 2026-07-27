@@ -34,4 +34,8 @@ export const APP_ROUTES: Routes = [
     path: Rutas.PROJECTS,
     loadChildren: () => import('./projects').then(m => m.PROJECTS_ROUTES),
   },
+  {
+    path: Rutas.TESTIMONIALS,
+    loadChildren: () => import('./testimonials').then(m => m.TESTIMONIALS_ROUTES),
+  },
 ];

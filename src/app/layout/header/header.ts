@@ -64,6 +64,18 @@ export class Header {
       href: `/${Rutas.SUBSCRIBERS}`,
     },
     {
+      label: 'Testimonios',
+      href: `/${Rutas.TESTIMONIALS}`,
+    },
+    {
+      label: 'Agregar Testimonio',
+      href: `/${Rutas.TESTIMONIALS}/${Rutas.NEW_ROUTES_O}`,
+    },
+    {
+      label: 'Editar Testimonio',
+      href: `/${Rutas.TESTIMONIALS}/${Rutas.UPDATE_ROUTES}/:id`,
+    },
+    {
       label: 'Contactos',
       href: `/${Rutas.CONTACTS}`,
     },
