@@ -50,6 +50,27 @@ export const getProjectsStatsEffect = createEffect(
   { functional: true }
 );
 
+export const getProjectsSelectEffect = createEffect(
+  (actions$ = inject(Actions), projectService = inject(ProjectService)) =>
+    actions$.pipe(
+      ofType(ProjectsActions.getProjectSelect),
+      switchMap(() =>
+        projectService.getProjectsSelect().pipe(
+          map(({ body }) => ProjectsActions.getProjectSelectSuccess({ select: body!.data })),
+          catchError((error: HandledError) => {
+            return of(
+              ProjectsActions.getProjectSelectFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
 export const getProjectByIdEffect = createEffect(
   (actions$ = inject(Actions), projectService = inject(ProjectService)) =>
     actions$.pipe(

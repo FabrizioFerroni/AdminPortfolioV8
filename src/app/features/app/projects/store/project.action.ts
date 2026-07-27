@@ -1,6 +1,12 @@
 import { PaginacionQuery } from '@/shared/interfaces';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ProjectCount, ProjectData, ProjectImageList, ProjectList } from '../interfaces';
+import {
+  ProjectCount,
+  ProjectData,
+  ProjectImageList,
+  ProjectList,
+  ProjectResponseSelectDto,
+} from '../interfaces';
 
 export const ProjectsActions = createActionGroup({
   source: 'Projects',
@@ -10,6 +16,7 @@ export const ProjectsActions = createActionGroup({
     'Get By Id': props<{ id: string }>(),
     'Get Images By ProjectId': props<{ projectId: string }>(),
     'Get Stats': emptyProps(),
+    'Get Project Select': emptyProps(),
     'Create Project': props<{ data: FormData }>(),
     'Create Project Image': props<{ data: FormData }>(),
     'Update Project': props<{ id: string; data: FormData }>(),
@@ -22,6 +29,7 @@ export const ProjectsActions = createActionGroup({
     'Get By Id Success': props<{ project: ProjectList | null }>(),
     'Get Images By ProjectId Success': props<{ images: ProjectImageList[] }>(),
     'Get Stats Success': props<{ stats: ProjectCount }>(),
+    'Get Project Select Success': props<{ select: ProjectResponseSelectDto[] }>(),
     'Create Project Success': emptyProps(),
     'Create Project Image Success': emptyProps(),
     'Update Project Success': emptyProps(),
@@ -34,6 +42,7 @@ export const ProjectsActions = createActionGroup({
     'Get By Id Failure': props<{ error: string; statusCode: number }>(),
     'Get Images By ProjectId Failure': props<{ error: string; statusCode: number }>(),
     'Get Stats Failure': props<{ error: string; statusCode: number }>(),
+    'Get Project Select Failure': props<{ error: string; statusCode: number }>(),
     'Create Project Failure': props<{ error: string; statusCode: number }>(),
     'Create Project Image Failure': props<{ error: string; statusCode: number }>(),
     'Update Project Failure': props<{ error: string; statusCode: number }>(),

@@ -1,0 +1,18 @@
+<div class="flex gap-2 items-start justify-start">
+  <div>
+    <img
+      [src]="testimonio()?.imageFullUrl"
+      [alt]="testimonio()?.fullname"
+      class="rounded-md w-15" />
+  </div>
+  <div class="flex flex-col items-start justify-start">
+    <span>{{ testimonio()?.fullname }}</span>
+    <span class="text-muted-foreground text-sm"
+      >{{ testimonio()?.position }}, {{ testimonio()?.empresa }}
+    </span>
+    <span class="text-muted-foreground text-sm">Proyecto: {{ testimonio()?.project?.title }} </span>
+  </div>
+</div>
+<div class="bg-secondary mt-3 py-4 px-2 rounded-lg">
+  {{ testimonio()?.comment }}
+</div>

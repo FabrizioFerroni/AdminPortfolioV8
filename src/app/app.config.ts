@@ -24,6 +24,7 @@ import {
   profileConfig,
   projectConfig,
   settingsConfig,
+  testimonialsConfig,
 } from './features';
 import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 import localeEsAr from '@angular/common/locales/es-AR';
@@ -58,7 +59,6 @@ export const appConfig: ApplicationConfig = {
       connectInZone: true,
     }),
     provideRouterStore(),
-    // provideMarkdown(),
     provideMarkdown({
       markedOptions: {
         provide: MARKED_OPTIONS,
@@ -76,6 +76,7 @@ export const appConfig: ApplicationConfig = {
     ...settingsConfig,
     ...projectConfig,
     ...dashboardConfig,
+    ...testimonialsConfig,
     { provide: LOCALE_ID, useValue: 'es-AR' },
   ],
 };

@@ -1,0 +1,349 @@
+<div class="space-y-6">
+  <z-breadcrumb zWrap="wrap" zAlign="start" class="mb-2">
+    <z-breadcrumb-item [routerLink]="[homeRoute]">
+      <ng-icon name="lucideHouse" />
+      Inicio
+    </z-breadcrumb-item>
+
+    <z-breadcrumb-item [routerLink]="[baseRoute]">
+      <ng-icon name="lucideUserStar" /> Testimonios
+    </z-breadcrumb-item>
+
+    <z-breadcrumb-item> <ng-icon name="lucidePencil" /> Editar testimonio </z-breadcrumb-item>
+  </z-breadcrumb>
+
+  @if (testimonioLoading()) {
+    <div class="flex items-center gap-4 mt-4">
+      <div>
+        <z-skeleton class="h-9 w-64 mb-2" />
+        <z-skeleton class="h-4 w-40" />
+      </div>
+    </div>
+
+    <!-- Skeleton form -->
+    <div class="grid gap-6 lg:grid-cols-3 mt-6">
+      <div class="lg:col-span-2 space-y-6">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-48 mb-2" />
+            <z-skeleton class="h-4 w-56" />
+          </div>
+          <div class="px-4 space-y-4">
+            <z-skeleton class="h-9 w-full" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <z-skeleton class="h-9 w-full" />
+              <z-skeleton class="h-9 w-full" />
+            </div>
+            <z-skeleton class="h-40 w-full" />
+          </div>
+        </f-card>
+      </div>
+
+      <div class="space-y-6">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-28 mb-2" />
+          </div>
+          <div class="px-4 space-y-4">
+            <z-skeleton class="h-9 w-full" />
+            <z-skeleton class="h-9 w-full" />
+            <div class="flex gap-2 pt-2">
+              <z-skeleton class="h-9 flex-1" />
+              <z-skeleton class="h-9 flex-1" />
+            </div>
+          </div>
+        </f-card>
+
+        <f-card cId="content" cClass="border-border/50 py-4 mt-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-44 mb-2" />
+          </div>
+          <div class="px-4">
+            <z-skeleton class="w-full aspect-video rounded-lg" />
+          </div>
+        </f-card>
+      </div>
+    </div>
+  } @else {
+    <div class="flex items-center gap-4 mt-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight">Editar Testimonio</h1>
+        <p class="text-muted-foreground mt-1">Edita el testimonio de tu portfolio</p>
+      </div>
+    </div>
+
+    @if (errorBack()) {
+      <z-alert
+        zType="destructive"
+        zTitle="Uppsss... Hubo un error!"
+        [zDescription]="customDescription"
+        class="animate-in slide-in-from-top-2" />
+
+      <ng-template #customDescription>
+        <p>{{ errorBack() }}</p>
+      </ng-template>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="handleSubmit()" class="grid gap-6 lg:grid-cols-3">
+      <div class="lg:col-span-2 space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Información Basica</h3>
+              <span class="text-sm text-muted-foreground">Datos principales del testimonio</span>
+            </div>
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <!-- fullname-->
+              <div class="grid grid-cols-1">
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="fullname"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Nombre Completo
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="fullname"
+                        formControlName="fullname"
+                        placeholder="Nombre completo"
+                        [zStatus]="
+                          fullnameControl?.invalid && fullnameControl!.touched ? 'error' : undefined
+                        "
+                        zRequired
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getFullnameError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+              </div>
+              <!-- fin fullname-->
+
+              <!-- position y empresa -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="position"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Posición
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="position"
+                        formControlName="position"
+                        placeholder="Posición"
+                        [zStatus]="
+                          positionControl?.invalid && positionControl!.touched ? 'error' : undefined
+                        "
+                        zRequired
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getPositionError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="empresa"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Empresa
+                    </label>
+                    <z-form-control>
+                      <input
+                        z-input
+                        id="empresa"
+                        formControlName="empresa"
+                        placeholder="Empresa"
+                        [zStatus]="
+                          empresaControl?.invalid && empresaControl!.touched ? 'error' : undefined
+                        "
+                        zRequired
+                        class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getEmpresaError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+              </div>
+              <!-- fin position y empresa -->
+
+              <!-- fullname-->
+              <div class="grid grid-cols-1">
+                <div class="flex flex-col gap-3">
+                  <z-form-field>
+                    <label
+                      for="comment"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Comentario
+                    </label>
+                    <z-form-control>
+                      <textarea
+                        id="comment"
+                        rows="4"
+                        placeholder="Comentario del cliente sobre el proyecto desarrollado"
+                        class="resize-none outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        z-input
+                        [zStatus]="
+                          commentControl?.invalid && commentControl!.touched ? 'error' : undefined
+                        "
+                        formControlName="comment"></textarea>
+                    </z-form-control>
+                    <z-form-message zType="error">{{ getCommentError() }}</z-form-message>
+                  </z-form-field>
+                </div>
+              </div>
+              <!-- fin fullname-->
+            </div>
+          </div>
+        </f-card>
+      </div>
+      <div class="space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Publicar</h3>
+            </div>
+
+            <div class="flex-1 auto-rows-min gap-6 px-4 space-y-2">
+              <div class="space-y-2 pt-2">
+                <z-form-field>
+                  <label
+                    for="projectId"
+                    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                    z-form-label
+                    zRequired>
+                    Proyecto
+                  </label>
+                  <z-form-control>
+                    <z-select
+                      class="w-full outFocus"
+                      id="projectId"
+                      zPlaceholder="Selecciona un proyecto"
+                      formControlName="projectId">
+                      @for (group of groupedProjects(); track group.category; let last = $last) {
+                        <z-select-group>
+                          <z-select-label class="flex items-center gap-2">
+                            <ng-icon [name]="iconCategory(group.category)" class="h-4 w-4" />
+                            {{ capitalizeCategory(group.category) }}
+                          </z-select-label>
+                          @for (item of group.items; track item.id) {
+                            <z-select-item [zValue]="item.id">
+                              {{ item.title }}
+                            </z-select-item>
+                          }
+                        </z-select-group>
+                        @if (!last) {
+                          <z-select-separator />
+                        }
+                      }
+                    </z-select>
+                  </z-form-control>
+                </z-form-field>
+              </div>
+
+              <div class="space-y-2 pt-2">
+                <z-form-field class="flex items-center justify-between">
+                  <div class="space-y-0.5">
+                    <label
+                      for="maintenanceMode"
+                      class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+                      z-form-label
+                      zRequired>
+                      Visible en portfolio
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      Cuando esta activo, los visitantes lo verán en la pagina del portfolio
+                    </p>
+                  </div>
+                  <z-form-control>
+                    <z-switch [formControl]="visibleControl" />
+                  </z-form-control>
+                </z-form-field>
+                @if (visibleControl.value) {
+                  <div class="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                    <p class="text-sm text-amber-600 dark:text-amber-400">
+                      Testimonio visible para todo el público.
+                    </p>
+                  </div>
+                }
+              </div>
+
+              <div class="space-y-2 pt-4 flex gap-2">
+                <a
+                  [routerLink]="baseRoute"
+                  z-button
+                  zType="ghost"
+                  class="cursor-pointer flex-1 w-full md:w-auto border border-input">
+                  <ng-icon name="lucideX" class="mr-2 h-4 w-4" /> Cancelar
+                </a>
+
+                <button
+                  [zDisabled]="isLoading$() || form.invalid"
+                  z-button
+                  type="submit"
+                  zType="default"
+                  class="cursor-pointer flex-1 w-full md:w-auto">
+                  @if (isLoading$()) {
+                    <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4" />
+                    <span> Editando testimonio </span>
+                  } @else {
+                    <ng-icon name="lucidePencil" class="mr-2 h-4 w-4" />
+                    <span>Editar testimonio</span>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </f-card>
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-4 pb-4">
+              <h3 class="text-2xl font-semibold leading-none tracking-tight">Foto del cliente</h3>
+            </div>
+            <div class="px-4">
+              @if (coverImage()) {
+                <div class="relative">
+                  <img
+                    [src]="coverImage()"
+                    alt="Cover"
+                    class="w-full aspect-video object-cover rounded-lg" />
+                  <button
+                    (click)="removeCoverImage()"
+                    class="absolute top-2 right-2 h-8 w-8 cursor-pointer"
+                    z-button
+                    zSize="icon"
+                    type="button"
+                    zType="destructive">
+                    <ng-icon name="lucideX" class="h-4 w-4" />
+                  </button>
+                </div>
+              } @else {
+                <label
+                  class="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                  <ng-icon name="lucideUpload" class="h-8 w-8 text-muted-foreground mb-2" />
+                  <span class="text-sm text-muted-foreground">Subir imagen</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    (change)="handleCoverImageUpload($event)" />
+                </label>
+              }
+            </div>
+          </div>
+        </f-card>
+      </div>
+    </form>
+  }
+</div>

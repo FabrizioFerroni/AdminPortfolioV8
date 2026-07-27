@@ -12,4 +12,5 @@ export enum Rutas {
   AUDITS = 'auditorias',
   PROFILE = 'perfil',
   SETTINGS = 'configuraciones',
+  TESTIMONIALS = 'testimonios',
 }

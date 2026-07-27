@@ -21,6 +21,7 @@ import {
   lucideMessageSquare,
   lucideSettings,
   lucideUser,
+  lucideUserStar,
   lucideUsers,
 } from '@ng-icons/lucide';
 import { Store } from '@ngrx/store';
@@ -62,6 +63,7 @@ interface MenuItem {
       lucideBriefcase,
       lucideMessageSquare,
       lucideClipboardList,
+      lucideUserStar,
     }),
   ],
 })
@@ -99,6 +101,11 @@ export class Sidebar {
       icon: 'lucideUsers',
     },
     {
+      label: 'Testimonios',
+      href: `/${Rutas.TESTIMONIALS}`,
+      icon: 'lucideUserStar',
+    },
+    {
       label: 'Contactos',
       href: `/${Rutas.CONTACTS}`,
       icon: 'lucideMessageSquare',
@@ -123,7 +130,7 @@ export class Sidebar {
 
   setClassLink(href: string): string {
     const baseClass =
-      'transition-colors py-3 h-auto rounded-lg  hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-foreground'; // hover:bg-yellow-600 dark:hover:bg-yellow-600';
+      'transition-colors py-3 h-auto rounded-lg  hover:text-foreground aria-expanded:bg-transparent aria-expanded:text-foreground';
 
     const activeClass =
       this.router.url === href || this.router.url.startsWith(href + '/')

@@ -21,3 +21,9 @@ export const imagesSelectedProject = projectFeature.selectImagesProject;
 export const imageLoadingProject = projectFeature.selectImageLoadingProject;
 export const imageErrorProject = projectFeature.selectImageErrorProject;
 export const imageStatusCodeProject = projectFeature.selectImageStatusCodeProject;
+
+//TODO: Estos selectors son para obtener todos los proyectos para el select.
+export const selectProjectSelect = projectFeature.selectProjectsSelect;
+export const selectIsLoadingSelect = projectFeature.selectIsLoadingSelect;
+export const selectErrorSelect = projectFeature.selectErrorSelect;
+export const selectStatusCodeSelect = projectFeature.selectStatusCodeSelect;

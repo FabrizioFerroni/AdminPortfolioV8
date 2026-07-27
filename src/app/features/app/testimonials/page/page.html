@@ -1,0 +1,386 @@
+<div class="space-y-6">
+  <z-breadcrumb zWrap="wrap" zAlign="start" class="mb-2">
+    <z-breadcrumb-item [routerLink]="[homeRoute]">
+      <ng-icon name="lucideHouse" />
+      Inicio
+    </z-breadcrumb-item>
+
+    <z-breadcrumb-item> <ng-icon name="lucideUserStar" /> Testimonios </z-breadcrumb-item>
+  </z-breadcrumb>
+
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Testimonios</h1>
+      <p class="text-muted-foreground mt-1">
+        Aquí veras todos los testimonios que han dejado los clientes en los proyectos realizados.
+      </p>
+    </div>
+    <a z-button [routerLink]="newRoute" zType="default" class="cursor-pointer">
+      <ng-icon name="lucidePlus" class="mr-2 h-4 w-4" />
+      Agregar testimonio
+    </a>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    @if (isLoadingStats()) {
+      @for (item of skeletonStatsItems; track item) {
+        <f-card cClass="p-0!">
+          <f-card-content cClass="p-4">
+            <div class="flex items-center gap-3">
+              <z-skeleton class="h-9 w-9 rounded-lg shrink-0" />
+              <div class="flex flex-col gap-2">
+                <z-skeleton class="h-7 w-16 rounded-md" />
+                <z-skeleton class="h-4 w-28 rounded-md" />
+              </div>
+            </div>
+          </f-card-content>
+        </f-card>
+      }
+    } @else {
+      <f-card
+        cId="total-subscribers"
+        cClass="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-0!">
+        <f-card-content cClass="p-4" cId="total-subscribers-content">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-blue-500/10">
+              <ng-icon name="lucideUserStar" class="h-5 w-5 text-blue-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ totalTestimonial() }}</p>
+              <p class="text-sm text-muted-foreground">Total Testimonios</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="subscriber-active"
+        cClass="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-emerald-500/20">
+        <f-card-content cId="subscriber-active-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-emerald-500/10">
+              <ng-icon name="lucideUserCheck" class="h-5 w-5 text-emerald-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ activeTestimonial() }}</p>
+              <p class="text-sm text-muted-foreground">Activos</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+      <f-card
+        cId="subscriber-inactive"
+        cClass="bg-gradient-to-br from-amber-500/10 to-amber-500/5 border-amber-500/20">
+        <f-card-content cId="subscriber-inactive-content" cClass="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center p-2 rounded-lg bg-amber-500/10">
+              <ng-icon name="lucideUserX" class="h-5 w-5 text-amber-500" />
+            </div>
+            <div>
+              <p class="text-2xl font-bold">{{ inactiveTestimonial() }}</p>
+              <p class="text-sm text-muted-foreground">Inactivos</p>
+            </div>
+          </div>
+        </f-card-content>
+      </f-card>
+    }
+  </div>
+
+  <f-card cId="content" cClass="border-border/50">
+    <f-card-header class="pb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <f-card-title class="text-lg"> Lista de testimonios </f-card-title>
+          <f-card-description> {{ totalTestimonial() }} personas en tu lista </f-card-description>
+        </div>
+        <div class="relative w-full sm:w-64">
+          <ng-icon
+            name="lucideSearch"
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
+          <input
+            z-input
+            type="text"
+            placeholder="Buscar testimonios..."
+            id="search"
+            class="pl-9 bg-muted/50 border-0 outFocus"
+            autoComplete="search"
+            (input)="search.set($any($event.target).value)"
+            zRequired />
+        </div>
+      </div>
+    </f-card-header>
+    <f-card-content>
+      <div class="w-full">
+        @if (!isMovile()) {
+          <div class="overflow-hidden rounded-md border">
+            <table z-table>
+              <thead z-table-header>
+                <tr z-table-row>
+                  <th z-table-head>Nombre</th>
+                  <th z-table-head>Puesto</th>
+                  <th z-table-head class="">Empresa</th>
+                  <th z-table-head class="">Proyecto</th>
+                  <th z-table-head class="">Estado</th>
+                  <th z-table-head class="w-16">Acciones</th>
+                </tr>
+              </thead>
+              <tbody z-table-body>
+                @if (isLoading$ | async) {
+                  @for (item of skeletonItems; track $index) {
+                    <tr z-table-row>
+                      <!-- Nombre -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-32 rounded-md" />
+                      </td>
+                      <!-- Puesto -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-44 rounded-md" />
+                      </td>
+                      <!-- Empresa -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-4 w-24 rounded-md" />
+                      </td>
+                      <!-- Proyecto  -->
+                      <td z-table-cell>
+                        <z-skeleton class="h-5 w-16 rounded-full" />
+                      </td>
+
+                      <!-- Estado (imita el badge)-->
+                      <td z-table-cell>
+                        <z-skeleton class="h-5 w-16 rounded-full" />
+                      </td>
+                      <!-- Acciones (imita el botón) -->
+                      <td z-table-cell>
+                        <div class="flex justify-end gap-2">
+                          <z-skeleton class="h-8 w-8 rounded-md" />
+                          <z-skeleton class="h-8 w-8 rounded-md" />
+                          <z-skeleton class="h-8 w-8 rounded-md" />
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
+                  @for (test of testimonials$ | async; track test.id) {
+                    <tr z-table-row>
+                      <td z-table-cell>
+                        <div class="">{{ test.fullname }}</div>
+                      </td>
+
+                      <td z-table-cell>
+                        <div class="">{{ test.position }}</div>
+                      </td>
+
+                      <td z-table-cell>
+                        <div class="">{{ test.empresa }}</div>
+                      </td>
+
+                      <td z-table-cell>
+                        <div class="">{{ test.project!.title }}</div>
+                      </td>
+
+                      <td z-table-cell>
+                        <z-badge [zType]="getStatusVariant(test.visible)">
+                          {{ getStatusName(test.visible) }}
+                        </z-badge>
+                      </td>
+
+                      <td z-table-cell>
+                        <div class="flex justify-end gap-2">
+                          <button
+                            z-button
+                            rel="noopener noreferer nofollow"
+                            zType="secondary"
+                            class="cursor-pointer"
+                            zTooltip="Ver testimonio"
+                            (click)="onViewDetail(test)">
+                            <ng-icon name="lucideEye" class="h-4 w-4" />
+                          </button>
+
+                          <a
+                            z-button
+                            zType="default"
+                            [routerLink]="[updateRoute, test.id]"
+                            class="cursor-pointer"
+                            zTooltip="Editar testimonio">
+                            <ng-icon name="lucidePencil" class="h-4 w-4" />
+                          </a>
+
+                          <button
+                            type="button"
+                            z-button
+                            zType="destructive"
+                            class="cursor-pointer"
+                            zTooltip="Borrar testimonio"
+                            (click)="onDelete(test.id)">
+                            <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr z-table-row>
+                      <td z-table-cell [attr.colspan]="6" class="text-center">
+                        <z-empty
+                          zIcon="lucideUserStar"
+                          zTitle="Aun no hay testimonios"
+                          zDescription="Aun no hay ningun testimonio cargado"
+                          [zActions]="[actionPrimary]">
+                          <ng-template #actionPrimary>
+                            <a
+                              z-button
+                              [routerLink]="newRoute"
+                              zType="default"
+                              class="cursor-pointer">
+                              <ng-icon name="lucidePlus" class="mr-2 h-4 w-4" />
+                              Agregar testimonio
+                            </a>
+                          </ng-template>
+                        </z-empty>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        @if (isMovile()) {
+          <div class="flex flex-col divide-y gap-3">
+            @if (isLoading$ | async) {
+              @for (item of skeletonItems; track $index) {
+                <div class="rounded-md border p-4 flex flex-col gap-2">
+                  <div class="flex items-center justify-between">
+                    <z-skeleton class="h-4 w-32 rounded-md" />
+                    <z-skeleton class="h-4 w-12 rounded-md" />
+                  </div>
+                  <z-skeleton class="h-4 w-44 rounded-md" />
+                  <z-skeleton class="h-4 w-24 rounded-md" />
+                  <div class="flex gap-2 items-end justify-end">
+                    <z-skeleton class="h-8 w-8 rounded-md" />
+                    <z-skeleton class="h-8 w-8 rounded-md" />
+                    <z-skeleton class="h-8 w-8 rounded-md" />
+                  </div>
+                </div>
+              }
+            } @else {
+              @for (test of testimonials$ | async; track test.id) {
+                <div class="rounded-md border p-4 flex flex-col gap-2">
+                  <div class="flex items-center justify-between">
+                    <span class="font-medium">{{ test.fullname }}</span>
+                    <z-badge [zType]="getStatusVariant(test.visible)">
+                      {{ getStatusName(test.visible) }}
+                    </z-badge>
+                  </div>
+
+                  <span class="text-sm text-muted-foreground"
+                    >{{ test.position }}, {{ test.empresa }}</span
+                  >
+
+                  <span class="text-sm text-muted-foreground">
+                    {{ test.project.title }}
+                  </span>
+
+                  <div class="flex justify-end gap-2">
+                    <button
+                      z-button
+                      rel="noopener noreferer nofollow"
+                      zType="secondary"
+                      class="cursor-pointer"
+                      zTooltip="Ver testimonio"
+                      (click)="onViewDetail(test)">
+                      <ng-icon name="lucideEye" class="h-4 w-4" />
+                    </button>
+
+                    <a
+                      z-button
+                      zType="default"
+                      [routerLink]="[updateRoute, test.id]"
+                      class="cursor-pointer"
+                      zTooltip="Editar testimonio">
+                      <ng-icon name="lucidePencil" class="h-4 w-4" />
+                    </a>
+
+                    <button
+                      type="button"
+                      z-button
+                      zType="destructive"
+                      class="cursor-pointer"
+                      zTooltip="Borrar testimonio"
+                      (click)="onDelete(test.id)">
+                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <z-empty
+                  zIcon="lucideUserStar"
+                  zTitle="Aun no hay testimonios"
+                  zDescription="Aun no se hay testimonio en tu portfolio.">
+                </z-empty>
+              }
+            }
+          </div>
+        }
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4">
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Mostrar</span>
+          <z-select
+            class="w-[70px]"
+            zSize="default"
+            zPlaceholder="Select a value"
+            [zValue]="selectedValue()"
+            (zSelectionChange)="handleItemsPerPageChange($event)">
+            @for (item of items; track item) {
+              <z-select-item [zValue]="item">{{ item }}</z-select-item>
+            }
+          </z-select>
+          <span>por página</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-foreground">
+            {{ rangeStart() }}-{{ rangeEnd() }} de {{ totalItems() }}
+          </span>
+          <div class="flex items-center gap-1">
+            <z-pagination
+              [zTotal]="totalPages()"
+              [(zPageIndex)]="currentPage"
+              [zContent]="content" />
+
+            <ng-template #content>
+              <ul z-pagination-content>
+                <li z-pagination-item>
+                  <z-pagination-previous
+                    (click)="goToPrevious()"
+                    [zDisabled]="!hasPreviousPage()"
+                    class="cursor-pointer" />
+                </li>
+
+                @for (page of pages(); track page) {
+                  <li z-pagination-item>
+                    <button
+                      type="button"
+                      z-pagination-button
+                      [zActive]="page === currentPage()"
+                      (click)="goToPage(page)"
+                      class="cursor-pointer">
+                      <span class="sr-only">To page</span>
+                      {{ page }}
+                    </button>
+                  </li>
+                }
+
+                <li z-pagination-item>
+                  <z-pagination-next
+                    (click)="goToNext()"
+                    [zDisabled]="!hasNextPage()"
+                    class="cursor-pointer" />
+                </li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </f-card-content>
+  </f-card>
+</div>
