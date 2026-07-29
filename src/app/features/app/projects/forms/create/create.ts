@@ -3,7 +3,6 @@ import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardBreadcrumbImports } from '@/shared/components/breadcrumb/breadcrumb.imports';
 import { ZardButtonComponent } from '@/shared/components/button';
 import { Card } from '@/shared/components/card-custom';
-import { ZardDatePickerComponent } from '@/shared/components/date-picker';
 import { ZardFormImports } from '@/shared/components/form';
 import { ZardInputDirective } from '@/shared/components/input';
 import { ZardTooltipImports } from '@/shared/components/tooltip';
@@ -61,6 +60,7 @@ import { ZardTabComponent, ZardTabGroupComponent } from '@/shared/components/tab
 import { ZardSelectImports } from '@/shared/components/select';
 import { CATEGORY_CONFIG, groupTechnologiesByCategory } from '../../utils';
 import { MarkdownModule } from 'ngx-markdown';
+import { ZardSwitchComponent } from '@/shared/components/switch';
 
 @Component({
   selector: 'app-createproject',
@@ -70,7 +70,6 @@ import { MarkdownModule } from 'ngx-markdown';
     FormsModule,
     ReactiveFormsModule,
     ZardInputDirective,
-    ZardDatePickerComponent,
     ZardButtonComponent,
     ZardTooltipImports,
     ZardBadgeComponent,
@@ -80,6 +79,7 @@ import { MarkdownModule } from 'ngx-markdown';
     ZardTabComponent,
     ZardTabGroupComponent,
     ZardSelectImports,
+    ZardSwitchComponent,
     RouterLink,
     MarkdownModule,
   ],
@@ -125,7 +125,10 @@ export class CreateProject implements OnInit, AfterViewInit {
     title: new FormControl('', { nonNullable: true, validators: Validators.required }),
     summary: new FormControl('', { nonNullable: true, validators: Validators.required }),
     description: new FormControl(null, { nonNullable: true, validators: Validators.required }),
-    publishedDate: new FormControl<Date | null>(new Date(), { validators: Validators.required }),
+    isPublished: new FormControl<boolean>(
+      { value: false, disabled: false },
+      { nonNullable: true, validators: Validators.required }
+    ),
     urlGithub: new FormControl('', { nonNullable: true }),
     urlProyect: new FormControl('', { nonNullable: true }),
     visibility: new FormControl('public', { nonNullable: true, validators: Validators.required }),
@@ -269,6 +272,10 @@ export class CreateProject implements OnInit, AfterViewInit {
     return '';
   }
 
+  get isPublishedControl() {
+    return this.form.controls.isPublished;
+  }
+
   get typeControl() {
     return this.form.get('type');
   }
@@ -276,18 +283,6 @@ export class CreateProject implements OnInit, AfterViewInit {
   getTypeError() {
     if (this.typeControl?.hasError('required') && this.typeControl.touched) {
       return 'El tipo del proyecto es obligatoria';
-    }
-
-    return '';
-  }
-
-  get publishedDateControl() {
-    return this.form.get('publishedDate');
-  }
-
-  getPublishedDateError() {
-    if (this.publishedDateControl?.hasError('required') && this.publishedDateControl.touched) {
-      return 'La fecha del proyecto es obligatoria';
     }
 
     return '';
@@ -351,10 +346,6 @@ export class CreateProject implements OnInit, AfterViewInit {
   //#endregion
 
   //#region Funciones
-  onPublishedDateChange(date: Date | null) {
-    this.form.controls.publishedDate.setValue(date);
-  }
-
   removeCoverImage() {
     this.coverImage.set('');
     this.selectedCoverFile = null;
@@ -425,12 +416,18 @@ export class CreateProject implements OnInit, AfterViewInit {
 
     const rawValue = this.form.getRawValue();
 
+    let publishedDate: Date | null = null;
+
+    if (rawValue.isPublished) {
+      publishedDate = new Date();
+    }
+
     const dataParaBack = {
       ...rawValue,
-      publishedDate: rawValue.publishedDate?.toISOString().split('T')[0],
+      publishedDate: publishedDate?.toISOString().split('T')[0],
     };
 
-    const date = rawValue.publishedDate;
+    const date = publishedDate;
     let formattedDate = null;
 
     if (date) {
@@ -447,6 +444,7 @@ export class CreateProject implements OnInit, AfterViewInit {
     fd.append('summary', dataParaBack.summary!);
     fd.append('description', dataParaBack.description!);
     fd.append('publishedDate', formattedDate!);
+    fd.append('isPublished', dataParaBack.isPublished.toString()!);
     fd.append('visibility', dataParaBack.visibility!);
     fd.append('type', dataParaBack.type!);
     fd.append('urlGithub', dataParaBack.urlGithub!);

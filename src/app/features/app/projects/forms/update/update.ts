@@ -3,7 +3,6 @@ import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardBreadcrumbImports } from '@/shared/components/breadcrumb/breadcrumb.imports';
 import { ZardButtonComponent } from '@/shared/components/button';
 import { Card } from '@/shared/components/card-custom';
-import { ZardDatePickerComponent } from '@/shared/components/date-picker';
 import { ZardFormImports } from '@/shared/components/form';
 import { ZardInputDirective } from '@/shared/components/input';
 import { ZardSkeletonComponent } from '@/shared/components/skeleton';
@@ -85,6 +84,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
 import { ImageDialog } from './image';
 import { ZardDialogService } from '@/shared/components/dialog';
+import { ZardSwitchComponent } from '@/shared/components/switch';
 
 @Component({
   selector: 'app-updateproject',
@@ -94,7 +94,7 @@ import { ZardDialogService } from '@/shared/components/dialog';
     FormsModule,
     ReactiveFormsModule,
     ZardInputDirective,
-    ZardDatePickerComponent,
+    ZardSwitchComponent,
     ZardButtonComponent,
     ZardTooltipImports,
     ZardBadgeComponent,
@@ -159,7 +159,10 @@ export class UpdateProject implements OnInit, AfterViewInit {
     title: new FormControl('', { nonNullable: true, validators: Validators.required }),
     summary: new FormControl('', { nonNullable: true, validators: Validators.required }),
     description: new FormControl(null, { nonNullable: true, validators: Validators.required }),
-    publishedDate: new FormControl<Date | null>(new Date(), { validators: Validators.required }),
+    isPublished: new FormControl<boolean>(
+      { value: false, disabled: false },
+      { nonNullable: true, validators: Validators.required }
+    ),
     urlGithub: new FormControl('', { nonNullable: true }),
     urlProyect: new FormControl('', { nonNullable: true }),
     category: new FormControl('', { nonNullable: true, validators: Validators.required }),
@@ -343,6 +346,10 @@ export class UpdateProject implements OnInit, AfterViewInit {
     return '';
   }
 
+  get isPublishedControl() {
+    return this.form.controls.isPublished;
+  }
+
   get typeControl() {
     return this.form.get('type');
   }
@@ -350,18 +357,6 @@ export class UpdateProject implements OnInit, AfterViewInit {
   getTypeError() {
     if (this.typeControl?.hasError('required') && this.typeControl.touched) {
       return 'El tipo del proyecto es obligatoria';
-    }
-
-    return '';
-  }
-
-  get publishedDateControl() {
-    return this.form.get('publishedDate');
-  }
-
-  getPublishedDateError() {
-    if (this.publishedDateControl?.hasError('required') && this.publishedDateControl.touched) {
-      return 'La fecha del proyecto es obligatoria';
     }
 
     return '';
@@ -498,10 +493,6 @@ export class UpdateProject implements OnInit, AfterViewInit {
     });
   }
 
-  onPublishedDateChange(date: Date | null) {
-    this.form.controls.publishedDate.setValue(date);
-  }
-
   removeCoverImage() {
     this.coverImage.set('');
     this.selectedCoverFile = null;
@@ -607,7 +598,13 @@ export class UpdateProject implements OnInit, AfterViewInit {
 
     const rawValue = this.form.getRawValue();
 
-    const rawDate = rawValue.publishedDate;
+    let publishedDate: Date | null = null;
+
+    if (rawValue.isPublished) {
+      publishedDate = new Date();
+    }
+
+    const rawDate = publishedDate;
     let formattedDate: string | null = null;
 
     if (rawDate) {
@@ -624,6 +621,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
     fd.append('summary', rawValue.summary!);
     fd.append('description', rawValue.description!);
     fd.append('publishedDate', formattedDate!);
+    fd.append('isPublished', rawValue.isPublished.toString()!);
     fd.append('visibility', rawValue.visibility!);
     fd.append('category', rawValue.category!);
     fd.append('type', rawValue.type!);
