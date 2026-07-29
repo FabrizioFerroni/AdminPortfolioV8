@@ -134,7 +134,7 @@
                 <th z-table-head>Tecnologias</th>
                 <th z-table-head class="">Visibilidad</th>
                 <th z-table-head class="">Tipo</th>
-                <th z-table-head class="">Fecha</th>
+                <th z-table-head class="">Estado (Fecha)</th>
                 <th z-table-head class="flex justify-end items-center mr-19">Accion</th>
               </tr>
             </thead>
@@ -229,7 +229,15 @@
                       </z-badge>
                     </td>
                     <td z-table-cell>
-                      {{ proj.publishedDate | date: 'dd/MM/yyyy' }}
+                      <z-badge class="gap-1" [zType]="proj.isPublished ? 'default' : 'secondary'">
+                        @if (proj.isPublished) {
+                          <ng-icon name="lucideGitPullRequest" class="h-3 w-3" />
+                          Publicado ({{ proj.publishedDate | date: 'dd/MM/yyyy' }})
+                        } @else {
+                          <ng-icon name="lucideGitPullRequestDraft" class="h-3 w-3" />
+                          Borrador
+                        }
+                      </z-badge>
                     </td>
                     <td z-table-cell>
                       <div class="flex justify-end gap-2">

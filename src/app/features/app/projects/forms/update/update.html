@@ -43,7 +43,7 @@
           </div>
         </f-card>
 
-        <f-card cId="content" cClass="border-border/50 py-4">
+        <f-card cId="content" cClass="border-border/50 py-4 mt-4">
           <div class="px-4 pb-4">
             <z-skeleton class="h-7 w-40 mb-2" />
             <z-skeleton class="h-4 w-52" />
@@ -53,7 +53,7 @@
           </div>
         </f-card>
 
-        <f-card cId="content" cClass="border-border/50 py-4">
+        <f-card cId="content" cClass="border-border/50 py-4 mt-4">
           <div class="px-4 pb-4">
             <z-skeleton class="h-7 w-36 mb-2" />
             <z-skeleton class="h-4 w-52" />
@@ -80,7 +80,7 @@
           </div>
         </f-card>
 
-        <f-card cId="content" cClass="border-border/50 py-4">
+        <f-card cId="content" cClass="border-border/50 py-4 mt-6">
           <div class="px-4 pb-4">
             <z-skeleton class="h-7 w-44 mb-2" />
           </div>
@@ -139,7 +139,7 @@
                         formControlName="title"
                         placeholder="Titulo"
                         [zStatus]="
-                          titleControl?.invalid && titleControl?.touched ? 'error' : undefined
+                          titleControl?.invalid && titleControl!.touched ? 'error' : undefined
                         "
                         zRequired
                         class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
@@ -191,7 +191,7 @@
                       class="resize-none outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       z-input
                       [zStatus]="
-                        summaryControl?.invalid && summaryControl?.touched ? 'error' : undefined
+                        summaryControl?.invalid && summaryControl!.touched ? 'error' : undefined
                       "
                       formControlName="summary"></textarea>
                     <z-form-message zType="error">{{ getSummaryError() }}</z-form-message>
@@ -218,7 +218,7 @@
                           style="min-height: 200px"
                           placeholder="Descripcion completa del proyecto."
                           [zStatus]="
-                            descriptionControl?.invalid && descriptionControl?.touched
+                            descriptionControl?.invalid && descriptionControl!.touched
                               ? 'error'
                               : undefined
                           "
@@ -262,7 +262,7 @@
                         z-input
                         id="githubUrl"
                         [zStatus]="
-                          urlGithubControl?.invalid && urlGithubControl?.touched
+                          urlGithubControl?.invalid && urlGithubControl!.touched
                             ? 'error'
                             : undefined
                         "
@@ -288,7 +288,7 @@
                         id="urlProyecto"
                         formControlName="urlProyect"
                         [zStatus]="
-                          urlProyectControl?.invalid && urlProyectControl?.touched
+                          urlProyectControl?.invalid && urlProyectControl!.touched
                             ? 'error'
                             : undefined
                         "
@@ -648,25 +648,33 @@
               <div class="space-y-2 pt-2">
                 <z-form-field>
                   <label
-                    for="publishedDate"
+                    for="isPublished"
                     z-form-label
                     zRequired
                     class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
-                    Fecha
+                    Estado
                   </label>
                   <z-form-control>
-                    <z-date-picker
-                      id="publishedDate"
-                      [value]="form.controls.publishedDate.value"
-                      placeholder="Selecciona la fecha"
-                      (dateChange)="onPublishedDateChange($event)"
-                      zFormat="dd/MM/yyyy"
-                      [maxDate]="maxDate"
-                      zClassBtn="w-full cursor-pointer"
-                      zRequired
-                      zSize="default" />
+                    <div class="flex items-center gap-3">
+                      <span
+                        class="text-sm transition-colors"
+                        [class.font-semibold]="!isPublishedControl.value"
+                        [class.text-foreground]="!isPublishedControl.value"
+                        [class.text-muted-foreground]="isPublishedControl.value">
+                        Borrador
+                      </span>
+
+                      <z-switch [formControl]="isPublishedControl" />
+
+                      <span
+                        class="text-sm transition-colors"
+                        [class.font-semibold]="isPublishedControl.value"
+                        [class.text-foreground]="isPublishedControl.value"
+                        [class.text-muted-foreground]="!isPublishedControl.value">
+                        Publicado
+                      </span>
+                    </div>
                   </z-form-control>
-                  <z-form-message zType="error">{{ getPublishedDateError() }}</z-form-message>
                 </z-form-field>
               </div>
 
@@ -739,69 +747,92 @@
     </form>
   }
 
-  <!-- form de images -->
-  <form class="grid gap-6 lg:grid-cols-3">
-    <div class="lg:col-span-2 space-y-6-cards">
-      <f-card cId="content" cClass="border-border/50 py-4 ">
-        <div class="flex-1 overflow-y-auto">
-          <div class="flex justify-between items-center px-4 pb-4">
-            <div>
-              <h3 class="text-2xl font-semibold leading-none tracking-tight">Galeria</h3>
-              <span class="text-sm text-muted-foreground">Imagenes adicionales del proyecto </span>
-            </div>
-            @if (galleryImages()?.length! > 0) {
-              <button
-                (click)="removeAllGalleryImages()"
-                class="h-8 w-8 cursor-pointer"
-                z-button
-                zSize="icon"
-                type="button"
-                zTooltip="Eliminar todas las imagenes"
-                zPosition="left"
-                zType="destructive">
-                <ng-icon name="lucideTrash2" class="h-4 w-4" />
-              </button>
-            }
+  @if (projectLoading()) {
+    <div class="grid gap-6 lg:grid-cols-3 mt-4">
+      <div class="lg:col-span-2 space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4">
+          <div class="px-4 pb-4">
+            <z-skeleton class="h-7 w-32 mb-2" />
+            <z-skeleton class="h-4 w-52" />
           </div>
-
           <div class="px-4">
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-              @if (isLoadingImagesBack()) {
-                @for (_ of skeletonImagesItems; track $index) {
-                  <div class="w-full aspect-video rounded-lg bg-muted animate-pulse"></div>
-                }
-              } @else {
-                @for (image of galleryImages(); track $index) {
-                  <div class="relative group">
-                    <img
-                      [src]="image.imageFullUrl"
-                      [alt]="image.altText"
-                      class="w-full aspect-video object-cover rounded-lg" />
-                    <button
-                      (click)="removeGalleryImage(image.id)"
-                      class="absolute top-2 right-2 h-8 w-8 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                      z-button
-                      zSize="icon"
-                      type="button"
-                      zType="destructive">
-                      <ng-icon name="lucideTrash2" class="h-4 w-4" />
-                    </button>
-                  </div>
-                }
+              @for (_ of skeletonImagesItems; track $index) {
+                <z-skeleton class="w-full aspect-video rounded-lg" />
               }
-              <button
-                type="button"
-                (click)="openDialogImage()"
-                class="flex flex-col items-center justify-center aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-                <ng-icon name="lucidePlus" class="h-8 w-8 text-muted-foreground mb-2" />
-                <span class="text-sm text-muted-foreground">Agregar imagen</span>
-              </button>
             </div>
           </div>
-        </div>
-      </f-card>
+        </f-card>
+      </div>
+      <div></div>
     </div>
-    <div></div>
-  </form>
-  <!-- fin form images -->
+  } @else {
+    <!-- form de images -->
+    <form class="grid gap-6 lg:grid-cols-3">
+      <div class="lg:col-span-2 space-y-6-cards">
+        <f-card cId="content" cClass="border-border/50 py-4 ">
+          <div class="flex-1 overflow-y-auto">
+            <div class="flex justify-between items-center px-4 pb-4">
+              <div>
+                <h3 class="text-2xl font-semibold leading-none tracking-tight">Galeria</h3>
+                <span class="text-sm text-muted-foreground"
+                  >Imagenes adicionales del proyecto
+                </span>
+              </div>
+              @if (galleryImages()?.length! > 0) {
+                <button
+                  (click)="removeAllGalleryImages()"
+                  class="h-8 w-8 cursor-pointer"
+                  z-button
+                  zSize="icon"
+                  type="button"
+                  zTooltip="Eliminar todas las imagenes"
+                  zPosition="left"
+                  zType="destructive">
+                  <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                </button>
+              }
+            </div>
+
+            <div class="px-4">
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                @if (isLoadingImagesBack()) {
+                  @for (_ of skeletonImagesItems; track $index) {
+                    <div class="w-full aspect-video rounded-lg bg-muted animate-pulse"></div>
+                  }
+                } @else {
+                  @for (image of galleryImages(); track $index) {
+                    <div class="relative group">
+                      <img
+                        [src]="image.imageFullUrl"
+                        [alt]="image.altText"
+                        class="w-full aspect-video object-cover rounded-lg" />
+                      <button
+                        (click)="removeGalleryImage(image.id)"
+                        class="absolute top-2 right-2 h-8 w-8 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                        z-button
+                        zSize="icon"
+                        type="button"
+                        zType="destructive">
+                        <ng-icon name="lucideTrash2" class="h-4 w-4" />
+                      </button>
+                    </div>
+                  }
+                }
+                <button
+                  type="button"
+                  (click)="openDialogImage()"
+                  class="flex flex-col items-center justify-center aspect-video border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                  <ng-icon name="lucidePlus" class="h-8 w-8 text-muted-foreground mb-2" />
+                  <span class="text-sm text-muted-foreground">Agregar imagen</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </f-card>
+      </div>
+      <div></div>
+    </form>
+    <!-- fin form images -->
+  }
 </div>

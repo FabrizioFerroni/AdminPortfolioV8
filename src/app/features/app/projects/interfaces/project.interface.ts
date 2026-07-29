@@ -6,6 +6,7 @@ export interface ProjectList {
   summary: string;
   description: string;
   publishedDate: Date | null;
+  isPublished: boolean;
   slug: string;
   visibility: string;
   category: string;
@@ -49,6 +50,7 @@ export interface CreateNewProjectDto {
   summary: string;
   description: string;
   publishedDate: string;
+  isPublished: string;
   visibility: string;
   type: string;
   category: string;
@@ -77,6 +79,7 @@ export interface UpdateProjectDto {
   summary: string;
   description: string;
   publishedDate: string;
+  isPublished: string;
   category: string;
   visibility?: string;
   type?: string;
@@ -94,7 +97,7 @@ export interface ProjectFormControls {
   title: FormControl<string>;
   summary: FormControl<string | null>;
   description: FormControl<string | null>;
-  publishedDate: FormControl<Date | null>;
+  isPublished: FormControl<boolean>;
   urlGithub: FormControl<string>;
   urlProyect: FormControl<string>;
   visibility: FormControl<string>;
@@ -112,6 +115,7 @@ export interface ProjectResponseSelectDto {
   id: string;
   title: string;
   category: string;
+  isPublished: boolean;
 }
 
 export interface ProjectGroup {

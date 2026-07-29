@@ -111,7 +111,7 @@
                     class="resize-none outFocus rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     z-input
                     [zStatus]="
-                      summaryControl?.invalid && summaryControl?.touched ? 'error' : undefined
+                      summaryControl?.invalid && summaryControl!.touched ? 'error' : undefined
                     "
                     formControlName="summary"></textarea>
                   <z-form-message zType="error">{{ getSummaryError() }}</z-form-message>
@@ -138,7 +138,7 @@
                         style="min-height: 200px"
                         placeholder="Descripcion completa del proyecto."
                         [zStatus]="
-                          descriptionControl?.invalid && descriptionControl?.touched
+                          descriptionControl?.invalid && descriptionControl!.touched
                             ? 'error'
                             : undefined
                         "
@@ -183,7 +183,7 @@
                       id="githubUrl"
                       formControlName="urlGithub"
                       [zStatus]="
-                        urlGithubControl?.invalid && urlGithubControl?.touched ? 'error' : undefined
+                        urlGithubControl?.invalid && urlGithubControl!.touched ? 'error' : undefined
                       "
                       placeholder="URL del repositorio github"
                       class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
@@ -206,7 +206,7 @@
                       id="urlProyecto"
                       formControlName="urlProyect"
                       [zStatus]="
-                        urlProyectControl?.invalid && urlProyectControl?.touched
+                        urlProyectControl?.invalid && urlProyectControl!.touched
                           ? 'error'
                           : undefined
                       "
@@ -570,25 +570,33 @@
             <div class="space-y-2 pt-2">
               <z-form-field>
                 <label
-                  for="publishedDate"
+                  for="isPublished"
                   z-form-label
                   zRequired
                   class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">
-                  Fecha
+                  Estado
                 </label>
                 <z-form-control>
-                  <z-date-picker
-                    id="publishedDate"
-                    [value]="form.controls.publishedDate.value"
-                    placeholder="Selecciona la fecha"
-                    (dateChange)="onPublishedDateChange($event)"
-                    zFormat="dd/MM/yyyy"
-                    [maxDate]="maxDate"
-                    zClassBtn="w-full cursor-pointer"
-                    zRequired
-                    zSize="default" />
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="text-sm transition-colors"
+                      [class.font-semibold]="!isPublishedControl.value"
+                      [class.text-foreground]="!isPublishedControl.value"
+                      [class.text-muted-foreground]="isPublishedControl.value">
+                      Borrador
+                    </span>
+
+                    <z-switch [formControl]="isPublishedControl" />
+
+                    <span
+                      class="text-sm transition-colors"
+                      [class.font-semibold]="isPublishedControl.value"
+                      [class.text-foreground]="isPublishedControl.value"
+                      [class.text-muted-foreground]="!isPublishedControl.value">
+                      Publicado
+                    </span>
+                  </div>
                 </z-form-control>
-                <z-form-message zType="error">{{ getPublishedDateError() }}</z-form-message>
               </z-form-field>
             </div>
 
