@@ -5,7 +5,7 @@ import { TokenService } from '@/shared/services';
 import { Storage } from '@/shared/utils';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, filter, from, switchMap, take, throwError } from 'rxjs';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
@@ -42,7 +42,6 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
 
       isRefreshing = true;
       refreshTokenSubject.next(null);
-
       return authService.refreshToken().pipe(
         switchMap(({ data: { access_token, refresh_token } }: RefreshResponse) => {
           isRefreshing = false;
@@ -55,15 +54,19 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
             tokenService.setLocalStorage(access_token);
           }
 
-          tokenService.setCookieRefresh(body);
-          refreshTokenSubject.next(access_token);
+          return from(tokenService.setCookieRefresh(body)).pipe(
+            switchMap(() => {
+              refreshTokenSubject.next(access_token);
+              const retryReq = req.clone({
+                setHeaders: { Authorization: `Bearer ${access_token}` },
+              });
 
-          const retryReq = req.clone({ setHeaders: { Authorization: `Bearer ${access_token}` } });
-
-          return next(retryReq).pipe(
-            catchError(retryErr => {
-              console.log('error reintento:', retryErr.status);
-              return throwError(() => retryErr);
+              return next(retryReq).pipe(
+                catchError(retryErr => {
+                  console.log('error reintento:', retryErr.status);
+                  return throwError(() => retryErr);
+                })
+              );
             })
           );
         }),

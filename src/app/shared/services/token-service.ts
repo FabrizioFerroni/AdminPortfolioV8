@@ -74,12 +74,12 @@ export class TokenService extends BaseHttpService {
     sessionStorage.removeItem(TOKEN_KEY);
   }
 
-  setCookieRefresh(body: RefreshToken): void {
+  async setCookieRefresh(body: RefreshToken) {
     const expires = new Date();
     expires.setHours(expires.getHours() + 24);
     // expires.setHours(expires.getHours() + 1);
 
-    const tokenCifred = cifrateData(this.publicKey, body);
+    const tokenCifred = await cifrateData(this.publicKey, body);
 
     const recifredToken = this.cryptoService.encryptToken(tokenCifred);
 

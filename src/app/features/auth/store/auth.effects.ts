@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap, tap, timer } from 'rxjs';
+import { catchError, from, map, of, switchMap, tap, timer } from 'rxjs';
 import { AuthActions } from './auth.actions';
 import { AuthService } from '@/features/auth/services';
 import { TokenService } from '@/shared/services';
@@ -42,7 +42,7 @@ export const loginSuccessEffect = createEffect(
   ) =>
     actions$.pipe(
       ofType(AuthActions.loginSuccess),
-      tap(({ user, access_token, refresh_token, rememberMe }) => {
+      switchMap(({ user, access_token, refresh_token, rememberMe }) => {
         const bodyRT: RefreshToken = { token: refresh_token };
 
         if (rememberMe) {
@@ -53,16 +53,18 @@ export const loginSuccessEffect = createEffect(
           tokenService.setSessionStorage(access_token);
         }
 
-        tokenService.setCookieRefresh(bodyRT);
+        return from(tokenService.setCookieRefresh(bodyRT)).pipe(
+          tap(() => {
+            toast.success('Éxito', {
+              description: `${user.name} te has logueado correctamente!`,
+              position: 'top-right',
+            });
 
-        toast.success('Éxito', {
-          description: `${user.name} te has logueado correctamente!`,
-          position: 'top-right',
-        });
-
-        const { fragment } = route.snapshot;
-        const redirectUrl = fragment ? fragment.split('=')[1] : `/${Rutas.DASHBOARD}`;
-        router.navigate([redirectUrl]);
+            const { fragment } = route.snapshot;
+            const redirectUrl = fragment ? fragment.split('=')[1] : `/${Rutas.DASHBOARD}`;
+            router.navigate([redirectUrl]);
+          })
+        );
       })
     ),
   { functional: true, dispatch: false }
