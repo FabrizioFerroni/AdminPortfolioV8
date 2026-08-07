@@ -11,11 +11,11 @@ import { ApiResponse } from '@/shared/response';
 export class AuthService extends BaseHttpService {
   private readonly tokenService = inject(TokenService);
 
-  login(body: ILogin): Observable<LoginResponse> {
+  login(body: ILogin, rememberMe: boolean): Observable<LoginResponse> {
     return from(cifrateData(this.publicKey, body)).pipe(
       switchMap(userEncrypt => {
         const headers = new HttpHeaders().set('basic', userEncrypt);
-        return this.http.post<LoginResponse>(`${this.authUrl}/login`, {}, { headers });
+        return this.http.post<LoginResponse>(`${this.authUrl}/login`, { rememberMe }, { headers });
       })
     );
   }
@@ -56,18 +56,19 @@ export class AuthService extends BaseHttpService {
   }
 
   refreshToken(): Observable<RefreshResponse> {
-    const token = this.tokenService.getCookieRefresh();
-    const headers = new HttpHeaders().set('basic', token!);
-    return this.http.post<RefreshResponse>(`${this.authUrl}/refresh`, {}, { headers }).pipe(
+    return this.http.post<RefreshResponse>(`${this.authUrl}/refresh`, {}).pipe(
       catchError((err: HttpErrorResponse) => {
         if (err.status === 401) {
           const { pathname } = window.location;
-
           this.tokenService.logOutRefresh(pathname);
         }
         return throwError(() => err);
       })
     );
+  }
+
+  logout(): Observable<unknown> {
+    return this.http.post(`${this.authUrl}/logout`, {});
   }
 
   profile(): Observable<ProfileResponse> {

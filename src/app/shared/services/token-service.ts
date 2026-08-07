@@ -1,16 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { BaseHttpService } from './base-http-service';
 import { Router } from '@angular/router';
-import { CryptoService } from './crypto-service';
-import { environment } from 'src/environments/environment';
 import { Rutas, Storage } from '../utils';
-import { RefreshToken, TokenInfo } from '../interfaces';
+import { TokenInfo } from '../interfaces';
 import { UserProfile } from '@/features/auth/response';
-import { cifrateData } from '../functions/cifrate-data';
-import { CookieService } from 'ngx-cookie-service';
 
 const TOKEN_KEY = 'token';
-const REFRESH_TOKEN_KEY = 'refreshToken';
 const USER_DATA = 'profile';
 
 @Injectable({
@@ -18,9 +13,7 @@ const USER_DATA = 'profile';
 })
 export class TokenService extends BaseHttpService {
   private tokenInfo: TokenInfo = { token: null, source: Storage.NONE };
-  private readonly cookieService = inject(CookieService);
   private readonly router = inject(Router);
-  private readonly cryptoService = inject(CryptoService);
 
   setUserLS(user: UserProfile): void {
     this.deleteUserLS();
@@ -74,39 +67,6 @@ export class TokenService extends BaseHttpService {
     sessionStorage.removeItem(TOKEN_KEY);
   }
 
-  async setCookieRefresh(body: RefreshToken) {
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 24);
-    // expires.setHours(expires.getHours() + 1);
-
-    const tokenCifred = await cifrateData(this.publicKey, body);
-
-    const recifredToken = this.cryptoService.encryptToken(tokenCifred);
-
-    const domain = window.location.hostname;
-    const secure = environment.secureCookie;
-
-    this.cookieService.set(
-      REFRESH_TOKEN_KEY,
-      recifredToken,
-      expires,
-      '/',
-      domain,
-      secure,
-      'Strict'
-    );
-  }
-
-  getCookieRefresh(): string | null {
-    const tokenCookie = this.cookieService.get(REFRESH_TOKEN_KEY) || null;
-    const tokenDecifred = this.cryptoService.decryptToken(tokenCookie!);
-    return tokenDecifred;
-  }
-
-  deleteCookieRefresh(): void {
-    this.cookieService.delete(REFRESH_TOKEN_KEY);
-  }
-
   isLogged(): boolean {
     if (this.getSessionToken() || this.getLocalToken()) {
       return true;
@@ -129,20 +89,18 @@ export class TokenService extends BaseHttpService {
   }
 
   logOut(): void {
-    if (this.getSessionToken() && !this.getLocalToken()) {
-      this.deleteSessionStorage();
-      this.deleteUserSS();
-    } else if (this.getLocalToken() && !this.getSessionToken()) {
-      this.deleteLocalStorage();
-      this.deleteUserLS();
-    }
-
-    this.deleteCookieRefresh();
-
+    this.clearLocalSession();
     this.router.navigateByUrl(`/${Rutas.HOME}`);
   }
 
   logOutRefresh(url: string): void {
+    this.clearLocalSession();
+    setTimeout(() => {
+      this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
+    }, 100);
+  }
+
+  private clearLocalSession(): void {
     if (this.getSessionToken() && !this.getLocalToken()) {
       this.deleteSessionStorage();
       this.deleteUserSS();
@@ -150,12 +108,5 @@ export class TokenService extends BaseHttpService {
       this.deleteLocalStorage();
       this.deleteUserLS();
     }
-
-    this.deleteCookieRefresh();
-
-    // this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
-    setTimeout(() => {
-      this.router.navigateByUrl(`/${Rutas.HOME}#redirect=${url}`);
-    }, 100);
   }
 }
