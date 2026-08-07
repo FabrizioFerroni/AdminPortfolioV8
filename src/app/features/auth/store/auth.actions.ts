@@ -9,7 +9,6 @@ export const AuthActions = createActionGroup({
     'Login Success': props<{
       user: UserProfile;
       access_token: string;
-      refresh_token: string;
       rememberMe: boolean;
     }>(),
     'Login Failure': props<{ error: string; statusCode: number }>(),
