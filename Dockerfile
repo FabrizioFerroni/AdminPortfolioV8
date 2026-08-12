@@ -8,11 +8,13 @@ ARG AUTH_URL
 ARG FILE_URL
 ARG RELEASE
 ARG VERSION
-ARG NODE_ENV=production
+
+RUN npm install -g npm@latest
 
 COPY package*.json ./
 RUN npm ci
 
+ARG NODE_ENV=production
 ENV PUBLIC_KEY=${PUBLIC_KEY} \
     APP_NAME=${APP_NAME} \
     API_URL=${API_URL} \
