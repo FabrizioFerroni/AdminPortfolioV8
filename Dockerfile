@@ -10,6 +10,9 @@ ARG RELEASE
 ARG VERSION
 ARG NODE_ENV=production
 
+COPY package*.json ./
+RUN npm ci
+
 ENV PUBLIC_KEY=${PUBLIC_KEY} \
     APP_NAME=${APP_NAME} \
     API_URL=${API_URL} \
@@ -18,9 +21,6 @@ ENV PUBLIC_KEY=${PUBLIC_KEY} \
     RELEASE=${RELEASE} \
     VERSION=${VERSION} \
     NODE_ENV=${NODE_ENV}
-
-COPY package*.json ./
-RUN npm ci
 
 COPY . .
 RUN npm run prebuild
