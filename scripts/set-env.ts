@@ -29,6 +29,12 @@ const targetFile = isProduction
 
 const content = `export const environment = {
   production: ${isProduction},
+  name: '${process.env.APP_NAME}',
+  api: '${process.env.API_URL}',
+  auth: '${process.env.AUTH_URL}',
+  file: '${process.env.FILE_URL}',
+  release: '${process.env.RELEASE}',
+  version: '${process.env.VERSION}',
   pathCert: \`${publicKey}\`,
 };
 `;
