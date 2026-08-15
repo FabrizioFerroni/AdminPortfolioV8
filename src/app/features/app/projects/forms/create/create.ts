@@ -446,6 +446,7 @@ export class CreateProject implements OnInit, AfterViewInit {
     fd.append('publishedDate', formattedDate!);
     fd.append('isPublished', dataParaBack.isPublished.toString()!);
     fd.append('visibility', dataParaBack.visibility!);
+    fd.append('category', dataParaBack.category!);
     fd.append('type', dataParaBack.type!);
     fd.append('urlGithub', dataParaBack.urlGithub!);
     fd.append('urlProyect', dataParaBack.urlProyect!);
