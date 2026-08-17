@@ -14,6 +14,10 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
   const authService = inject(AuthService);
 
+  if (req.url.includes('/refresh')) {
+    return next(req);
+  }
+
   const { token, source }: TokenInfo = tokenService.getTokenLogin();
 
   if (!token) {
@@ -23,6 +27,10 @@ export const refreshInterceptor: HttpInterceptorFn = (req, next) => {
   const authReq = req.clone({
     setHeaders: { Authorization: `Bearer ${token}` },
   });
+
+  if (req.url.includes('/logout')) {
+    return next(authReq);
+  }
 
   return next(authReq).pipe(
     catchError((err: HttpErrorResponse) => {
