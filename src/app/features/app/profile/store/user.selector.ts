@@ -11,3 +11,21 @@ export const selectUserProfileFormLoading = userFeature.selectIsLoadingProfileFo
 export const selectUserPasswordFormLoading = userFeature.selectIsLoadingPasswordForm;
 export const selectUserProfileStatusCode = userFeature.selectFormProfileStatusCode;
 export const selectUserPasswordStatusCode = userFeature.selectFormPasswordStatusCode;
+
+//sessions
+export const sessions = userFeature.selectSessions;
+export const isLoadingSessions = userFeature.selectIsLoadingSessions;
+export const errorSessions = userFeature.selectErrorSessions;
+export const statusCodeSessions = userFeature.selectStatusCodeSessions;
+
+//delete session id
+export const deleteIdSession = userFeature.selectDeleteIdSession;
+export const isLoadingDeleteIdSession = userFeature.selectIsLoadingDeleteIdSession;
+export const errorDeleteIdSession = userFeature.selectErrorIdSession;
+export const statusCodeDeleteIdSession = userFeature.selectStatusCodeIdSession;
+
+//delete session all
+export const deleteAllSession = userFeature.selectDeleteAllSession;
+export const isLoadingDeleteAllSession = userFeature.selectIsLoadingDeleteAllSession;
+export const errorDeleteAllSession = userFeature.selectErrorAllSession;
+export const statusCodeDeleteAllSession = userFeature.selectStatusCodeIdSession;

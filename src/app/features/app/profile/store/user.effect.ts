@@ -9,6 +9,7 @@ import { ApiResponse } from '@/shared/response';
 import { toast } from 'ngx-sonner';
 import { TokenService } from '@/shared/services';
 import { AuthActions } from '@/features/auth/store';
+import { ClearSession, SessionsData } from '../interfaces';
 
 export const getProfileEffect = createEffect(
   (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
@@ -105,6 +106,85 @@ export const syncAuthUserAfterProfileUpdateEffect = createEffect(
         if (tokenService.getUserSS()) tokenService.setUserSS(data);
       }),
       map(({ data }) => AuthActions.updateUser({ user: data }))
+    ),
+  { functional: true }
+);
+
+export const getAllSessions = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.getAllSesions),
+      switchMap(() =>
+        profileService.getSessions().pipe(
+          map(({ body }: HttpResponse<ApiResponse<SessionsData[]>>) => {
+            return UserActions.getAllSesionsSuccess({ data: body!.data });
+          }),
+          catchError((error: HandledError) => {
+            return of(
+              UserActions.getAllSesionsFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const deleteSessionId = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.deleteSessionByID),
+      switchMap(({ sessionId }) =>
+        profileService.clearSessionByID(sessionId).pipe(
+          map(({ body }: HttpResponse<ApiResponse<ClearSession>>) => {
+            toast.success('Éxito', {
+              description: `${body!.data.message}`,
+              position: 'top-right',
+            });
+
+            return UserActions.deleteSessionByIDSuccess({ sessionId, data: body!.data });
+          }),
+          catchError((error: HandledError) => {
+            return of(
+              UserActions.deleteSessionByIDFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const deleteAllSessions = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.deleteAllSesions),
+      switchMap(() =>
+        profileService.clearAllSessions().pipe(
+          map(({ body }: HttpResponse<ApiResponse<ClearSession>>) => {
+            toast.success('Éxito', {
+              description: `${body!.data.message}`,
+              position: 'top-right',
+            });
+
+            return UserActions.deleteAllSesionsSuccess({ data: body!.data });
+          }),
+          catchError((error: HandledError) => {
+            return of(
+              UserActions.deleteAllSesionsFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
     ),
   { functional: true }
 );

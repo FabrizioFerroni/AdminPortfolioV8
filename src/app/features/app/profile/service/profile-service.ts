@@ -3,7 +3,7 @@ import { BaseHttpService } from '@/shared/services';
 import { HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UpdatePasswordDto } from '../interfaces';
+import { ClearSession, SessionsData, UpdatePasswordDto } from '../interfaces';
 import { UserProfile } from '@/features/auth/response';
 
 @Injectable()
@@ -22,6 +22,24 @@ export class ProfileService extends BaseHttpService {
 
   updatePassword(data: UpdatePasswordDto): Observable<HttpResponse<ApiResponse<string>>> {
     return this.http.patch<ApiResponse<string>>(`${this.apiUrl}/users/password`, data, {
+      observe: 'response',
+    });
+  }
+
+  getSessions(): Observable<HttpResponse<ApiResponse<SessionsData[]>>> {
+    return this.http.get<ApiResponse<SessionsData[]>>(`${this.apiUrl}/sessions`, {
+      observe: 'response',
+    });
+  }
+
+  clearSessionByID(sessionId: string): Observable<HttpResponse<ApiResponse<ClearSession>>> {
+    return this.http.delete<ApiResponse<ClearSession>>(`${this.apiUrl}/sessions/${sessionId}`, {
+      observe: 'response',
+    });
+  }
+
+  clearAllSessions(): Observable<HttpResponse<ApiResponse<ClearSession>>> {
+    return this.http.delete<ApiResponse<ClearSession>>(`${this.apiUrl}/sessions`, {
       observe: 'response',
     });
   }
