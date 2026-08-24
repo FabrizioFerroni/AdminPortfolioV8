@@ -36,21 +36,45 @@ import {
 } from '@angular/forms';
 import { LucideEye, LucideEyeOff } from '@lucide/angular';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCamera, lucideLoader2, lucideSave } from '@ng-icons/lucide';
-import { Store } from '@ngrx/store';
-import { UpdatePasswordDto } from '../interfaces';
 import {
+  lucideCamera,
+  lucideClock,
+  lucideGlobe,
+  lucideLoader2,
+  lucideLogOut,
+  lucideMap,
+  lucideMonitor,
+  lucideSave,
+  lucideSmartphone,
+  lucideTablet,
+} from '@ng-icons/lucide';
+import { Store } from '@ngrx/store';
+import { SessionDevice, UpdatePasswordDto } from '../interfaces';
+import {
+  errorDeleteAllSession,
+  errorDeleteIdSession,
+  errorSessions,
+  isLoadingDeleteAllSession,
+  isLoadingDeleteIdSession,
+  isLoadingSessions,
   selectUserError,
   selectUserLoading,
   selectUserPasswordFormError,
   selectUserPasswordFormLoading,
   selectUserProfileFormError,
   selectUserProfileFormLoading,
+  sessions,
+  statusCodeDeleteAllSession,
+  statusCodeDeleteIdSession,
+  statusCodeSessions,
   UserActions,
 } from '../store';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Actions, ofType } from '@ngrx/effects';
 import { ZardSkeletonComponent } from '@/shared/components/skeleton';
+import { ZardBadgeComponent } from '@/shared/components/badge';
+import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
+import { TimeAgoPipe } from '@/shared/pipes';
 
 @Component({
   selector: 'app-profile',
@@ -71,8 +95,10 @@ import { ZardSkeletonComponent } from '@/shared/components/skeleton';
     ZardAlertComponent,
     ZardBreadcrumbImports,
     ZardSkeletonComponent,
+    ZardBadgeComponent,
     LucideEye,
     LucideEyeOff,
+    TimeAgoPipe,
   ],
   templateUrl: './page.html',
   styleUrl: './page.css',
@@ -81,6 +107,13 @@ import { ZardSkeletonComponent } from '@/shared/components/skeleton';
       lucideCamera,
       lucideSave,
       lucideLoader2,
+      lucideLogOut,
+      lucideSmartphone,
+      lucideMap,
+      lucideGlobe,
+      lucideClock,
+      lucideMonitor,
+      lucideTablet,
     }),
   ],
 })
@@ -88,6 +121,7 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   //#region injecciones
   private readonly layout = inject(LayoutService);
   private readonly utilsService = inject(UtilsService);
+  private readonly alertDialogService = inject(ZardAlertDialogService);
   private readonly store = inject(Store);
   private readonly injector = inject(Injector);
   private destroyRef = inject(DestroyRef);
@@ -101,10 +135,9 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  avatarPreview = signal<string | null>(null); // blob URL, solo para <img> nativo
+  avatarPreview = signal<string | null>(null);
   private selectedAvatarFile: File | null = null;
 
-  // z-avatar solo recibe URLs reales del servidor
   avatarSrc = computed(() => this.user()?.avatar ?? '');
 
   form = new FormGroup({
@@ -131,6 +164,11 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
     ),
   });
 
+  deviceIcons: Record<SessionDevice, string> = {
+    desktop: 'lucideMonitor',
+    mobile: 'lucideSmartphone',
+    tablet: 'lucideTablet',
+  };
   //#endregion
 
   //#region imports reducers
@@ -148,10 +186,41 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   readonly isLoadingUser$ = toSignal(this.store.select(selectUserLoading), {
     initialValue: true, // true por defecto para evitar flash del form vacío
   });
+
+  //sessions
+  sessions = this.store.selectSignal(sessions);
+  otherSessionsCount = computed(() => this.sessions()?.filter(s => !s.current).length ?? 0);
+  sortedSessions = computed(() => {
+    return [...this.sessions()!].sort((a, b) => {
+      if (a.current) return -1;
+      if (b.current) return 1;
+      return 0;
+    });
+  });
+  readonly isLoadingSessions = toSignal(this.store.select(isLoadingSessions), {
+    initialValue: false,
+  });
+  readonly errorSessions = this.store.selectSignal(errorSessions);
+  readonly statusCodeSessions = this.store.selectSignal(statusCodeSessions);
+
+  //delete session by id
+  readonly isLoadingDeleteIdSession = toSignal(this.store.select(isLoadingDeleteIdSession), {
+    initialValue: false,
+  });
+  readonly errorDeleteIdSession = this.store.selectSignal(errorDeleteIdSession);
+  readonly statusCodeDeleteIdSession = this.store.selectSignal(statusCodeDeleteIdSession);
+
+  //delete session by all
+  readonly isLoadingDeleteAllSession = toSignal(this.store.select(isLoadingDeleteAllSession), {
+    initialValue: false,
+  });
+  readonly errorDeleteAllSession = this.store.selectSignal(errorDeleteAllSession);
+  readonly statusCodeDeleteAllSession = this.store.selectSignal(statusCodeDeleteAllSession);
   //#endregion
 
   //#region Ciclo de vida angular
   ngOnInit() {
+    this.store.dispatch(UserActions.getAllSesions());
     this.formPassword.controls.currentPassword.valueChanges.subscribe(value => {
       if (value) {
         this.formPassword.controls.newPassword.enable();
@@ -182,6 +251,10 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   //#endregion
 
   //#region Getter y errores
+  get skeletonSessionsItems() {
+    return Array(3);
+  }
+
   get nameControl() {
     return this.form.get('name')!;
   }
@@ -265,6 +338,10 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   //#endregion
 
   //#region funciones
+  getDeviceIcon(device: SessionDevice): string {
+    return this.deviceIcons[device];
+  }
+
   getInitialsWithFullName(fullname: string): string {
     const fullNameSplit = fullname.split(' ');
     const name = fullNameSplit[0];
@@ -279,7 +356,6 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
 
     this.selectedAvatarFile = file;
 
-    // Revocar el blob anterior para no leakear memoria
     const prev = this.avatarPreview();
     if (prev) URL.revokeObjectURL(prev);
 
@@ -325,6 +401,36 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
     const hasMinimumLength = value.length >= 8;
 
     return hasUppercase && hasLowercase && hasDigit && hasSpecialCharacter && hasMinimumLength;
+  }
+
+  private deleteSession(sessionId: string): void {
+    this.store.dispatch(UserActions.deleteSessionByID({ sessionId }));
+  }
+
+  handleRevokeSession(sessionId: string): void {
+    this.alertDialogService.confirm({
+      zTitle: '¿Estás completamente seguro?',
+      zDescription: 'Esta acción es irreversible. Cerrara la sesion permanentemente.',
+      zOkDestructive: true,
+      zOkText: 'Si, cerrar',
+      zCancelText: 'No, cancelar',
+      zOnOk: () => this.deleteSession(sessionId),
+    });
+  }
+
+  private deleteAllSessions(): void {
+    this.store.dispatch(UserActions.deleteAllSesions());
+  }
+
+  handleRevokeAllSessions(): void {
+    this.alertDialogService.confirm({
+      zTitle: '¿Estás completamente seguro?',
+      zDescription: 'Esta acción es irreversible. Cerrara la sesion permanentemente.',
+      zOkDestructive: true,
+      zOkText: 'Si, cerrar',
+      zCancelText: 'No, cancelar',
+      zOnOk: () => this.deleteAllSessions(),
+    });
   }
   //#endregion
 }

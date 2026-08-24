@@ -14,6 +14,8 @@
     "start:dev:p": "ng serve --poll --c=development",
     "start:dev:o": "ng serve --c=development -o",
     "start:dev:op": "ng serve --poll --c=development -o",
+    "start:dev:ssl": "ng serve --poll --c=development --ssl --ssl-cert 192.168.0.64+3.pem --ssl-key 192.168.0.64+3-key.pem",
+    "start:dev:ssl:o": "ng serve --poll --c=development -o --ssl --ssl-cert 192.168.0.64+3.pem --ssl-key 192.168.0.64+3-key.pem",
     "build:dev": "ng build --c=development",
     "start:prod": "ng serve --c=production",
     "start:prod:o": "ng serve --c=production -o",

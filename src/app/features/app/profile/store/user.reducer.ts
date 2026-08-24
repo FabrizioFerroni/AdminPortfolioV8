@@ -13,6 +13,24 @@ const initialState: UserState = {
   formPasswordStatusCode: null,
   isLoadingProfileForm: false,
   isLoadingPasswordForm: false,
+
+  //sessions
+  isLoadingSessions: false,
+  sessions: null,
+  errorSessions: null,
+  statusCodeSessions: null,
+
+  // delete sessions id
+  isLoadingDeleteIdSession: false,
+  deleteIdSession: null,
+  errorIdSession: null,
+  statusCodeIdSession: null,
+
+  // delete sessions all
+  isLoadingDeleteAllSession: false,
+  deleteAllSession: null,
+  errorAllSession: null,
+  statusCodeAllSession: null,
 };
 
 export const userFeature = createFeature({
@@ -93,6 +111,86 @@ export const userFeature = createFeature({
       formProfileError: null,
       formProfileStatusCode: null,
       formPasswordStatusCode: null,
+    })),
+
+    on(UserActions.getAllSesions, state => ({
+      ...state,
+      isLoadingSessions: true,
+      sessions: null,
+      errorSessions: null,
+      statusCodeSessions: null,
+    })),
+
+    on(UserActions.getAllSesionsSuccess, (state, { data }) => ({
+      ...state,
+      isLoadingSessions: false,
+      sessions: data,
+      errorSessions: null,
+      statusCodeSessions: null,
+    })),
+
+    on(UserActions.getAllSesionsFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingSessions: false,
+      sessions: null,
+      errorSessions: error,
+      statusCodeSessions: statusCode,
+    })),
+
+    on(UserActions.deleteSessionByID, state => ({
+      ...state,
+      isLoadingDeleteIdSession: true,
+      isLoadingSessions: true,
+      deleteIdSession: null,
+      errorIdSession: null,
+      statusCodeIdSession: null,
+    })),
+
+    on(UserActions.deleteSessionByIDSuccess, (state, { sessionId, data }) => ({
+      ...state,
+      isLoadingDeleteIdSession: false,
+      isLoadingSessions: false,
+      deleteIdSession: data,
+      errorIdSession: null,
+      statusCodeIdSession: null,
+      sessions: state.sessions!.filter(s => s.id !== sessionId),
+    })),
+
+    on(UserActions.deleteSessionByIDFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingDeleteIdSession: false,
+      isLoadingSessions: false,
+      deleteIdSession: null,
+      errorIdSession: error,
+      statusCodeIdSession: statusCode,
+    })),
+
+    on(UserActions.deleteAllSesions, state => ({
+      ...state,
+      isLoadingDeleteAllSession: true,
+      isLoadingSessions: true,
+      deleteAllSession: null,
+      errorAllSession: null,
+      statusCodeAllSession: null,
+    })),
+
+    on(UserActions.deleteAllSesionsSuccess, (state, { data }) => ({
+      ...state,
+      isLoadingDeleteAllSession: false,
+      isLoadingSessions: false,
+      deleteAllSession: data,
+      errorAllSession: null,
+      statusCodeAllSession: null,
+      sessions: state.sessions?.filter(s => s.current) ?? null,
+    })),
+
+    on(UserActions.deleteAllSesionsFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingDeleteAllSession: false,
+      isLoadingSessions: false,
+      deleteAllSession: null,
+      errorAllSession: error,
+      statusCodeAllSession: statusCode,
     }))
   ),
 });

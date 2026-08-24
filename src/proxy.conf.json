@@ -2,16 +2,19 @@
   "/api/**": {
     "target": "http://localhost:4400",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "xfwd": true
   },
   "/auth/**": {
     "target": "http://localhost:4400",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "xfwd": true
   },
   "/file/**": {
     "target": "http://localhost:4400",
     "secure": false,
-    "changeOrigin": true
+    "changeOrigin": true,
+    "xfwd": true
   }
 }
