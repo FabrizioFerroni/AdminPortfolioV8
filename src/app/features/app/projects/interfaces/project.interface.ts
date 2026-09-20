@@ -1,5 +1,7 @@
 import { FormControl } from '@angular/forms';
 
+export type ImageVariantName = 'thumbnail' | 'medium';
+
 export interface ProjectList {
   id: string;
   title: string;
@@ -16,6 +18,7 @@ export interface ProjectList {
   images: ProjectImageList[];
   technologies: ProjectTechnologieList[];
   features: ProjectFeatureList[];
+  imageVariants: Record<ImageVariantName, { url: string }>;
 }
 
 export interface ProjectImageList {
