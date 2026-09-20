@@ -255,7 +255,7 @@ export class UpdateProject implements OnInit, AfterViewInit {
             this.title.set(data.title);
             this.form.patchValue(data);
             this.handleDeleteAllDataFT(data.technologies, data.features);
-            this.coverImage.set(data.imageFullUrl);
+            this.coverImage.set(data.imageVariants.thumbnail.url);
             this.form.controls.technologies.setValue(
               data.technologies.map(tech => ({
                 id: tech.id,
