@@ -7,15 +7,15 @@
         </div>
         <div class="text-center">
           <h1 class="text-2xl font-bold text-foreground">Portfolio Admin</h1>
-          <p class="text-sm text-muted-foreground mt-1">Inicia sesión en tu cuenta.</p>
+          <p class="text-sm text-muted-foreground mt-1">Cambiar contraseña.</p>
         </div>
       </div>
       <form
         novalidate
         [formGroup]="validationForm"
         (ngSubmit)="handleSubmit()"
-        class="max-w-sm space-y-6">
-        @if (authError()) {
+        class="max-w-sm space-y-6 select-none">
+        @if (authRecoverError()) {
           <z-alert
             zType="destructive"
             zTitle="Uppsss... Hubo un error!"
@@ -23,42 +23,11 @@
             class="animate-in slide-in-from-top-2" />
 
           <ng-template #customDescription>
-            <p>{{ authError() }}</p>
+            <p>{{ authRecoverError() }}</p>
           </ng-template>
         }
+
         <div class="space-y-4">
-          <div class="flex flex-col gap-2">
-            <z-form-field>
-              <label
-                id="email"
-                for="email"
-                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                z-form-label
-                zRequired
-                >Email</label
-              >
-              <div class="relative">
-                <z-form-control>
-                  <svg
-                    lucideMail
-                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"></svg>
-                  <input
-                    z-input
-                    type="email"
-                    placeholder="name@example.com"
-                    formControlName="email"
-                    id="email"
-                    class="h-12 pl-10 pr-4 outFocus"
-                    autoComplete="email"
-                    zRequired
-                    [zStatus]="
-                      emailControl.invalid && emailControl.touched ? 'error' : undefined
-                    " />
-                </z-form-control>
-                <z-form-message zType="error">{{ getEmailError() }}</z-form-message>
-              </div>
-            </z-form-field>
-          </div>
           <div class="flex flex-col gap-2">
             <z-form-field>
               <div class="flex items-center justify-between">
@@ -69,11 +38,6 @@
                   z-form-label
                   zRequired
                   >Contraseña</label
-                >
-                <a
-                  [routerLink]="forgoPassowrd"
-                  class="text-xs text-primary hover:text-primary/80 hover:underline transition-colors"
-                  >Olvidaste tu contraseña?</a
                 >
               </div>
               <div class="relative">
@@ -108,18 +72,53 @@
               </div>
             </z-form-field>
           </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <z-form-field>
-            <z-form-control class="flex flex-col">
-              <div class="flex items-center space-x-2">
-                <z-checkbox id="rememberMe" formControlName="rememberMe" class="outFocus" />
-                <label z-form-label class="mb-0! outFocus" for="rememberMe">Recordarme</label>
+          <div class="flex flex-col gap-2">
+            <z-form-field>
+              <div class="flex items-center justify-between">
+                <label
+                  for="confirm_password"
+                  id="confirm_password"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  z-form-label
+                  zRequired
+                  >Confirmar Contraseña</label
+                >
               </div>
-            </z-form-control>
-          </z-form-field>
+              <div class="relative">
+                <z-form-control>
+                  <svg
+                    lucideLock
+                    class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"></svg>
+                  <input
+                    z-input
+                    type="{{ showConfirmPassword ? 'text' : 'password' }}"
+                    placeholder="Confirma tu contraseña"
+                    formControlName="confirm_password"
+                    id="confirm_password"
+                    class="h-12 pl-10 pr-4 outFocus"
+                    autoComplete="current-password"
+                    zRequired
+                    [zStatus]="
+                      confirmPasswordControl.invalid && confirmPasswordControl.touched
+                        ? 'error'
+                        : undefined
+                    " />
+                  <button
+                    type="button"
+                    (click)="showConfirmPassword = !showConfirmPassword"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    @if (showConfirmPassword) {
+                      <svg lucideEyeOff class="h-5 w-5"></svg>
+                    } @else {
+                      <svg lucideEye class="h-5 w-5"></svg>
+                    }
+                  </button>
+                </z-form-control>
+                <z-form-message zType="error">{{ getConfirmPasswordError() }}</z-form-message>
+              </div>
+            </z-form-field>
+          </div>
         </div>
-
         @if (isLoading()) {
           <button
             z-button
@@ -129,7 +128,7 @@
             type="button"
             class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer cursor-not-allowed">
             <svg lucideLoader2 class="mr-2 h-5 w-5 animate-spin"></svg>
-            <span>Iniciando sesión...</span>
+            <span>Cambiando clave...</span>
           </button>
         } @else {
           <button
@@ -139,8 +138,8 @@
             type="submit"
             [zDisabled]="validationForm.invalid"
             class="w-full h-12 text-base font-medium shadow-sm shadow-primary/25 hover:shadow-md hover:shadow-primary/30 transition-all cursor-pointer disabled:cursor-not-allowed">
-            <svg lucideLogIn class="mr-2 h-5 w-5"></svg>
-            <span>Iniciar sesión </span>
+            <svg lucideKey class="mr-2 h-5 w-5"></svg>
+            <span>Cambiar Clave</span>
           </button>
         }
       </form>

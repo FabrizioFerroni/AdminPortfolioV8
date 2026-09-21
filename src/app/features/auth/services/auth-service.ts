@@ -20,20 +20,7 @@ export class AuthService extends BaseHttpService {
     );
   }
 
-  verify(body: IValidateUser): Observable<ApiResponse<string>> {
-    return from(cifrateData(this.publicKey, body)).pipe(
-      switchMap(userEncrypt => {
-        const headers = new HttpHeaders().set('basic', userEncrypt);
-        return this.http.post<ApiResponse<string>>(
-          `${this.authUrl}/verificar/${body.token}`,
-          {},
-          { headers }
-        );
-      })
-    );
-  }
-
-  forgot_password(body: IForgotPassword): Observable<ApiResponse<string>> {
+  forgotPassword(body: IForgotPassword): Observable<ApiResponse<string>> {
     return from(cifrateData(this.publicKey, body)).pipe(
       switchMap(userEncrypt => {
         const headers = new HttpHeaders().set('basic', userEncrypt);
@@ -42,12 +29,29 @@ export class AuthService extends BaseHttpService {
     );
   }
 
-  change_password(body: IChangePassword): Observable<ApiResponse<string>> {
+  verifyTokenPassword(token: string): Observable<ApiResponse<string>> {
+    return this.http.get<ApiResponse<string>>(`${this.authUrl}/verificar-token-clave/${token}`);
+  }
+
+  changePassword(body: IChangePassword): Observable<ApiResponse<string>> {
     return from(cifrateData(this.publicKey, body)).pipe(
       switchMap(userEncrypt => {
         const headers = new HttpHeaders().set('basic', userEncrypt);
         return this.http.post<ApiResponse<string>>(
           `${this.authUrl}/cambiar-clave/${body.token}`,
+          {},
+          { headers }
+        );
+      })
+    );
+  }
+
+  verify(body: IValidateUser): Observable<ApiResponse<string>> {
+    return from(cifrateData(this.publicKey, body)).pipe(
+      switchMap(userEncrypt => {
+        const headers = new HttpHeaders().set('basic', userEncrypt);
+        return this.http.post<ApiResponse<string>>(
+          `${this.authUrl}/verificar/${body.token}`,
           {},
           { headers }
         );
