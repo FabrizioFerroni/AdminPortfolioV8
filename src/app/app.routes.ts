@@ -7,7 +7,7 @@ import { logedGuard } from './core';
 export const routes: Routes = [
   {
     path: Rutas.HOME,
-    loadChildren: () => import('./features/auth/auth.routes'),
+    loadChildren: () => import('./features').then(m => m.AUTH_ROUTES),
   },
   {
     path: Rutas.HOME,

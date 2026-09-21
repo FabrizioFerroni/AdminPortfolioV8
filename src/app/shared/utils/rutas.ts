@@ -13,4 +13,6 @@ export enum Rutas {
   PROFILE = 'perfil',
   SETTINGS = 'configuraciones',
   TESTIMONIALS = 'testimonios',
+  FORGOT_PASSWORD = 'olvide-clave',
+  CHANGE_PASSWORD = 'cambiar-clave',
 }

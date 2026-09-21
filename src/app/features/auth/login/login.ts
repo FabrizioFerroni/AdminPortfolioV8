@@ -26,6 +26,8 @@ import {
 import { ILogin } from '../interfaces';
 import { Store } from '@ngrx/store';
 import { AuthActions, selectAuthError, selectIsLoading } from '../store';
+import { Rutas } from '@/shared/utils';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -44,17 +46,19 @@ import { AuthActions, selectAuthError, selectIsLoading } from '../store';
     ZardButtonComponent,
     ZardCheckboxComponent,
     ZardFormImports,
+    RouterLink,
   ],
   templateUrl: './login.html',
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export default class Login implements OnInit {
+export class Login implements OnInit {
   //#region Variables
   showPassword = false;
   year: number = new Date().getFullYear();
   rememberSelect = signal(false);
+  forgoPassowrd = Rutas.FORGOT_PASSWORD;
 
   //#region dependencias
   private readonly store = inject(Store);

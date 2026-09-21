@@ -33,6 +33,110 @@ export const loginEffect = createEffect(
   { functional: true }
 );
 
+export const forgotPasswordEffect = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) =>
+    actions$.pipe(
+      ofType(AuthActions.forgotPassword),
+      switchMap(({ body }) =>
+        authService.forgotPassword(body).pipe(
+          map(({ data }) => AuthActions.forgotPasswordSuccess({ message: data })),
+          catchError((error: HandledError) => {
+            return of(
+              AuthActions.forgotPasswordFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const verifyPasswordEffect = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) =>
+    actions$.pipe(
+      ofType(AuthActions.verifyTokenPassword),
+      switchMap(({ token }) =>
+        authService.verifyTokenPassword(token).pipe(
+          map(({ data }) => AuthActions.verifyTokenPasswordSuccess({ message: data })),
+          catchError((error: HandledError) => {
+            return of(
+              AuthActions.verifyTokenPasswordFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const verifyPasswordFailureEffect = createEffect(
+  (actions$ = inject(Actions), router = inject(Router)) =>
+    actions$.pipe(
+      ofType(AuthActions.verifyTokenPasswordFailure),
+      tap(({ error }) => {
+        toast.error('Uppss... Hubo un error', {
+          description: error,
+          position: 'top-right',
+        });
+        router.navigateByUrl('/');
+      })
+    ),
+  { functional: true, dispatch: false }
+);
+
+export const changePasswordEffect = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) =>
+    actions$.pipe(
+      ofType(AuthActions.changePassword),
+      switchMap(({ body }) =>
+        authService.changePassword(body).pipe(
+          map(({ data }) => AuthActions.changePasswordSuccess({ message: data })),
+          catchError((error: HandledError) => {
+            return of(
+              AuthActions.changePasswordFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+const FORGOT_MESSAGE_TTL_MS = 20_000;
+
+export const clearForgotMessageEffect = createEffect(
+  (actions$ = inject(Actions)) =>
+    actions$.pipe(
+      ofType(AuthActions.forgotPasswordSuccess),
+      ofType(AuthActions.forgotPasswordFailure),
+      switchMap(() =>
+        timer(FORGOT_MESSAGE_TTL_MS).pipe(map(() => AuthActions.clearForgotMessage()))
+      )
+    ),
+  { functional: true }
+);
+
+export const clearChangeMessageEffect = createEffect(
+  (actions$ = inject(Actions)) =>
+    actions$.pipe(
+      ofType(AuthActions.changePasswordSuccess),
+      ofType(AuthActions.changePasswordFailure),
+      switchMap(() =>
+        timer(FORGOT_MESSAGE_TTL_MS).pipe(map(() => AuthActions.clearForgotMessage()))
+      )
+    ),
+  { functional: true }
+);
+
 export const loginSuccessEffect = createEffect(
   (
     actions$ = inject(Actions),
