@@ -1,6 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { ClearSession, SessionsData, UpdatePasswordDto } from '../interfaces';
 import { UserProfile } from '@/features/auth/response';
+import { CVResponse } from '../interfaces/cv.interface';
 
 export const UserActions = createActionGroup({
   source: 'User',
@@ -13,6 +14,12 @@ export const UserActions = createActionGroup({
     'Delete Session By ID': props<{ sessionId: string }>(),
     'Delete All Sesions': emptyProps(),
 
+    //CV
+    'Get CV': emptyProps(),
+    'Get Olds CV': emptyProps(),
+    'Upload CV': props<{ data: FormData }>(),
+    'Download CV': emptyProps(),
+
     // Success
     'Get User Success': props<{ data: UserProfile }>(),
     'Update Profile Success': emptyProps(),
@@ -21,6 +28,12 @@ export const UserActions = createActionGroup({
     'Delete Session By ID Success': props<{ sessionId: string; data: ClearSession }>(),
     'Delete All Sesions Success': props<{ data: ClearSession }>(),
 
+    // Success CV
+    'Get CV Success': props<{ data: CVResponse }>(),
+    'Get Olds CV Success': props<{ data: CVResponse[] }>(),
+    'Upload CV Success': props<{ data: string }>(),
+    'Download CV Success': props<{ filename: string }>(),
+
     // Failure
     'Get User Failure': props<{ error: string; statusCode: number }>(),
     'Update Profile Failure': props<{ error: string; statusCode: number }>(),
@@ -28,6 +41,12 @@ export const UserActions = createActionGroup({
     'Get All Sesions Failure': props<{ error: string; statusCode: number }>(),
     'Delete Session By ID Failure': props<{ error: string; statusCode: number }>(),
     'Delete All Sesions Failure': props<{ error: string; statusCode: number }>(),
+
+    // Failure CV
+    'Get CV Failure': props<{ error: string; statusCode: number }>(),
+    'Get Olds CV Failure': props<{ error: string; statusCode: number }>(),
+    'Upload CV Failure': props<{ error: string; statusCode: number }>(),
+    'Download CV Failure': props<{ error: string; statusCode: number }>(),
 
     // Misc
     'Clear Error': emptyProps(),

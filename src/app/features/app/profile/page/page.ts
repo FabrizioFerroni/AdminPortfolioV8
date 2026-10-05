@@ -37,8 +37,13 @@ import {
 import { LucideEye, LucideEyeOff } from '@lucide/angular';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
+  lucideCalendar,
   lucideCamera,
   lucideClock,
+  lucideDownload,
+  lucideFileStack,
+  lucideFileText,
+  lucideFileX,
   lucideGlobe,
   lucideLoader2,
   lucideLogOut,
@@ -47,15 +52,19 @@ import {
   lucideSave,
   lucideSmartphone,
   lucideTablet,
+  lucideUpload,
 } from '@ng-icons/lucide';
 import { Store } from '@ngrx/store';
 import { SessionDevice, UpdatePasswordDto } from '../interfaces';
 import {
   errorDeleteAllSession,
   errorDeleteIdSession,
+  errorGetCV,
   errorSessions,
+  getCVData,
   isLoadingDeleteAllSession,
   isLoadingDeleteIdSession,
+  isLoadingGetCV,
   isLoadingSessions,
   selectUserError,
   selectUserLoading,
@@ -66,6 +75,7 @@ import {
   sessions,
   statusCodeDeleteAllSession,
   statusCodeDeleteIdSession,
+  statusCodeGetCV,
   statusCodeSessions,
   UserActions,
 } from '../store';
@@ -74,7 +84,12 @@ import { Actions, ofType } from '@ngrx/effects';
 import { ZardSkeletonComponent } from '@/shared/components/skeleton';
 import { ZardBadgeComponent } from '@/shared/components/badge';
 import { ZardAlertDialogService } from '@/shared/components/alert-dialog';
-import { TimeAgoPipe } from '@/shared/pipes';
+import { FileSizePipe, TimeAgoPipe } from '@/shared/pipes';
+import { CVDialog } from '../cv-dialog';
+import { ZardDialogService } from '@/shared/components/dialog';
+import { OldCVDialog } from '../old-cv-dialog';
+import { DatePipe } from '@angular/common';
+import { stripPdfExtension } from '@/shared/functions';
 
 @Component({
   selector: 'app-profile',
@@ -99,6 +114,8 @@ import { TimeAgoPipe } from '@/shared/pipes';
     LucideEye,
     LucideEyeOff,
     TimeAgoPipe,
+    FileSizePipe,
+    DatePipe,
   ],
   templateUrl: './page.html',
   styleUrl: './page.css',
@@ -114,6 +131,12 @@ import { TimeAgoPipe } from '@/shared/pipes';
       lucideClock,
       lucideMonitor,
       lucideTablet,
+      lucideUpload,
+      lucideFileStack,
+      lucideFileText,
+      lucideDownload,
+      lucideCalendar,
+      lucideFileX,
     }),
   ],
 })
@@ -124,6 +147,7 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   private readonly alertDialogService = inject(ZardAlertDialogService);
   private readonly store = inject(Store);
   private readonly injector = inject(Injector);
+  private readonly dialogService = inject(ZardDialogService);
   private destroyRef = inject(DestroyRef);
   private actions$ = inject(Actions);
   //#endregion
@@ -216,11 +240,25 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   });
   readonly errorDeleteAllSession = this.store.selectSignal(errorDeleteAllSession);
   readonly statusCodeDeleteAllSession = this.store.selectSignal(statusCodeDeleteAllSession);
+
+  //getCV
+  cv = this.store.selectSignal(getCVData);
+  readonly cvDisplayName = computed(() => stripPdfExtension(this.cv()?.downloadName));
+  readonly id = computed(() => this.cv()?.id);
+  readonly isLoadingGetCVBack = toSignal(this.store.select(isLoadingGetCV), {
+    initialValue: false,
+  });
+  readonly errorGetCVBack = this.store.selectSignal(errorGetCV);
+  readonly statusCodeGetCVBack = this.store.selectSignal(statusCodeGetCV);
+
+  isDownloading = signal(false);
   //#endregion
 
   //#region Ciclo de vida angular
   ngOnInit() {
     this.store.dispatch(UserActions.getAllSesions());
+    this.store.dispatch(UserActions.getCV());
+
     this.formPassword.controls.currentPassword.valueChanges.subscribe(value => {
       if (value) {
         this.formPassword.controls.newPassword.enable();
@@ -235,6 +273,15 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
       .pipe(ofType(UserActions.updatePasswordSuccess), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.formPassword.reset();
+      });
+
+    this.actions$
+      .pipe(
+        ofType(UserActions.downloadCVSuccess, UserActions.downloadCVFailure),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        this.isDownloading.set(false);
       });
   }
 
@@ -338,6 +385,11 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   //#endregion
 
   //#region funciones
+  onDownloadCv(): void {
+    this.isDownloading.set(true);
+    this.store.dispatch(UserActions.downloadCV());
+  }
+
   getDeviceIcon(device: SessionDevice): string {
     return this.deviceIcons[device];
   }
@@ -430,6 +482,28 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
       zOkText: 'Si, cerrar',
       zCancelText: 'No, cancelar',
       zOnOk: () => this.deleteAllSessions(),
+    });
+  }
+
+  openDialogCV() {
+    this.dialogService.create({
+      zTitle: 'Subir un CV nuevo',
+      zDescription: 'Este cv se podra descargar desde el portfolio en el botón de "Descargar CV".',
+      zContent: CVDialog,
+      zHideFooter: true,
+      zMaskClosable: false,
+      zWidth: '1000px',
+    });
+  }
+
+  openDialogOldCV() {
+    this.dialogService.create({
+      zTitle: 'Ver CV antiguos',
+      zDescription: 'Podrás revisar los cv antiguos cuantas descarga tuvieron.',
+      zContent: OldCVDialog,
+      zHideFooter: true,
+      zMaskClosable: false,
+      zWidth: '1000px',
     });
   }
   //#endregion

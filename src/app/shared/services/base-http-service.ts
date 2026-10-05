@@ -11,4 +11,5 @@ export class BaseHttpService {
   readonly authUrl = environment.auth;
   readonly fileUrl = environment.file;
   readonly publicKey = environment.pathCert;
+  readonly apiKey = environment.apiKey;
 }

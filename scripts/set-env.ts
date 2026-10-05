@@ -35,7 +35,8 @@ const content = `export const environment = {
   file: '${process.env.FILE_URL}',
   release: '${process.env.RELEASE}',
   version: '${process.env.VERSION}',
-  pathCert: \`${publicKey}\`
+  pathCert: \`${publicKey}\`,
+  apiKey: '${process.env.API_KEY}'
 };
 `;
 

@@ -10,6 +10,7 @@ import { toast } from 'ngx-sonner';
 import { TokenService } from '@/shared/services';
 import { AuthActions } from '@/features/auth/store';
 import { ClearSession, SessionsData } from '../interfaces';
+import { CVResponse } from '../interfaces/cv.interface';
 
 export const getProfileEffect = createEffect(
   (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
@@ -185,6 +186,120 @@ export const deleteAllSessions = createEffect(
           })
         )
       )
+    ),
+  { functional: true }
+);
+
+function triggerBrowserSave(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+export const downloadCv = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.downloadCV),
+      switchMap(() =>
+        profileService.downloadCv().pipe(
+          tap(({ blob, filename }) => triggerBrowserSave(blob, filename)),
+          map(({ filename }) => UserActions.downloadCVSuccess({ filename })),
+          catchError((error: HandledError) =>
+            of(
+              UserActions.downloadCVFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            )
+          )
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const getCV = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.getCV),
+      switchMap(() =>
+        profileService.getAdminCV().pipe(
+          map(({ body }: HttpResponse<ApiResponse<CVResponse>>) => {
+            return UserActions.getCVSuccess({ data: body!.data });
+          }),
+          catchError((error: HandledError) => {
+            return of(
+              UserActions.getCVFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const getOldsCVS = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.getOldsCV),
+      switchMap(() =>
+        profileService.getAdminOldsCV().pipe(
+          map(({ body }: HttpResponse<ApiResponse<CVResponse[]>>) => {
+            return UserActions.getOldsCVSuccess({ data: body!.data });
+          }),
+          catchError((error: HandledError) => {
+            return of(
+              UserActions.getOldsCVFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            );
+          })
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const uploadCV = createEffect(
+  (actions$ = inject(Actions), profileService = inject(ProfileService)) =>
+    actions$.pipe(
+      ofType(UserActions.uploadCV),
+      switchMap(({ data }) =>
+        profileService.postCV(data).pipe(
+          mergeMap(({ body }) => {
+            toast.success('Éxito', {
+              description: `${body!.data}`,
+              position: 'top-right',
+            });
+
+            return [UserActions.uploadCVSuccess({ data: body!.data }), UserActions.getCV()];
+          }),
+          catchError((error: HandledError) =>
+            of(
+              UserActions.uploadCVFailure({
+                error: error.message,
+                statusCode: error.statusCode,
+              })
+            )
+          )
+        )
+      )
+    ),
+  { functional: true }
+);
+
+export const reloadCvAfterDownloadEffect = createEffect(
+  (actions$ = inject(Actions)) =>
+    actions$.pipe(
+      ofType(UserActions.downloadCVSuccess),
+      mergeMap(() => [UserActions.getCV()])
     ),
   { functional: true }
 );

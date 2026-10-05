@@ -1,0 +1,76 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmitCV()" class="grid gap-6">
+  <div class="flex flex-col gap-3">
+    <z-form-field>
+      <label
+        for="name"
+        class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+        z-form-label
+        zRequired>
+        Nombre del CV
+      </label>
+      <z-form-control>
+        <input
+          z-input
+          id="name"
+          formControlName="name"
+          placeholder="Nombre de descarga del CV"
+          [zStatus]="nameControl?.invalid && nameControl!.touched ? 'error' : undefined"
+          zRequired
+          class="outFocus file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+      </z-form-control>
+      <z-form-message zType="error">{{ getNameError() }}</z-form-message>
+    </z-form-field>
+  </div>
+
+  <div class="relative h-48 w-full sm:h-[60dvh] sm:min-h-80">
+    @if (cvPreviewUrl(); as previewUrl) {
+      @if (canPreviewPdf) {
+        <iframe
+          [src]="previewUrl"
+          title="Vista previa del CV"
+          class="h-full w-full rounded-lg border"></iframe>
+      } @else {
+        <div
+          class="flex h-full w-full flex-col items-center justify-center gap-3 rounded-lg border p-4 text-center">
+          <ng-icon name="lucideFileText" class="h-20 w-20 text-muted-foreground" />
+          <span class="max-w-full truncate text-sm">{{ selectedCoverFile?.name }}</span>
+          <a [href]="previewUrl" target="_blank" rel="noopener" class="text-sm underline">
+            Abrir vista previa
+          </a>
+        </div>
+      }
+
+      <button
+        (click)="removeCV()"
+        class="absolute top-2 right-6 h-8 w-8 cursor-pointer"
+        z-button
+        zSize="icon"
+        type="button"
+        zType="destructive">
+        <ng-icon name="lucideX" class="h-4 w-4" />
+      </button>
+    } @else {
+      <label
+        class="flex h-full w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:bg-muted/50">
+        <ng-icon name="lucideUpload" class="mb-2 h-8 w-8 text-muted-foreground" />
+        <span class="text-sm text-muted-foreground">Subir CV</span>
+        <input
+          type="file"
+          accept="application/pdf"
+          class="hidden"
+          (change)="handleCVUpload($event)" />
+      </label>
+    }
+  </div>
+  <div class="flex justify-end">
+    <button
+      [zDisabled]="form.invalid || !selectedCoverFile"
+      z-button
+      type="submit"
+      zType="default"
+      class="cursor-pointer w-full md:w-auto">
+      <ng-icon name="lucideUpload" class="mr-2 h-4 w-4" />
+      <span>Cargar CV</span>
+    </button>
+  </div>
+</form>

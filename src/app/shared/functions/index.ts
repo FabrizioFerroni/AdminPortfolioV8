@@ -4,3 +4,4 @@ export * from './passwordLength';
 export * from './regex.patterns';
 export * from './validate-password';
 export * from './generateSlug';
+export * from './strip-pdf-ext';
