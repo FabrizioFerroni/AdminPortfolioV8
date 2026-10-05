@@ -164,11 +164,28 @@ export class ZardDialogOptions<T, U> {
   styles: `
     :host {
       --z-dialog-duration: 100ms;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100dvh - 2rem);
       opacity: 1;
       transform: scale(1);
       transition:
         opacity var(--z-dialog-duration) ease-out,
         transform var(--z-dialog-duration) ease-out;
+    }
+
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 0.5rem;
+      margin-right: -0.5rem;
+    }
+
+    header,
+    footer {
+      flex-shrink: 0;
     }
 
     @starting-style {
@@ -191,6 +208,7 @@ export class ZardDialogOptions<T, U> {
   host: {
     '[class]': 'classes()',
     '[style.max-width]': 'maxWidthCss()',
+    '[style.max-height]': "'calc(100dvh - 2rem)'",
     '[style.--z-dialog-duration]': 'durationCss()',
     'data-slot': 'dialog-content',
     role: 'dialog',

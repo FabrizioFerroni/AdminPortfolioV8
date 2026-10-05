@@ -31,6 +31,30 @@ const initialState: UserState = {
   deleteAllSession: null,
   errorAllSession: null,
   statusCodeAllSession: null,
+
+  //get cv
+  isLoadingGetCv: false,
+  getCV: null,
+  errorGetCv: null,
+  statusCodeGetCV: null,
+
+  // Upload cv
+  isLoadingUploadCV: false,
+  uploadCV: null,
+  errorUploadCv: null,
+  statusCodeUploadCV: null,
+
+  // Download CV
+  isLoadingDownloadCV: false,
+  downloadCV: null,
+  errorDownloadCV: null,
+  statusCodeDownloadCV: null,
+
+  //Get Olds CV
+  isLoadingGetOldsCvs: false,
+  getOldsCVS: null,
+  errorGetOldsCvs: null,
+  statusCodeGetOldsCVS: null,
 };
 
 export const userFeature = createFeature({
@@ -191,6 +215,109 @@ export const userFeature = createFeature({
       deleteAllSession: null,
       errorAllSession: error,
       statusCodeAllSession: statusCode,
+    }))
+  ),
+});
+
+export const cvFeature = createFeature({
+  name: 'cv',
+  reducer: createReducer(
+    initialState,
+
+    on(UserActions.getCV, state => ({
+      ...state,
+      isLoadingGetCv: true,
+      getCV: null,
+      errorGetCv: null,
+      statusCodeGetCV: null,
+    })),
+
+    on(UserActions.getCVSuccess, (state, { data }) => ({
+      ...state,
+      isLoadingGetCv: false,
+      getCV: data,
+      errorGetCv: null,
+      statusCodeGetCV: 200,
+    })),
+
+    on(UserActions.getCVFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingGetCv: false,
+      getCV: null,
+      errorGetCv: error,
+      statusCodeGetCV: statusCode,
+    })),
+
+    on(UserActions.uploadCV, state => ({
+      ...state,
+      isLoadingUploadCV: true,
+      uploadCV: null,
+      errorUploadCv: null,
+      statusCodeUploadCV: null,
+    })),
+
+    on(UserActions.uploadCVSuccess, (state, { data }) => ({
+      ...state,
+      isLoadingUploadCV: false,
+      uploadCV: data,
+      errorUploadCv: null,
+      statusCodeUploadCV: null,
+    })),
+
+    on(UserActions.uploadCVFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingUploadCV: false,
+      uploadCV: null,
+      errorUploadCv: error,
+      statusCodeUploadCV: statusCode,
+    })),
+
+    on(UserActions.downloadCV, state => ({
+      ...state,
+      isLoadingDownloadCV: true,
+      downloadCV: null,
+      errorDownloadCv: null,
+      statusCodeDownloadCV: null,
+    })),
+
+    on(UserActions.downloadCVSuccess, (state, { filename }) => ({
+      ...state,
+      isLoadingDownloadCV: false,
+      downloadCV: filename,
+      errorDownloadCv: null,
+      statusCodeDownloadCV: null,
+    })),
+
+    on(UserActions.downloadCVFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingDownloadCV: false,
+      downloadCV: null,
+      errorDownloadCv: error,
+      statusCodeDownloadCV: statusCode,
+    })),
+
+    on(UserActions.getOldsCV, state => ({
+      ...state,
+      isLoadingGetOldsCvs: true,
+      getOldsCVS: null,
+      errorGetOldsCvs: null,
+      statusCodeGetOldsCVS: null,
+    })),
+
+    on(UserActions.getOldsCVSuccess, (state, { data }) => ({
+      ...state,
+      isLoadingGetOldsCvs: false,
+      getOldsCVS: data,
+      errorGetOldsCvs: null,
+      statusCodeGetOldsCVS: 200,
+    })),
+
+    on(UserActions.getOldsCVFailure, (state, { error, statusCode }) => ({
+      ...state,
+      isLoadingGetOldsCvs: false,
+      getOldsCVS: null,
+      errorGetOldsCvs: error,
+      statusCodeGetOldsCVS: statusCode,
     }))
   ),
 });

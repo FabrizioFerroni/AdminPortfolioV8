@@ -7,4 +7,5 @@ export const environment = {
   release: '',
   version: '',
   pathCert: '',
+  apiKey: '',
 };
